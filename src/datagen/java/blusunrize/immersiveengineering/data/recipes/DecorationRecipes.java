@@ -47,6 +47,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.List;
@@ -512,9 +513,10 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("crc")
 				.pattern("igi")
 				.define('c', IETags.copperWire)
-				//TODO
-				// .define('r', Tags.Items.GLASS_RED)
-				.define('r', Tags.Items.GLASS_BLOCKS)
+				.define('r', new Ingredient(new IntersectionIngredient(List.of(
+						Ingredient.of(Tags.Items.GLASS_BLOCKS_TINTED),
+						Ingredient.of(Tags.Items.DYED_RED)
+				))))
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).nugget)
 				.define('g', Tags.Items.DUSTS_GLOWSTONE)
 				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))

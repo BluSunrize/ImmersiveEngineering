@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-31T10:08:09.822417804	Recipes
+// 1.21.1	2024-08-31T17:20:57.648285431	Recipes
 e46a17053b96b7062a3dbf804ed3e25c134fc397 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick.json
 6a92fb93f1478200a7237b19770f94285cc3d955 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_from_slab.json
 bba88ea9b8e42c09c4e5df2344ccef6ad7ed4b8d data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_to_slab.json
@@ -909,7 +909,7 @@ f1d22e6ef1a8287de5050649b85edfc27167b27a data/immersiveengineering/recipe/crafti
 da4350feff6c6da4f1d244e5e48b8f2355745b9f data/immersiveengineering/recipe/crafting/breaker_switch.json
 d08514598befe2c0814eaf8c4b269100b5c9ea6d data/immersiveengineering/recipe/crafting/bullet_firework.json
 c3db362479116a5ffef9d1083914b61700353592 data/immersiveengineering/recipe/crafting/buzzsaw.json
-4c382d55c0ceef6140f353adced2c87510b1b34e data/immersiveengineering/recipe/crafting/cagelamp.json
+1223ba7c972bf88c2139636233620070bbaf4cf9 data/immersiveengineering/recipe/crafting/cagelamp.json
 ae3d1e982a4bd242980d037eadd44dd3970a42b3 data/immersiveengineering/recipe/crafting/capacitor_hv.json
 7617db29be7ae732ceab1ce99ddf92674679c0c2 data/immersiveengineering/recipe/crafting/capacitor_lv.json
 901d74286928832204659517110dc2243009fdaa data/immersiveengineering/recipe/crafting/capacitor_mv.json

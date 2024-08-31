@@ -14,8 +14,10 @@ import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -107,5 +109,15 @@ public class ItemUtils
 		}
 		else
 			tool.setDamageValue(newDamage);
+	}
+
+	public static void damageStackableItem(ItemStack stack, Level level, int amount)
+	{
+		// HACK: We cannot set the default value "the usual way" because MC stops you from having an item that
+		// is both stackable and damageable.
+		if(!stack.has(DataComponents.DAMAGE))
+			stack.set(DataComponents.DAMAGE, 0);
+		stack.hurtAndBreak(amount, (ServerLevel)level, null, (item) -> {
+		});
 	}
 }

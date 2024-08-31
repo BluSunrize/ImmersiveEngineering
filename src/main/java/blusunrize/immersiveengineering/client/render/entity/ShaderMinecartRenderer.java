@@ -13,20 +13,13 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.MinecartModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -37,78 +30,59 @@ import org.joml.Quaternionf;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ShaderMinecartRenderer<T extends AbstractMinecart> extends MinecartRenderer<T>
+public class ShaderMinecartRenderer<T extends AbstractMinecart>
 {
 	public static Int2ObjectMap<ResourceLocation> shadedCarts = new Int2ObjectOpenHashMap<>();
 
-	private final MinecartRenderer<T> baseRenderer;
-	private final MinecartModel<?> baseModel;
-
-	public ShaderMinecartRenderer(MinecartRenderer<T> base, Context manager)
-	{
-		super(manager, ModelLayers.MINECART);
-		this.baseRenderer = base;
-		this.baseModel = getModel();
-	}
-
-	@Override
-	public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
+	public static void render(
+			MinecartModel<?> baseModel, AbstractMinecart entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn
+	)
 	{
 		ShaderCase sCase = null;
 		ResourceLocation shader = shadedCarts.get(entity.getId());
 		if(shader!=null)
 			sCase = ShaderRegistry.getShader(shader, IEApi.ieLoc("minecart"));
-		baseRenderer.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-		if(sCase!=null)
-		{
-			matrixStackIn.pushPose();
-			applyTransforms(matrixStackIn, entity, partialTicks, entityYaw);
-			List<ModelPart> boxList = baseModel.root().getAllParts().collect(Collectors.toList());
-			//TODO check magic numbers
-			boxList.get(5).y = 4.1F;
-			for(int part = 0; part < boxList.size()-1; part++)
-				if(boxList.get(part)!=null)
-				{
-					float scale = 1;
-					ShaderLayer[] layers = sCase.getLayers();
+		if(sCase==null)
+			return;
 
-					//identify part 1+2, they shouldn'T render with additional?!
+		matrixStackIn.pushPose();
+		applyTransforms(matrixStackIn, entity, partialTicks, entityYaw);
+		List<ModelPart> boxList = baseModel.root().getAllParts().collect(Collectors.toList());
+		//TODO check magic numbers
+		boxList.get(5).y = 4.1F;
+		for(int part = 0; part < boxList.size()-1; part++)
+			if(boxList.get(part)!=null)
+			{
+				float scale = 1;
+				ShaderLayer[] layers = sCase.getLayers();
 
-					for(int pass = 0; pass < layers.length; pass++)
-						if(sCase.shouldRenderGroupForPass(""+part, pass))
-						{
-							Color4 col = sCase.getRenderColor(""+part, pass, Color4.WHITE);
-							matrixStackIn.pushPose();
-							matrixStackIn.scale(scale, scale, scale);
+				//identify part 1+2, they shouldn'T render with additional?!
 
-							RenderType type = sCase.getLayers()[pass].getRenderType(RenderType.entityTranslucent(
-									sCase.getTextureReplacement(Integer.toString(part), pass)
-							));
+				for(int pass = 0; pass < layers.length; pass++)
+					if(sCase.shouldRenderGroupForPass(""+part, pass))
+					{
+						Color4 col = sCase.getRenderColor(""+part, pass, Color4.WHITE);
+						matrixStackIn.pushPose();
+						matrixStackIn.scale(scale, scale, scale);
 
-							ModelPart subModel = boxList.get(part);
-							//TODO Fix this
-							//boolean oldMirrored = subModel.mirror;
-							//subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
-							subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, col.toInt());
-							//subModel.mirror = oldMirrored;
+						RenderType type = sCase.getLayers()[pass].getRenderType(RenderType.entityTranslucent(
+								sCase.getTextureReplacement(Integer.toString(part), pass)
+						));
 
-							matrixStackIn.popPose();
-						}
-				}
-			matrixStackIn.popPose();
-		}
+						ModelPart subModel = boxList.get(part);
+						//TODO Fix this
+						//boolean oldMirrored = subModel.mirror;
+						//subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
+						subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, col.toInt());
+						//subModel.mirror = oldMirrored;
+
+						matrixStackIn.popPose();
+					}
+			}
+		matrixStackIn.popPose();
 	}
 
-	private MinecartModel<?> getModel()
-	{
-		EntityModel<?> model = ((MinecartRendererAccess)baseRenderer).getModel();
-		if(model instanceof MinecartModel<?>)
-			return (MinecartModel<?>)model;
-		else
-			return (MinecartModel<?>)this.model;
-	}
-
-	private void applyTransforms(PoseStack matrixStackIn, T entityIn, float partialTicks, float entityYaw)
+	private static void applyTransforms(PoseStack matrixStackIn, AbstractMinecart entityIn, float partialTicks, float entityYaw)
 	{
 		long i = (long)entityIn.getId()*493286711L;
 		i = i*i*4392167121L+i*98761L;
@@ -157,24 +131,5 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 					new Quaternionf().rotateZ(Mth.DEG_TO_RAD * Mth.sin(f5)*f5*f6/10.0F*(float)entityIn.getHurtDir())
 			);
 		matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
-	}
-
-	public static void overrideMinecartModels()
-	{
-		Minecraft mc = Minecraft.getInstance();
-		EntityRenderDispatcher rendererManager = mc.getEntityRenderDispatcher();
-		// TODO fix, possibly using EntityRenderersEvent.AddLayers?
-		//Map<EntityType<?>, EntityRenderer<?>> mutableRenderers = new HashMap<>(rendererManager.renderers);
-		//for(Entry<EntityType<?>, EntityRenderer<?>> entry : rendererManager.renderers.entrySet())
-		//	if(entry.getValue() instanceof MinecartRenderer<?> minecartRender)
-		//		mutableRenderers.put(
-		//				entry.getKey(),
-		//				new ShaderMinecartRenderer<>(minecartRender, new Context(
-		//						rendererManager, mc.getItemRenderer(), mc.getBlockRenderer(),
-		//						mc.getEntityRenderDispatcher().getItemInHandRenderer(),
-		//						mc.getResourceManager(), mc.getEntityModels(), mc.font
-		//				))
-		//		);
-		//rendererManager.renderers = ImmutableMap.copyOf(mutableRenderers);
 	}
 }

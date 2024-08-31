@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -44,7 +45,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -136,17 +136,7 @@ public class ArcFurnaceLogic
 			return;
 		if(tickedAny)
 			for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
-			{
-				int finalI = i;
-				state.inventory.getStackInSlot(i).hurtAndBreak(
-						1,
-						(ServerLevel)level.getRawLevel(),
-						null,
-						// TODO?
-						(item) -> {
-						}
-				);
-			}
+				ItemUtils.damageStackableItem(state.inventory.getStackInSlot(i), level.getRawLevel(), 1);
 
 		if(state.processor.getQueueSize() < state.processor.getMaxQueueSize())
 			enqueueProcesses(state, level.getRawLevel());

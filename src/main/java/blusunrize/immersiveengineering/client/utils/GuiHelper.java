@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -83,8 +82,7 @@ public class GuiHelper
 
 	public static void drawRepeatedFluidSpriteGui(MultiBufferSource buffer, PoseStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		RenderType renderType = IERenderTypes.getGuiTranslucent(InventoryMenu.BLOCK_ATLAS);
-		VertexConsumer builder = buffer.getBuffer(renderType);
+		VertexConsumer builder = buffer.getBuffer(RenderType.TRANSLUCENT);
 		drawRepeatedFluidSprite(builder, transform, fluid, x, y, w, h);
 	}
 
@@ -98,7 +96,7 @@ public class GuiHelper
 		if(iW > 0&&iH > 0)
 			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH,
 					sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(),
-					(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, 1);
+					(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, (col>>24&255)/255f);
 	}
 
 	public static void drawRepeatedSprite(VertexConsumer builder, PoseStack transform, float x, float y, float w,

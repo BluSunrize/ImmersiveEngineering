@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SawmillShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -45,7 +46,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -112,14 +112,7 @@ public class SawmillLogic
 			{
 				state.output.insertOrDrop(process.getCurrentStack(rawLevel, !state.sawblade.isEmpty()).copy(), level);
 				processIterator.remove();
-				state.sawblade.hurtAndBreak(
-						IEServerConfig.MACHINES.sawmill_bladeDamage.get(),
-						(ServerLevel)level.getRawLevel(),
-						null,
-						// TODO?
-						(item) -> {
-						}
-				);
+				ItemUtils.damageStackableItem(state.sawblade, level.getRawLevel(), IEServerConfig.MACHINES.sawmill_bladeDamage.get());
 				context.markDirtyAndSync();
 			}
 		}

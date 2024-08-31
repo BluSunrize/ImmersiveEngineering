@@ -292,7 +292,6 @@ public class ClientProxy extends CommonProxy
 			if(render instanceof LivingEntityRenderer<?, ?> livingRenderer)
 				addIELayer(livingRenderer, ev.getEntityModels());
 		}
-		ShaderMinecartRenderer.overrideMinecartModels();
 	}
 
 	private static <T extends LivingEntity, M extends EntityModel<T>>

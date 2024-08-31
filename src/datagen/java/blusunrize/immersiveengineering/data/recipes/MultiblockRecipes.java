@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.data.recipes;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
@@ -35,7 +34,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,19 +41,14 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.IETags.getItemTag;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -313,13 +306,11 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("crusher/clay"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.AMETHYST_SHARD, 4)
-				// TODO .input(Tags.Items.STORAGE_BLOCKS_AMETHYST)
 				.input(Items.AMETHYST_BLOCK)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/amethyst"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.QUARTZ, 4)
-				// TODO .input(Tags.Items.STORAGE_BLOCKS_QUARTZ)
 				.input(Items.QUARTZ_BLOCK)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/quartz"));

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class IEDualCodecs
 {
 	public static final DualCodec<RegistryFriendlyByteBuf, FluidStack> FLUID_STACK = new DualCodec<>(
-			FluidStack.CODEC, FluidStack.STREAM_CODEC
+			FluidStack.OPTIONAL_CODEC, FluidStack.OPTIONAL_STREAM_CODEC
 	);
 	public static final DualCodec<ByteBuf, Vec3> VEC3 = new DualCodec<>(
 			Vec3.CODEC, IEStreamCodecs.VEC3_STREAM_CODEC

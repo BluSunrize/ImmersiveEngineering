@@ -12,7 +12,15 @@
       "tag": "c:nuggets/iron"
     },
     "r": {
-      "tag": "c:glass_blocks"
+      "type": "neoforge:intersection",
+      "children": [
+        {
+          "tag": "c:glass_blocks/tinted"
+        },
+        {
+          "tag": "c:dyed/red"
+        }
+      ]
     }
   },
   "pattern": [
