@@ -1,0 +1,8 @@
+{
+  "parent": "immersiveengineering:item/ie_item_base",
+  "textures": {
+    "layer0": "immersiveengineering:item/shader_0",
+    "layer1": "immersiveengineering:item/shader_1",
+    "layer2": "immersiveengineering:item/shader_2"
+  }
+}

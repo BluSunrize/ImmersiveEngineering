@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:item/bullet_flare",
+    "layer1": "immersiveengineering:item/bullet_flare_layer"
+  }
+}
