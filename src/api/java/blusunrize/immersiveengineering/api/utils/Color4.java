@@ -58,6 +58,7 @@ public record Color4(float r, float g, float b, float a)
 		return CODECS.toNBT(this);
 	}
 
+	// TODO split into RGB and ARGB
 	public int toInt()
 	{
 		final int rInt = (int)(255*r);

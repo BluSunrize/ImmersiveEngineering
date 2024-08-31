@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.Lists;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -23,7 +21,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class EarmuffsRecipe implements CraftingRecipe
 {
@@ -42,7 +39,6 @@ public class EarmuffsRecipe implements CraftingRecipe
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		List<ItemStack> list = Lists.newArrayList();
 		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
@@ -55,15 +51,15 @@ public class EarmuffsRecipe implements CraftingRecipe
 						armorItem.getEquipmentSlot()==EquipmentSlot.HEAD&&
 						!isEarmuffs)
 					armor = stackInSlot;
-				else if(Utils.isDye(stackInSlot))
-					list.add(stackInSlot);
 				else
 					return false;
 			}
 		}
-		if(!earmuffs.isEmpty()&&(!armor.isEmpty()||!list.isEmpty()))
-			return true;
-		else return !armor.isEmpty()&&armor.has(IEDataComponents.CONTAINED_EARMUFF)&&earmuffs.isEmpty()&&list.isEmpty();
+		if(armor.isEmpty())
+			return false;
+		boolean addingEarmuffs = !earmuffs.isEmpty();
+		boolean removingEarmuffs = armor.has(IEDataComponents.CONTAINED_EARMUFF);
+		return addingEarmuffs!=removingEarmuffs;
 	}
 
 	@Nonnull

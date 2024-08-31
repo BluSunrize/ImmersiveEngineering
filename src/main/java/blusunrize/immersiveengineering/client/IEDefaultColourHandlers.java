@@ -16,17 +16,17 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
 import javax.annotation.Nullable;
 
@@ -64,7 +64,7 @@ public class IEDefaultColourHandlers implements ItemColor, BlockColor
 	public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(state.getBlock() instanceof IColouredBlock colouredBlock)
-			return colouredBlock.getRenderColour(state, worldIn, pos, tintIndex);
+			return colouredBlock.getRenderColour(state, worldIn, pos, tintIndex)|0xff000000;
 		return 0xffffff;
 	}
 
@@ -72,7 +72,7 @@ public class IEDefaultColourHandlers implements ItemColor, BlockColor
 	public int getColor(ItemStack stack, int tintIndex)
 	{
 		if(stack.getItem() instanceof IColouredItem colouredItem)
-			return colouredItem.getColourForIEItem(stack, tintIndex);
-		return 0xffffff;
+			return colouredItem.getColourForIEItem(stack, tintIndex)|0xff000000;
+		return 0xffffffff;
 	}
 }
