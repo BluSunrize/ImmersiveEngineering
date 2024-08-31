@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnaceRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, BlastFurnaceRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, BlastFurnaceRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutput.CODECS.fieldOf("result"), r -> r.output,
 			IngredientWithSize.CODECS.fieldOf("input"), r -> r.input,
 			DualCodecs.INT.optionalFieldOf("time", 200), r -> r.time,

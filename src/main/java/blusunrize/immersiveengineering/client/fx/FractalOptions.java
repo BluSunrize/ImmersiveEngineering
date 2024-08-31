@@ -10,10 +10,12 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.phys.Vec3;
@@ -22,8 +24,8 @@ public record FractalOptions(
 		Vec3 direction, double scale, int maxAge, int points, Color4 colourOut, Color4 colourIn
 ) implements ParticleOptions
 {
-	public static DualMapCodec<ByteBuf, FractalOptions> CODECS = DualMapCodec.composite(
-			DualCodecs.VEC3.fieldOf("direction"), d -> d.direction,
+	public static DualMapCodec<ByteBuf, FractalOptions> CODECS = DualCompositeMapCodecs.composite(
+			IEDualCodecs.VEC3.fieldOf("direction"), d -> d.direction,
 			DualCodecs.DOUBLE.fieldOf("scale"), d -> d.scale,
 			DualCodecs.INT.fieldOf("maxAge"), d -> d.maxAge,
 			DualCodecs.INT.fieldOf("points"), d -> d.points,

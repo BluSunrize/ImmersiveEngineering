@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutputList.CODEC.fieldOf("results"), r -> r.output,
 			TagOutput.CODECS.optionalFieldOf("slag", TagOutput.EMPTY), r -> r.slag,
 			CHANCE_LIST_CODECS.optionalFieldOf("secondaries", List.of()), r -> r.secondaryOutputs,

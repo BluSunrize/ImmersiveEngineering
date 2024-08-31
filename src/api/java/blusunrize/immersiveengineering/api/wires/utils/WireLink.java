@@ -9,10 +9,11 @@
 package blusunrize.immersiveengineering.api.wires.utils;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +24,7 @@ public record WireLink(
 		ConnectionPoint cp, ResourceKey<Level> dimension, BlockPos offset, TargetingInfo target
 )
 {
-	public static final DualCodec<ByteBuf, TargetingInfo> TARGETING_INFO_CODECS = DualCodecs.composite(
+	public static final DualCodec<ByteBuf, TargetingInfo> TARGETING_INFO_CODECS = DualCompositeCodecs.composite(
 			DualCodecs.DIRECTION.fieldOf("side"), t -> t.side,
 			DualCodecs.FLOAT.fieldOf("hitX"), t -> t.hitX,
 			DualCodecs.FLOAT.fieldOf("hitY"), t -> t.hitY,
@@ -31,7 +32,7 @@ public record WireLink(
 			TargetingInfo::new
 	);
 
-	public static final DualCodec<RegistryFriendlyByteBuf, WireLink> CODECS = DualCodecs.composite(
+	public static final DualCodec<RegistryFriendlyByteBuf, WireLink> CODECS = DualCompositeCodecs.composite(
 			ConnectionPoint.CODECS.fieldOf("cp"), WireLink::cp,
 			DualCodecs.resourceKey(Registries.DIMENSION).fieldOf("dimension"), WireLink::dimension,
 			DualCodecs.BLOCK_POS.fieldOf("offset"), WireLink::offset,

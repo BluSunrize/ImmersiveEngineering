@@ -12,20 +12,18 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.DamagingBullet;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.bullets.PotionBullet.Data;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -161,7 +159,7 @@ public class PotionBullet extends DamagingBullet<Data>
 
 	public record Data(PotionContents contents, PotionType type)
 	{
-		public static final DualCodec<RegistryFriendlyByteBuf, Data> CODECS = DualCodecs.composite(
+		public static final DualCodec<RegistryFriendlyByteBuf, Data> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.POTION_CONTENTS.fieldOf("contents"), Data::contents,
 				PotionType.CODECS.fieldOf("type"), Data::type,
 				Data::new
@@ -187,6 +185,6 @@ public class PotionBullet extends DamagingBullet<Data>
 		LINGERING,
 		DEFAULT;
 
-		public static final DualCodec<ByteBuf, PotionType> CODECS = DualCodecs.forEnum(values());
+		public static final DualCodec<ByteBuf, PotionType> CODECS = IEDualCodecs.forEnum(values());
 	}
 }

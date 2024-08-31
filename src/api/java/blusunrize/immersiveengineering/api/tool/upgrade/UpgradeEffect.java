@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.api.tool.upgrade;
 
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData.UpgradeEntry;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.mojang.datafixers.util.Unit;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 
 import java.util.HashMap;
 import java.util.Map;

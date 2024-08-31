@@ -8,9 +8,10 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -19,7 +20,7 @@ import javax.annotation.Nonnull;
 
 public record ConnectionPoint(@Nonnull BlockPos position, int index) implements Comparable<ConnectionPoint>
 {
-	public static final DualCodec<ByteBuf, ConnectionPoint> CODECS = DualCodecs.composite(
+	public static final DualCodec<ByteBuf, ConnectionPoint> CODECS = DualCompositeCodecs.composite(
 			DualCodecs.BLOCK_POS.fieldOf("position"), ConnectionPoint::position,
 			DualCodecs.INT.fieldOf("index"), ConnectionPoint::index,
 			ConnectionPoint::new

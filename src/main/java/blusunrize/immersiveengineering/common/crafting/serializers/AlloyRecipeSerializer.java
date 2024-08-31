@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 {
-	private static final DualMapCodec<RegistryFriendlyByteBuf, AlloyRecipe> CODECS = DualMapCodec.composite(
+	private static final DualMapCodec<RegistryFriendlyByteBuf, AlloyRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutput.CODECS.fieldOf("result"), r -> r.output,
 			IngredientWithSize.CODECS.fieldOf("input0"), r -> r.input0,
 			IngredientWithSize.CODECS.fieldOf("input1"), r -> r.input1,

@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, SqueezerRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, SqueezerRecipe> CODECS = DualCompositeMapCodecs.composite(
 			optionalFluidOutput("fluid"), r -> r.fluidOutput,
 			optionalItemOutput("result"), r -> r.itemOutput,
 			IngredientWithSize.CODECS.fieldOf("input"), r -> r.input,

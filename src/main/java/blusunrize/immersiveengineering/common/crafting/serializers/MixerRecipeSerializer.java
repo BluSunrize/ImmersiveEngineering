@@ -9,16 +9,18 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, MixerRecipe> CODECS = DualMapCodec.composite(
-			DualCodecs.FLUID_STACK.fieldOf("result"), r -> r.fluidOutput,
+	public static final DualMapCodec<RegistryFriendlyByteBuf, MixerRecipe> CODECS = DualCompositeMapCodecs.composite(
+			IEDualCodecs.FLUID_STACK.fieldOf("result"), r -> r.fluidOutput,
 			FluidTagInput.CODECS.fieldOf("fluid"), r -> r.fluidInput,
 			IngredientWithSize.CODECS.listOf().fieldOf("inputs"), r -> r.itemInputs,
 			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,

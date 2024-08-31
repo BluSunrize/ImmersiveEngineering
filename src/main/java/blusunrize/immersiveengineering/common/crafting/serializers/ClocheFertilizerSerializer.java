@@ -10,15 +10,16 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class ClocheFertilizerSerializer extends IERecipeSerializer<ClocheFertilizer>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, ClocheFertilizer> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, ClocheFertilizer> CODECS = DualCompositeMapCodecs.composite(
 			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.input,
 			DualCodecs.FLOAT.fieldOf("growthModifier"), r -> r.growthModifier,
 			ClocheFertilizer::new

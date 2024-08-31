@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -32,7 +32,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 			Codec.INT.fieldOf("tempKelvin").forGetter(r -> r.temperature),
 			TagKey.codec(Registries.BLOCK).optionalFieldOf("blockTag").forGetter(r -> r.blocks.leftOptional()),
 			maybeListOrSingle(
-					DualCodecs.registry(BuiltInRegistries.BLOCK), "singleBlock"
+					DualCodecs.registryEntry(BuiltInRegistries.BLOCK), "singleBlock"
 			).mapCodec().forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());

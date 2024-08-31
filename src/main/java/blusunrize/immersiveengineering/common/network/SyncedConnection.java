@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEStreamCodecs;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -24,8 +25,8 @@ public record SyncedConnection(
 			ConnectionPoint.CODECS.streamCodec(), SyncedConnection::start,
 			ConnectionPoint.CODECS.streamCodec(), SyncedConnection::end,
 			WireType.CODECS.streamCodec(), SyncedConnection::type,
-			IECodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetStart,
-			IECodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetEnd,
+			IEStreamCodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetStart,
+			IEStreamCodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetEnd,
 			SyncedConnection::new
 	);
 

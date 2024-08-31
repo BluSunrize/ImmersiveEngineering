@@ -13,13 +13,14 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import com.google.common.collect.Sets;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -205,7 +206,7 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 
 	public record EarmuffData(float volumeMod, Set<String> affectedCategories)
 	{
-		public static final DualCodec<ByteBuf, EarmuffData> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, EarmuffData> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.FLOAT.fieldOf("volumeMod"), EarmuffData::volumeMod,
 				DualCodecs.STRING.setOf().fieldOf("affectedCategories"), EarmuffData::affectedCategories,
 				EarmuffData::new

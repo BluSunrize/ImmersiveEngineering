@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.items.bullets;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import malte0811.dualcodecs.DualCodec;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;

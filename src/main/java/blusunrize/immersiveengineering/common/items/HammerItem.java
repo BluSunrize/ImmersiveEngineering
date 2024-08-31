@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrig
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerBlockInteraction;
@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -268,7 +269,7 @@ public class HammerItem extends IEBaseItem
 			Optional<List<ResourceLocation>> forbidden
 	)
 	{
-		public static final DualCodec<ByteBuf, MultiblockRestriction> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, MultiblockRestriction> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.RESOURCE_LOCATION.listOf().optionalFieldOf("allowed"), MultiblockRestriction::allowed,
 				DualCodecs.RESOURCE_LOCATION.listOf().optionalFieldOf("forbidden"), MultiblockRestriction::forbidden,
 				MultiblockRestriction::new

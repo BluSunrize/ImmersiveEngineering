@@ -14,13 +14,14 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -202,7 +203,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public record LitState(float strength, int time)
 	{
-		public static final DualCodec<ByteBuf, LitState> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, LitState> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.FLOAT.fieldOf("strength"), LitState::strength,
 				DualCodecs.INT.fieldOf("time"), LitState::time,
 				LitState::new

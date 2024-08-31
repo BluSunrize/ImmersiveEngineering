@@ -9,8 +9,9 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<RevolverAssemblyRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, RevolverAssemblyRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, RevolverAssemblyRecipe> CODECS = DualCompositeMapCodecs.composite(
 			new DualMapCodec<>(
 					RecipeSerializer.SHAPED_RECIPE.codec(), RecipeSerializer.SHAPED_RECIPE.streamCodec()
 			), RevolverAssemblyRecipe::toVanilla,

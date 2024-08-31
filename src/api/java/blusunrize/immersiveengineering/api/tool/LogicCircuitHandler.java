@@ -9,10 +9,11 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -41,7 +42,7 @@ public class LogicCircuitHandler
 		IMPLY(2, args -> (!args[0])|args[1], 2),
 		NIMPLY(2, args -> args[0]&!args[1], 3);
 
-		public static final DualCodec<ByteBuf, LogicCircuitOperator> CODECS = DualCodecs.forEnum(values());
+		public static final DualCodec<ByteBuf, LogicCircuitOperator> CODECS = IEDualCodecs.forEnum(values());
 
 		private final int argumentCount;
 		private final Predicate<boolean[]> operator;
@@ -96,7 +97,7 @@ public class LogicCircuitHandler
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
 
-		public static final DualCodec<ByteBuf, LogicCircuitRegister> CODECS = DualCodecs.forEnum(values());
+		public static final DualCodec<ByteBuf, LogicCircuitRegister> CODECS = IEDualCodecs.forEnum(values());
 
 		public MutableComponent getDescription()
 		{
@@ -109,7 +110,7 @@ public class LogicCircuitHandler
 
 	public static final class LogicCircuitInstruction
 	{
-		public static final DualCodec<ByteBuf, LogicCircuitInstruction> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, LogicCircuitInstruction> CODECS = DualCompositeCodecs.composite(
 				LogicCircuitOperator.CODECS.fieldOf("operator"), i -> i.operator,
 				LogicCircuitRegister.CODECS.fieldOf("output"), i -> i.output,
 				LogicCircuitRegister.CODECS.listOf()

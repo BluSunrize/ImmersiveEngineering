@@ -12,15 +12,16 @@ import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, FermenterRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, FermenterRecipe> CODECS = DualCompositeMapCodecs.composite(
 			optionalFluidOutput("fluid"), r -> r.fluidOutput,
 			optionalItemOutput("result"), r -> r.itemOutput,
 			IngredientWithSize.CODECS.fieldOf("input"), r -> r.input,

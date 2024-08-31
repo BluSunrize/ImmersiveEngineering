@@ -12,8 +12,9 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, CrusherRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, CrusherRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutput.CODECS.fieldOf("result"), r -> r.output,
 			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.input,
 			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,

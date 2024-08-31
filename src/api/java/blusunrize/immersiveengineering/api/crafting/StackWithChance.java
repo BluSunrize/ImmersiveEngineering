@@ -9,9 +9,10 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.google.common.base.Preconditions;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public record StackWithChance(TagOutput stack, float chance, List<ICondition> conditions)
 {
-	public static final DualCodec<RegistryFriendlyByteBuf, StackWithChance> CODECS = DualCodecs.composite(
+	public static final DualCodec<RegistryFriendlyByteBuf, StackWithChance> CODECS = DualCompositeCodecs.composite(
 			TagOutput.CODECS.fieldOf("output"), StackWithChance::stack,
 			DualCodecs.FLOAT.fieldOf("chance"), StackWithChance::chance,
 			StackWithChance::new

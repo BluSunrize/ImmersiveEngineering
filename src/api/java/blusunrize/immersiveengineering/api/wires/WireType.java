@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;

@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.LazyShapelessRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.core.NonNullList;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 
 public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShapelessRecipe>
 {
-	private final DualMapCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> codecs = DualMapCodec.composite(
+	private final DualMapCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> codecs = DualCompositeMapCodecs.composite(
 			TagOutput.CODECS.fieldOf("result"), LazyShapelessRecipe::getResult,
 			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.getIngredients().get(0),
 			(result, input) -> new LazyShapelessRecipe(

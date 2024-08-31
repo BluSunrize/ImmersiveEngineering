@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEStreamCodecs;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RadioTowerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RadioTowerLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
@@ -105,7 +106,7 @@ public class RadioTowerMenu extends IEContainerMenu
 
 	public record NearbyComponents(List<Vec3> positions)
 	{
-		public static final StreamCodec<ByteBuf, NearbyComponents> STREAM_CODEC = IECodecs.VEC3_STREAM_CODEC
+		public static final StreamCodec<ByteBuf, NearbyComponents> STREAM_CODEC = IEStreamCodecs.VEC3_STREAM_CODEC
 				.apply(ByteBufCodecs.list())
 				.map(NearbyComponents::new, NearbyComponents::positions);
 

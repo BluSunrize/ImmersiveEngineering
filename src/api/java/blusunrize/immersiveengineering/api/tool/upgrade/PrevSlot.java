@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.tool.upgrade;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 
 import java.util.Optional;
 

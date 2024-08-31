@@ -12,8 +12,6 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
@@ -21,6 +19,9 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -64,7 +65,7 @@ public class ClocheRenderFunctions
 	private static <F extends ClocheRenderFunction>
 	DualMapCodec<? super RegistryFriendlyByteBuf, F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
 	{
-		return DualCodecs.registry(BuiltInRegistries.BLOCK)
+		return DualCodecs.registryEntry(BuiltInRegistries.BLOCK)
 				.map(make, getBlock)
 				.fieldOf("block");
 	}
@@ -169,10 +170,10 @@ public class ClocheRenderFunctions
 			Block cropBlock, Block stemBlock, Block attachedStemBlock
 	) implements ClocheRenderFunction
 	{
-		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionStem> CODEC = DualMapCodec.composite(
-				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("crop"), f -> f.cropBlock,
-				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("stem"), f -> f.stemBlock,
-				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("attachedStem"), f -> f.attachedStemBlock,
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionStem> CODEC = DualCompositeMapCodecs.composite(
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("crop"), f -> f.cropBlock,
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("stem"), f -> f.stemBlock,
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("attachedStem"), f -> f.attachedStemBlock,
 				RenderFunctionStem::new
 		);
 

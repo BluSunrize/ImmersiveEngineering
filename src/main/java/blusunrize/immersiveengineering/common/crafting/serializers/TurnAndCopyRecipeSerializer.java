@@ -9,8 +9,9 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import com.mojang.serialization.MapCodec;
@@ -26,7 +27,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 {
 	private record AdditionalData(List<Integer> copySlots, boolean quarter, boolean eights)
 	{
-		private static final DualMapCodec<ByteBuf, AdditionalData> CODECS = DualMapCodec.composite(
+		private static final DualMapCodec<ByteBuf, AdditionalData> CODECS = DualCompositeMapCodecs.composite(
 				DualCodecs.INT.listOf().optionalFieldOf("copyNBT", List.of()), AdditionalData::copySlots,
 				DualCodecs.BOOL.optionalFieldOf("quarter_turn", false), AdditionalData::quarter,
 				DualCodecs.BOOL.optionalFieldOf("eight_turn", false), AdditionalData::eights,
@@ -49,7 +50,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 		}
 	}
 
-	public static final DualMapCodec<RegistryFriendlyByteBuf, TurnAndCopyRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, TurnAndCopyRecipe> CODECS = DualCompositeMapCodecs.composite(
 			AdditionalData.CODECS, AdditionalData::new,
 			new DualMapCodec<>(RecipeSerializer.SHAPED_RECIPE.codec(), RecipeSerializer.SHAPED_RECIPE.streamCodec()), AbstractShapedRecipe::toVanilla,
 			AdditionalData::apply

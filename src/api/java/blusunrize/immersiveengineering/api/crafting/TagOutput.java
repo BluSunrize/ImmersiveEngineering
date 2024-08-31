@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import malte0811.dualcodecs.DualCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

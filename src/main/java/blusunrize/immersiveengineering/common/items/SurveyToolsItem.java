@@ -13,9 +13,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -206,7 +207,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 	private record HintedPosition(int x, int z, Component hintText)
 	{
-		public static final DualCodec<RegistryFriendlyByteBuf, HintedPosition> CODECS = DualCodecs.composite(
+		public static final DualCodec<RegistryFriendlyByteBuf, HintedPosition> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.INT.fieldOf("x"), HintedPosition::x,
 				DualCodecs.INT.fieldOf("z"), HintedPosition::z,
 				DualCodecs.CHAT_COMPONENT.fieldOf("hintText"), HintedPosition::hintText,
@@ -216,7 +217,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 	public record VeinEntry(int x, int z, ResourceKey<Level> level, List<HintedPosition> hinted)
 	{
-		public static final DualCodec<RegistryFriendlyByteBuf, VeinEntry> CODECS = DualCodecs.composite(
+		public static final DualCodec<RegistryFriendlyByteBuf, VeinEntry> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.INT.fieldOf("x"), VeinEntry::x,
 				DualCodecs.INT.fieldOf("z"), VeinEntry::z,
 				DualCodecs.resourceKey(Registries.DIMENSION).fieldOf("level"), VeinEntry::level,

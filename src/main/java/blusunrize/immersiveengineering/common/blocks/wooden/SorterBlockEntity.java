@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
@@ -25,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,12 +57,12 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 {
 	public static final int FILTER_SLOTS_PER_SIDE = 8;
 	public static final int TOTAL_SLOTS = 6*SorterBlockEntity.FILTER_SLOTS_PER_SIDE;
-	public static final DualCodec<ByteBuf, EnumMap<Direction, FilterConfig>> FILTER_CODEC = DualCodecs.forEnumMap(
-			Direction.values(), FilterConfig.CODEC
+	public static final DualCodec<ByteBuf, Map<Direction, FilterConfig>> FILTER_CODEC = IEDualCodecs.forMap(
+			IEDualCodecs.forEnum(Direction.values()), FilterConfig.CODEC
 	);
 
 	public SorterInventory filter;
-	public EnumMap<Direction, FilterConfig> sideFilter = Util.make(new EnumMap<>(Direction.class), l -> {
+	public Map<Direction, FilterConfig> sideFilter = Util.make(new EnumMap<>(Direction.class), l -> {
 		for(Direction d : Direction.values())
 			l.put(d, FilterConfig.DEFAULT);
 	});
@@ -458,7 +460,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	public record FilterConfig(boolean allowTags, boolean considerComponents, boolean ignoreDamage)
 	{
 		public static final FilterConfig DEFAULT = new FilterConfig(false, false, false);
-		public static final DualCodec<ByteBuf, FilterConfig> CODEC = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, FilterConfig> CODEC = DualCompositeCodecs.composite(
 				DualCodecs.BOOL.fieldOf("allowTags"), FilterConfig::allowTags,
 				DualCodecs.BOOL.fieldOf("considerComponents"), FilterConfig::considerComponents,
 				DualCodecs.BOOL.fieldOf("ignoreDamage"), FilterConfig::ignoreDamage,

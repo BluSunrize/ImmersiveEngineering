@@ -19,8 +19,9 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -36,6 +37,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -533,7 +535,7 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 			List<String> renderAdditions
 	)
 	{
-		public static final DualCodec<ByteBuf, SpecialRevolver> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, SpecialRevolver> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.STRING.listOf().fieldOf("uuid"), SpecialRevolver::uuid,
 				DualCodecs.STRING.fieldOf("tag"), SpecialRevolver::tag,
 				DualCodecs.STRING.fieldOf("flavour"), SpecialRevolver::flavour,
@@ -688,17 +690,17 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 		return revolver.getOrDefault(REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT);
 	}
 
-	public record Perks(EnumMap<RevolverPerk, Double> perks)
+	public record Perks(Map<RevolverPerk, Double> perks)
 	{
-		public static final DualCodec<ByteBuf, Perks> CODECS = DualCodecs.forEnumMap(
-				RevolverPerk.values(), DualCodecs.DOUBLE
+		public static final DualCodec<ByteBuf, Perks> CODECS = IEDualCodecs.forMap(
+				IEDualCodecs.forEnum(RevolverPerk.values()), DualCodecs.DOUBLE
 		).map(Perks::new, Perks::perks);
 		public static final Perks EMPTY = new Perks(new EnumMap<>(RevolverPerk.class));
 	}
 
 	public record RevolverCooldowns(int reloadTimer, int fireCooldown)
 	{
-		public static final DualCodec<ByteBuf, RevolverCooldowns> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, RevolverCooldowns> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.INT.fieldOf("reloadTimer"), RevolverCooldowns::reloadTimer,
 				DualCodecs.INT.fieldOf("fireCooldown"), RevolverCooldowns::fireCooldown,
 				RevolverCooldowns::new

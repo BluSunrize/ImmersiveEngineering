@@ -9,14 +9,15 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class BottlingMachineRecipeSerializer extends IERecipeSerializer<BottlingMachineRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, BottlingMachineRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, BottlingMachineRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutputList.CODEC.fieldOf("results"), r -> r.output,
 			listOrSingle(IngredientWithSize.CODECS, "input", "inputs"), r -> r.inputs,
 			FluidTagInput.CODECS.fieldOf("fluid"), r -> r.fluidInput,

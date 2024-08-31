@@ -13,8 +13,9 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -273,11 +275,11 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			boolean ignite, FluidStack mainFluid, FluidStack fluid1, FluidStack fluid2
 	)
 	{
-		public static final DualCodec<RegistryFriendlyByteBuf, ChemthrowerData> CODECS = DualCodecs.composite(
+		public static final DualCodec<RegistryFriendlyByteBuf, ChemthrowerData> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.BOOL.fieldOf("ignite"), ChemthrowerData::ignite,
-				DualCodecs.FLUID_STACK.fieldOf("mainFluid"), ChemthrowerData::mainFluid,
-				DualCodecs.FLUID_STACK.fieldOf("fluid1"), ChemthrowerData::fluid1,
-				DualCodecs.FLUID_STACK.fieldOf("fluid2"), ChemthrowerData::fluid2,
+				IEDualCodecs.FLUID_STACK.fieldOf("mainFluid"), ChemthrowerData::mainFluid,
+				IEDualCodecs.FLUID_STACK.fieldOf("fluid1"), ChemthrowerData::fluid1,
+				IEDualCodecs.FLUID_STACK.fieldOf("fluid2"), ChemthrowerData::fluid2,
 				ChemthrowerData::new
 		);
 		public static final ChemthrowerData DEFAULT = new ChemthrowerData(

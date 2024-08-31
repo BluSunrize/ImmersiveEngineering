@@ -9,8 +9,10 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.DamageToolRecipe;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,11 +22,11 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class DamageToolRecipeSerializer implements RecipeSerializer<DamageToolRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, DamageToolRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, DamageToolRecipe> CODECS = DualCompositeMapCodecs.composite(
 			DualCodecs.STRING.fieldOf("group"), ShapelessRecipe::getGroup,
 			DualCodecs.ITEM_STACK.fieldOf("result"), r -> r.getResultItem(null),
 			DualCodecs.INGREDIENT.fieldOf("tool"), DamageToolRecipe::getTool,
-			DualCodecs.NONNULL_INGREDIENTS.fieldOf("ingredients"), ShapelessRecipe::getIngredients,
+			IEDualCodecs.NONNULL_INGREDIENTS.fieldOf("ingredients"), ShapelessRecipe::getIngredients,
 			DamageToolRecipe::new
 	);
 

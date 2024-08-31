@@ -69,7 +69,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 	public boolean isFluidValid(int tank, @Nonnull FluidStack fluid)
 	{
 		FluidStack tankFluid = getFluidInTank(tank);
-		return (tankFluid.isEmpty()&&this.canFillFluidType(fluid))||tankFluid.isFluidEqual(fluid);
+		return (tankFluid.isEmpty()&&this.canFillFluidType(fluid))||FluidStack.isSameFluidSameComponents(tankFluid, fluid);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 		}
 		else
 		{
-			if(contained.isFluidEqual(resource))
+			if(FluidStack.isSameFluid(contained, resource))
 			{
 				int fillAmount = Math.min(getCapacity()-contained.getAmount(), resource.getAmount());
 				if(doFill.execute()&&fillAmount > 0)

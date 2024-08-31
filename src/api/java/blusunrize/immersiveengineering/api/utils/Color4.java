@@ -8,16 +8,17 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.DyeColor;
 
 public record Color4(float r, float g, float b, float a)
 {
 	public static final Color4 WHITE = new Color4(1f, 1, 1, 1);
-	public static final DualCodec<ByteBuf, Color4> CODECS = DualCodecs.composite(
+	public static final DualCodec<ByteBuf, Color4> CODECS = DualCompositeCodecs.composite(
 			DualCodecs.FLOAT.fieldOf("r"), Color4::r,
 			DualCodecs.FLOAT.fieldOf("g"), Color4::g,
 			DualCodecs.FLOAT.fieldOf("b"), Color4::b,

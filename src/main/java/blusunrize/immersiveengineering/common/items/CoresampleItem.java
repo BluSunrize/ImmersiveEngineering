@@ -12,13 +12,15 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.TimestampFormat;
 import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.Utils;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -167,7 +169,7 @@ public class CoresampleItem extends IEBaseItem
 
 	public record ItemData(SamplePosition position, List<VeinSample> veins, long timestamp)
 	{
-		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCompositeCodecs.composite(
 				SamplePosition.CODECS.fieldOf("position"), ItemData::position,
 				VeinSample.CODECS.listOf().fieldOf("veins"), ItemData::veins,
 				DualCodecs.LONG.fieldOf("timestamp"), ItemData::timestamp,
@@ -183,7 +185,7 @@ public class CoresampleItem extends IEBaseItem
 			double percentageInTotalSample
 	)
 	{
-		public static final DualCodec<ByteBuf, VeinSample> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, VeinSample> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.RESOURCE_LOCATION.fieldOf("mineral"), VeinSample::mineral,
 				DualCodecs.INT.fieldOf("depletion"), VeinSample::depletion,
 				DualCodecs.DOUBLE.fieldOf("saturation"), VeinSample::saturation,
@@ -194,7 +196,7 @@ public class CoresampleItem extends IEBaseItem
 
 	public record SamplePosition(ResourceKey<Level> dimension, int x, int z)
 	{
-		public static final DualCodec<ByteBuf, SamplePosition> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, SamplePosition> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.resourceKey(Registries.DIMENSION).fieldOf("dimension"), SamplePosition::dimension,
 				DualCodecs.INT.fieldOf("x"), SamplePosition::x,
 				DualCodecs.INT.fieldOf("z"), SamplePosition::z,
@@ -212,7 +214,7 @@ public class CoresampleItem extends IEBaseItem
 
 	public record CoresampleMapData(Map<String, List<ResourceLocation>> mapDataToMinerals)
 	{
-		public static final DualCodec<ByteBuf, CoresampleMapData> CODECS = DualCodecs.forMap(DualCodecs.STRING, DualCodecs.RESOURCE_LOCATION.listOf())
+		public static final DualCodec<ByteBuf, CoresampleMapData> CODECS = IEDualCodecs.forMap(DualCodecs.STRING, DualCodecs.RESOURCE_LOCATION.listOf())
 				.fieldOf("mapDataToMinerals")
 				.codec()
 				.map(CoresampleMapData::new, CoresampleMapData::mapDataToMinerals);

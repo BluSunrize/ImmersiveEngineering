@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -23,7 +24,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, SawmillRecipe> CODECS = DualMapCodec.composite(
+	public static final DualMapCodec<RegistryFriendlyByteBuf, SawmillRecipe> CODECS = DualCompositeMapCodecs.composite(
 			TagOutput.CODECS.fieldOf("result"), r -> r.output,
 			optionalItemOutput("stripped"), r -> r.stripped,
 			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.input,

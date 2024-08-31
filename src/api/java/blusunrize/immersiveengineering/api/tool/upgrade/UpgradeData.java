@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.tool.upgrade;
 
-import blusunrize.immersiveengineering.api.utils.IECodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
 import com.mojang.datafixers.util.Unit;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 
 import java.util.ArrayList;
 import java.util.List;

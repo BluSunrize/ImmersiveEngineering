@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import com.mojang.serialization.MapCodec;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;

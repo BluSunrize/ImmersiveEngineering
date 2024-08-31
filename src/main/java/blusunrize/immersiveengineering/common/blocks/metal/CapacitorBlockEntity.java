@@ -14,8 +14,7 @@ import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -32,6 +31,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -284,10 +285,10 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 	}
 
-	public record CapacitorState(EnumMap<Direction, IOSideConfig> sideConfig)
+	public record CapacitorState(Map<Direction, IOSideConfig> sideConfig)
 	{
-		public static final DualCodec<ByteBuf, CapacitorState> CODECS = DualCodecs.forEnumMap(
-				Direction.values(), IOSideConfig.CODECS
+		public static final DualCodec<ByteBuf, CapacitorState> CODECS = IEDualCodecs.forMap(
+				DualCodecs.DIRECTION, IOSideConfig.CODECS
 		).map(CapacitorState::new, CapacitorState::sideConfig);
 
 		public CapacitorState

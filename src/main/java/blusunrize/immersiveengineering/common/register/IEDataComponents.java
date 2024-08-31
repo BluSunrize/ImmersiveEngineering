@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
@@ -86,7 +86,7 @@ public class IEDataComponents
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Color4>> COLOR = make("color", Color4.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Block>> DEFAULT_COVER = make(
-			"default_cover", DualCodecs.registry(BuiltInRegistries.BLOCK)
+			"default_cover", DualCodecs.registryEntry(BuiltInRegistries.BLOCK)
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<CapacitorState>> CAPACITOR_CONFIG = make(
 			"cap_config", CapacitorState.CODECS

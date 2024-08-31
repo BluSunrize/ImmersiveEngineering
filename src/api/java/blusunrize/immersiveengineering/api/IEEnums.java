@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
@@ -25,7 +25,7 @@ public class IEEnums
 		OUTPUT("out");
 
 		public static final IOSideConfig[] VALUES = values();
-		public static final DualCodec<ByteBuf, IOSideConfig> CODECS = DualCodecs.forEnum(VALUES);
+		public static final DualCodec<ByteBuf, IOSideConfig> CODECS = IEDualCodecs.forEnum(VALUES);
 
 		final String texture;
 

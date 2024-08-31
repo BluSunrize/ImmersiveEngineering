@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
-import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 
 	public static DualMapCodec<RegistryFriendlyByteBuf, FluidStack> optionalFluidOutput(String name)
 	{
-		return DualCodecs.FLUID_STACK.optionalFieldOf(name, FluidStack.EMPTY);
+		return IEDualCodecs.FLUID_STACK.optionalFieldOf(name, FluidStack.EMPTY);
 	}
 
 	public abstract ItemStack getIcon();

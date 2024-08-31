@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
@@ -26,6 +24,9 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
@@ -270,7 +271,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			BlockState middleState
 	)
 	{
-		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCompositeCodecs.composite(
 				WireType.CODECS.fieldOf("type"), ItemData::type,
 				DualCodecs.BLOCK_STATE.fieldOf("middleState"), ItemData::middleState,
 				ItemData::new

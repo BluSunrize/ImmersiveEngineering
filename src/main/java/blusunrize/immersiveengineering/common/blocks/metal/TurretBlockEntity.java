@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -556,7 +557,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			boolean redstoneControlInverted
 	)
 	{
-		public static final DualCodec<ByteBuf, TurretConfig> CODECS = DualCodecs.composite(
+		public static final DualCodec<ByteBuf, TurretConfig> CODECS = DualCompositeCodecs.composite(
 				DualCodecs.STRING.listOf().fieldOf("targetList"), TurretConfig::targetList,
 				DualCodecs.BOOL.fieldOf("whitelist"), TurretConfig::whitelist,
 				DualCodecs.BOOL.fieldOf("attackAnimals"), TurretConfig::attackAnimals,

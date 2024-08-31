@@ -9,7 +9,8 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.IEStreamCodecs;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
@@ -48,7 +49,7 @@ public class GenericDataSerializers
 			ByteBufCodecs.BYTE_ARRAY, arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 	public static final DataSerializer<int[]> INT_ARRAY = register(
-			IECodecs.VAR_INT_ARRAY_STREAM_CODEC,
+			IEStreamCodecs.VAR_INT_ARRAY_STREAM_CODEC,
 			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
