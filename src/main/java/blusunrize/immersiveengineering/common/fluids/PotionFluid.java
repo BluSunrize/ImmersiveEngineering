@@ -195,7 +195,7 @@ public class PotionFluid extends Fluid
 		public Component getDescription(FluidStack stack)
 		{
 			var potionData = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-			return Component.translatable(Potion.getName(potionData.potion(), this.getDescriptionId()+".effect."));
+			return Component.translatable(Potion.getName(potionData.potion(), "item.minecraft.potion.effect."));
 		}
 
 		@Override

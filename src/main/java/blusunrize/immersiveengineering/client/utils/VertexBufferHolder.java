@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -21,6 +22,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -29,6 +36,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.GAME)
 public class VertexBufferHolder implements IVertexBufferHolder
 {
 	private static final Lazy<Boolean> HAS_OPTIFINE = Lazy.of(() -> {
@@ -131,9 +139,10 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		renderer.render(builder, transform, light, overlay);
 	}
 
-	public static void afterTERRendering(Matrix4f frustumMatrix)
+	@SubscribeEvent
+	public static void afterTERRendering(RenderLevelStageEvent ev)
 	{
-		if(JOBS.isEmpty())
+		if(ev.getStage()!=Stage.AFTER_BLOCK_ENTITIES||JOBS.isEmpty())
 			return;
 		for(Entry<RenderType, List<BufferedJob>> typeEntry : JOBS.entrySet())
 		{
@@ -155,7 +164,11 @@ public class VertexBufferHolder implements IVertexBufferHolder
 						.set(job.light&0xffff, (job.light>>16)&0xffff);
 				Objects.requireNonNull(shader.getUniform("OverlayUV"))
 						.set(job.overlay&0xffff, (job.overlay>>16)&0xffff);
-				buffer.drawWithShader(job.transform.mulLocal(frustumMatrix), RenderSystem.getProjectionMatrix(), shader);
+				buffer.drawWithShader(
+						job.transform.mulLocal(ev.getModelViewMatrix()),
+						RenderSystem.getProjectionMatrix(),
+						shader
+				);
 			}
 			if(inverted)
 				GL11.glCullFace(GL11.GL_BACK);

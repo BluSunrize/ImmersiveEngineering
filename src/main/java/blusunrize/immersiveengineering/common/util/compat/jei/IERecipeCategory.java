@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;

@@ -8,20 +8,18 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.gui.*;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
-import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import blusunrize.immersiveengineering.common.items.PotionBucketItem;
-import blusunrize.immersiveengineering.common.items.ShaderItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
@@ -47,19 +45,20 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class JEIHelper implements IModPlugin
 	private static final ResourceLocation UID = IEApi.ieLoc("main");
 	public static final ResourceLocation JEI_GUI = IEApi.ieLoc("textures/gui/jei_elements.png");
 	public static IDrawableStatic slotDrawable;
-	public static IRecipeSlotTooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
+	public static IRecipeSlotRichTooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
 
 	@Override
 	public ResourceLocation getPluginUid()
@@ -86,19 +85,18 @@ public class JEIHelper implements IModPlugin
 		subtypeRegistry.registerSubtypeInterpreter(
 				VanillaTypes.ITEM_STACK,
 				Misc.BLUEPRINT.asItem(),
-				(stack, $) -> EngineersBlueprintItem.getCategory(stack)
+				(stack, $) -> stack.get(IEApiDataComponents.BLUEPRINT_TYPE)
 		);
 		subtypeRegistry.registerSubtypeInterpreter(
-				VanillaTypes.ITEM_STACK, Misc.POTION_BUCKET.asItem(), (stack, $) -> PotionBucketItem.getPotion(stack).getName("")
-		);
-		subtypeRegistry.registerSubtypeInterpreter(
-				VanillaTypes.ITEM_STACK, Misc.SHADER.asItem(), (stack, $) -> ItemNBTHelper.getString(stack, ShaderItem.SHADER_NAME_KEY)
+				VanillaTypes.ITEM_STACK,
+				Misc.POTION_BUCKET.asItem(),
+				(stack, $) -> stack.get(DataComponents.POTION_CONTENTS).potion().map(h -> h.getRegisteredName()).orElse("")
 		);
 		for(IConveyorType<?> conveyor : ConveyorHandler.getConveyorTypes())
 			subtypeRegistry.registerSubtypeInterpreter(
 					VanillaTypes.ITEM_STACK,
 					ConveyorHandler.getBlock(conveyor).asItem(),
-					(stack, $) -> ItemNBTHelper.getString(stack, ConveyorBlock.DEFAULT_COVER)
+					(stack, $) -> stack.getOrDefault(IEDataComponents.DEFAULT_COVER, Blocks.AIR).getDescriptionId()
 			);
 	}
 

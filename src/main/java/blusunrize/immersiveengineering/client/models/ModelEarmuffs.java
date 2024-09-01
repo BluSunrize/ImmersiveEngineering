@@ -20,7 +20,7 @@ public class ModelEarmuffs extends ModelIEArmorBase
 {
 	public ModelEarmuffs(ModelPart part)
 	{
-		super(part, RenderType::entitySolid);
+		super(part, RenderType::entityCutout);
 
 		hat.visible = false;
 		body.visible = false;

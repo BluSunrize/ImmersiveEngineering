@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;

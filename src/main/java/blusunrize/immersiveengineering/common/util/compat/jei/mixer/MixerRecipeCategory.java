@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.mixer;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
@@ -52,13 +52,13 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
 				.setFluidRenderer(tankSize, false, 58, 47)
 				.addIngredients(NeoForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
-				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+				.addRichTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
 				.setFluidRenderer(tankSize, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidOutput)
-				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+				.addRichTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		for(int i = 0; i < recipe.itemInputs.size(); i++)
 		{

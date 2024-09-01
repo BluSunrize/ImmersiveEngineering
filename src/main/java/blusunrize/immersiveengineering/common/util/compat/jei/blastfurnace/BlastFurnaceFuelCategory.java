@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -34,7 +34,7 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	public BlastFurnaceFuelCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.BLAST_FUEL, "gui.immersiveengineering.blastFurnace.fuel");
-		ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
+		ResourceLocation furnaceBackgroundLocation = ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
 		setBackground(helper.drawableBuilder(furnaceBackgroundLocation, 55, 36, 18, 36).addPadding(0, 0, 0, 68).build());
 		setIcon(helper.createDrawable(IEApi.ieLoc("textures/gui/blast_furnace.png"), 176, 0, 14, 14));
 

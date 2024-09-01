@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.cloche;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
@@ -69,7 +69,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 				.setFluidRenderer(4000, false, 20, 51)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(Fluids.WATER, 4000))
-				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+				.addRichTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		// TODO: Fix this to not be this unperformant and just bad, if there is a better way to do it
 		ArrayList<ItemStack> fertilizers = new ArrayList<>(Collections.singleton(ItemStack.EMPTY));

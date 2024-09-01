@@ -44,8 +44,6 @@ public class EntityLoot implements LootTableSubProvider
 				.setBonusRolls(ConstantValue.exactly(1))
 				.add(createEntry(Items.EMERALD)
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-						//TODO
-						// .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 				).add(createEntry(Ingredients.STICK_STEEL)
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4)))
 				));
@@ -55,8 +53,6 @@ public class EntityLoot implements LootTableSubProvider
 				.setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Items.EMERALD)
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-						//TODO
-						// .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 				).add(createEntry(Ingredients.GUNPART_BARREL)
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
 						.apply(RevolverperkLootFunction.builder())
@@ -74,8 +70,6 @@ public class EntityLoot implements LootTableSubProvider
 				.setBonusRolls(ConstantValue.exactly(1))
 				.add(createEntry(Items.EMERALD)
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-						//TODO
-						// .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 				).add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK.getValue()))
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
 				));

@@ -67,14 +67,13 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -278,14 +277,14 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void registerLayers(EntityRenderersEvent.AddLayers ev)
 	{
-		// TODO fix
-		//for(EntityRenderer<?> render : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values())
-		//{
-		//	if(render instanceof HumanoidMobRenderer<?, ?> hmr)
-		//		addIELayer(hmr, ev.getEntityModels());
-		//	else if(render instanceof ArmorStandRenderer asr)
-		//		addIELayer(asr, ev.getEntityModels());
-		//}
+		for(var entityType : BuiltInRegistries.ENTITY_TYPE)
+		{
+			var render = ev.getRenderer(entityType);
+			if(render instanceof HumanoidMobRenderer<?, ?> hmr)
+				addIELayer(hmr, ev.getEntityModels());
+			else if(render instanceof ArmorStandRenderer asr)
+				addIELayer(asr, ev.getEntityModels());
+		}
 		for(Model skin : ev.getSkins())
 		{
 			EntityRenderer<? extends Player> render = ev.getSkin(skin);
