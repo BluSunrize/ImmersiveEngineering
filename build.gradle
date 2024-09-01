@@ -356,6 +356,12 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.datagen.allSource
 }
 
+jar {
+    from(sourceSets.manual.output)
+    from(sourceSets.api.output)
+    from(sourceSets.main.output)
+}
+
 artifacts {
     archives sourcesJar
     archives jar
