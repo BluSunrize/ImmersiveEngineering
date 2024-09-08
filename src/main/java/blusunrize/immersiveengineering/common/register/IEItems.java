@@ -186,7 +186,7 @@ public final class IEItems
 		public static final ItemRegObject<SwordItem> STEEL_SWORD = register(
 				"sword_steel", IETools.createSword(Lib.MATERIAL_Steel)
 		);
-		public static final Map<Type, ItemRegObject<SteelArmorItem>> STEEL_ARMOR = new EnumMap<>(Type.class);
+		public static final Map<Type, ItemRegObject<ArmorItem>> STEEL_ARMOR = new EnumMap<>(Type.class);
 
 		public static final ItemRegObject<ToolboxItem> TOOLBOX = register("toolbox", ToolboxItem::new);
 
@@ -218,7 +218,8 @@ public final class IEItems
 			for(var slot : ArmorItem.Type.values())
 				if(slot!=Type.BODY)
 					STEEL_ARMOR.put(slot, register(
-							"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new SteelArmorItem(slot)
+							"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH),
+							() -> new ArmorItem(IEArmorMaterials.STEEL, slot, IEArmorMaterials.getProperties(IEArmorMaterials.STEEL, slot))
 					));
 		}
 	}
@@ -305,8 +306,8 @@ public final class IEItems
 		public static final ItemRegObject<FakeIconItem> ICON_DRILLBREAK = icon("drillbreak");
 		public static final ItemRegObject<FakeIconItem> ICON_RAVENHOLM = icon("ravenholm");
 		public static final ItemRegObject<FakeIconItem> ICON_FRIED = icon("fried");
-
 		public static final ItemRegObject<FakeIconItem> ICON_BTTF = icon("bttf");
+
 		public static final ItemRegObject<PotionBucketItem> POTION_BUCKET = IEItems.register("potion_bucket", PotionBucketItem::new);
 
 		private static ItemRegObject<FakeIconItem> icon(String name)
@@ -330,8 +331,12 @@ public final class IEItems
 							"armor_faraday_"+slot.name().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 					));
 			for(var shader : ShaderRegistry.shaderRegistry.keySet())
-				// TODO fix for non-IE shaders
-				SHADERS.put(shader, register("shader_"+shader.getPath(), () -> new ShaderItem(shader)));
+			{
+				String path = shader.getNamespace().equals(Lib.MODID)?
+						shader.getPath():
+						(shader.getNamespace()+'_'+shader.getPath());
+				SHADERS.put(shader, register("shader_"+path, () -> new ShaderItem(shader)));
+			}
 		}
 
 		public static void registerShaderBags()

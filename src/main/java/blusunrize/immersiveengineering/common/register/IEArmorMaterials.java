@@ -15,8 +15,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterial.Layer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -36,7 +39,8 @@ public class IEArmorMaterials
 			0,
 			SoundEvents.ARMOR_EQUIP_CHAIN,
 			() -> Ingredient.of(IETags.getTagsFor(EnumMetals.ALUMINUM).plate),
-			List.of(new Layer(IEApi.ieLoc("textures/models/armor_faraday.png"))),
+			// TODO may be wrong
+			List.of(new Layer(IEApi.ieLoc("faraday"))),
 			0,
 			0
 	));
@@ -45,7 +49,7 @@ public class IEArmorMaterials
 			10,
 			SoundEvents.ARMOR_EQUIP_IRON,
 			() -> Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot),
-			List.of(new Layer(IEApi.ieLoc("textures/models/armor_steel.png"))),
+			List.of(new Layer(IEApi.ieLoc("steel"))),
 			0,
 			0
 	));
@@ -55,4 +59,36 @@ public class IEArmorMaterials
 		REGISTER.register(modBus);
 	}
 
+	public static Item.Properties getProperties(Holder<ArmorMaterial> material, Type type)
+	{
+		return new Properties().durability(getDurability(material, type));
+	}
+
+	public static int getDurability(Holder<ArmorMaterial> material, Type type)
+	{
+		if(material.value()==STEEL.value())
+		{
+			return switch(type)
+			{
+				case BOOTS -> 273;
+				case LEGGINGS -> 315;
+				case CHESTPLATE -> 336;
+				case HELMET -> 231;
+				case BODY -> throw new UnsupportedOperationException("Steel body armor not implemented");
+			};
+		}
+		else if(material.value()==FARADAY.value())
+		{
+			return switch(type)
+			{
+				case BOOTS -> 13;
+				case LEGGINGS -> 15;
+				case CHESTPLATE -> 16;
+				case HELMET -> 11;
+				case BODY -> throw new UnsupportedOperationException("Faraday body armor not implemented");
+			};
+		}
+		else
+			throw new UnsupportedOperationException("Unknown material "+material.getRegisteredName());
+	}
 }

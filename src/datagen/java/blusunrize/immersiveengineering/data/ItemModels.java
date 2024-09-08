@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.items.SteelArmorItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
@@ -282,7 +281,7 @@ public class ItemModels extends TRSRItemModelProvider
 			addLayeredItemModel(bullet.getValue().asItem(), bullet.getKey().getTextures());
 		addItemModels("", IEItems.Misc.FARADAY_SUIT.values());
 //		addItemModels("", IEItems.Tools.STEEL_ARMOR.values());
-		for(Entry<Type, ItemRegObject<SteelArmorItem>> armorPiece : IEItems.Tools.STEEL_ARMOR.entrySet())
+		for(Entry<Type, ItemRegObject<ArmorItem>> armorPiece : IEItems.Tools.STEEL_ARMOR.entrySet())
 			addTrimmedArmorModel(armorPiece.getValue().get());
 
 		addItemModel("blueprint", IEItems.Misc.BLUEPRINT);

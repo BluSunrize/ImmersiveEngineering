@@ -101,8 +101,8 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		if(isSpareBladeUpgrade(upgrade))
 		{
-			List<ItemStack> spares = Arrays.asList(new ItemStack[2]);
-			forEachSpareBlade(stack, spares::set);
+			List<ItemStack> spares = new ArrayList<>();
+			forEachSpareBlade(stack, (i, blade) -> spares.add(blade));
 			upgrade.set(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.fromItems(spares));
 		}
 		return upgrade;
@@ -118,10 +118,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	private void forEachSpareBlade(ItemStack stack, BiConsumer<Integer, ItemStack> onBlade)
 	{
 		for(int i = 1; i <= 2; i++)
-		{
-			ItemStack sawblade = getSawblade(stack, i);
-			onBlade.accept(i, sawblade);
-		}
+			onBlade.accept(i, getSawblade(stack, i));
 	}
 
 	@Override

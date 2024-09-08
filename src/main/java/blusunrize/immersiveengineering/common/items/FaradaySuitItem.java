@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.register.IEArmorMaterials;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
@@ -30,7 +29,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 {
 	public FaradaySuitItem(Type type)
 	{
-		super(IEArmorMaterials.FARADAY, type, new Properties().stacksTo(1));
+		super(IEArmorMaterials.FARADAY, type, IEArmorMaterials.getProperties(IEArmorMaterials.FARADAY, type));
 	}
 
 	@Override
@@ -61,9 +60,10 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 	@Nullable
 	public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, Layer layer, boolean innerModel)
 	{
-		if(slot==EquipmentSlot.LEGS)
-			return IEApi.ieLoc("textures/models/armor_faraday_legs.png");
-		else
+		// TODO remove
+		//if(slot==EquipmentSlot.LEGS)
+		//	return IEApi.ieLoc("textures/models/armor/faraday_layer_2.png");
+		//else
 			return null;
 	}
 

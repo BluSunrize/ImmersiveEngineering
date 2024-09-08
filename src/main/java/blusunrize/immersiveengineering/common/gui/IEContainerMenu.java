@@ -167,6 +167,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	{
 		boolean inAllowedRange = true;
 		int allowedStart = pStartIndex;
+		// TODO understand
 		for(int i = pStartIndex; i < pEndIndex; i++)
 		{
 			boolean mayplace = slots.get(i).mayPlace(pStack);

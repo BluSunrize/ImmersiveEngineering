@@ -160,53 +160,60 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 
 	@Nonnull
 	@Override
+	// TODO this is broken when moving from an ISI slot to the player inv for some reason???
+	//  I think we're modifying the stack we got from the slot, which doesn't work at all with components
 	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack resultStack = ItemStack.EMPTY;
 		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.hasItem())
-		{
-			ItemStack stackInSlot = slotObject.getItem();
-			resultStack = stackInSlot.copy();
+		if(slotObject==null||!slotObject.hasItem())
+			return resultStack;
 
-			if(slot < ownSlotCount)
+		ItemStack stackInSlot = slotObject.getItem();
+		resultStack = stackInSlot.copy();
+
+		if(slot < ownSlotCount)
+		{
+			if(!this.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
+				return ItemStack.EMPTY;
+		}
+		else if(!stackInSlot.isEmpty())
+		{
+			boolean singleSlot = ownSlotCount==1;
+			if(stackInSlot.getItem() instanceof EngineersBlueprintItem
+					||(stackInSlot.getItem() instanceof IUpgradeableTool uTool&&uTool.canModify(stackInSlot))
+					||(stackInSlot.getItem() instanceof IConfigurableTool cTool&&cTool.canConfigure(stackInSlot)))
 			{
-				if(!this.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
+				if(!this.moveItemStackTo(stackInSlot, 0, 1, false)&&singleSlot)
 					return ItemStack.EMPTY;
 			}
-			else if(!stackInSlot.isEmpty())
+
+			if(!singleSlot)
 			{
-				boolean singleSlot = ownSlotCount==1;
-				if(stackInSlot.getItem() instanceof EngineersBlueprintItem
-						||(stackInSlot.getItem() instanceof IUpgradeableTool uTool&&uTool.canModify(stackInSlot))
-						||(stackInSlot.getItem() instanceof IConfigurableTool cTool&&cTool.canConfigure(stackInSlot)))
-				{
-					if(!this.moveItemStackTo(stackInSlot, 0, 1, false)&&singleSlot)
-						return ItemStack.EMPTY;
-				}
-
-				if(!singleSlot)
-				{
-					if(!this.moveItemStackTo(stackInSlot, 1, ownSlotCount, false))
-						return ItemStack.EMPTY;
-				}
+				if(!this.moveItemStackTo(stackInSlot, 1, ownSlotCount, false))
+					return ItemStack.EMPTY;
 			}
-
-			slotObject.setChanged();
-
-			if(stackInSlot.getCount()==resultStack.getCount())
-				resultStack = ItemStack.EMPTY;
-			slotObject.onTake(player, resultStack);
-			if(slotObject.hasItem())
-				player.drop(slotObject.getItem(), false);
 		}
+
+		slotObject.setChanged();
+		// TODO hack
+		slotObject.set(stackInSlot);
+
+		// TODO that looks weird as well
+		if(stackInSlot.getCount()==resultStack.getCount())
+			resultStack = ItemStack.EMPTY;
+		slotObject.onTake(player, resultStack);
+		if(slotObject.hasItem())
+			player.drop(slotObject.getItem(), false);
 		return resultStack;
 	}
 
 	@Override
 	protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
 	{
+		// TODO I think super::moveItemStackTo just assumes it can mutate the stacks in slots and it will propagate
+		//  correctly?
 		return IEContainerMenu.moveItemStackToWithMayPlace(slots, super::moveItemStackTo, stack, startIndex, endIndex);
 	}
 

@@ -131,7 +131,6 @@ public class IETags
 	public static final TagKey<Block> grindingDiskHarvestable = createBlockWrapper(ieLoc("mineable/grinding_disk"));
 	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(ieLoc("survey_tool_targets"));
 	public static final TagKey<Block> concreteForFeet = createBlockWrapper(ieLoc("concrete_for_concrete_feet"));
-	// TODO populate this tag!
 	public static final TagKey<Block> incorrectDropsSteel = createBlockWrapper(ieLoc("incorrect_for_steel_tool"));
 	public static final TagKey<Block> teleportBlocking = createBlockWrapper(ieLoc("teleport_blocking"));
 

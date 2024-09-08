@@ -280,6 +280,8 @@ public class IEBlockTags extends BlockTagsProvider
 		for(BlockEntry<?> stairs : IEBlocks.TO_WALL.values())
 			tag(BlockTags.WALLS).add(stairs.get());
 
+		tag(IETags.incorrectDropsSteel).addTag(BlockTags.INCORRECT_FOR_IRON_TOOL);
+
 		/* MOD COMPAT STARTS HERE */
 
 		// TConstruct

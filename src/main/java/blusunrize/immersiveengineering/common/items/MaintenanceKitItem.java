@@ -24,7 +24,7 @@ public class MaintenanceKitItem extends IEBaseItem
 {
 	public MaintenanceKitItem()
 	{
-		super(new Properties().stacksTo(1).durability(50));
+		super(new Properties().durability(50));
 	}
 
 	@Nonnull
