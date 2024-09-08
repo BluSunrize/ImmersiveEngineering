@@ -1,8 +1,7 @@
 import groovy.json.JsonOutput
 
 plugins {
-    // Apply the plugin. You can find the latest version at https://projects.neoforged.net/neoforged/ModDevGradle
-    id 'net.neoforged.moddev' version '1.0.11'
+    id 'net.neoforged.moddev' version "$version_mdg"
 }
 
 def version_replaces = [
@@ -20,13 +19,19 @@ version = buildVersionString()
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.FAIL
-    inputs.properties(version_replaces)
-    filesMatching("META-INF/neoforge.mods.toml") {
-        expand version_replaces
-    }
     exclude ".cache"
     exclude "assets/immersiveengineering/lang_base"
 }
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    inputs.properties version_replaces
+    expand version_replaces
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+// Generate mods.toml on IDE import
+neoForge.ideSyncTask generateModMetadata
 
 sourceSets {
     manual {
@@ -39,10 +44,8 @@ sourceSets {
     }
     main {
         resources {
-            srcDirs = [
-                    "$rootDir/src/main/resources",
-                    "$rootDir/src/generated/resources",
-            ]
+            srcDir "$rootDir/src/generated/resources"
+            srcDir generateModMetadata
         }
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
@@ -359,7 +362,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 jar {
     from(sourceSets.manual.output)
     from(sourceSets.api.output)
-    from(sourceSets.main.output)
 }
 
 artifacts {
