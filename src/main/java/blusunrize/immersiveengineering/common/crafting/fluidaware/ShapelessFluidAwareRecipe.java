@@ -41,7 +41,7 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInput inv)
+	public MatchLocation findMatch(CraftingInput inv)
 	{
 		List<ItemStack> inputs = new ArrayList<>();
 		int[] slotToInput = new int[inv.size()];

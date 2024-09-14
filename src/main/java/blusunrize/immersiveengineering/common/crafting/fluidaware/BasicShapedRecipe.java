@@ -10,23 +10,19 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe.MatchLocation;
-import blusunrize.immersiveengineering.mixin.accessors.ShapedPatternAccess;
-import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nullable;
 
+import static blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.BOOLEANS;
+
 public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
-		super(
-				vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
-				vanillaBase.getIngredients(), vanillaBase.getResultItem(null), vanillaBase.category(),
-				((ShapedPatternAccess)(Object)((ShapedRecipeAccess)vanillaBase).getPattern()).getData()
-		);
+		super(vanillaBase);
 	}
 
 	protected boolean checkMatch(CraftingInput craftingInventory, MatchLocation loc)
@@ -56,7 +52,7 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInput inv)
+	public MatchLocation findMatch(CraftingInput inv)
 	{
 		for(int xOffset = 0; xOffset <= inv.width()-this.getWidth(); ++xOffset)
 			for(int yOffset = 0; yOffset <= inv.height()-this.getHeight(); ++yOffset)

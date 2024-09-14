@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import blusunrize.immersiveengineering.mixin.accessors.ShapedPatternAccess;
-import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -24,6 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.BOOLEANS;
 
 public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
@@ -39,12 +39,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	public TurnAndCopyRecipe(ShapedRecipe vanilla, List<Integer> copySlots)
 	{
-		super(
-				vanilla.getGroup(),
-				vanilla.getWidth(), vanilla.getHeight(),
-				vanilla.getIngredients(), vanilla.getResultItem(null), vanilla.category(),
-				((ShapedPatternAccess)(Object)((ShapedRecipeAccess)vanilla).getPattern()).getData()
-		);
+		super(vanilla);
 		this.nbtCopyTargetSlot = copySlots;
 	}
 
@@ -74,7 +69,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInput inv)
+	public MatchLocation findMatch(CraftingInput inv)
 	{
 		for(int xOffset = 0; xOffset <= inv.width()-this.getWidth(); ++xOffset)
 			for(int yOffset = 0; yOffset <= inv.height()-this.getHeight(); ++yOffset)

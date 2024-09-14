@@ -16,35 +16,34 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 // TODO to follow Neo convention this needs to have ShapedRecipe as the superclass instead AFAR
 public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
-		extends AbstractFluidAwareRecipe<MatchLocation>
+		extends ShapedRecipe implements IFluidAwareRecipe<MatchLocation>
 {
 	private final int recipeWidth;
 	private final int recipeHeight;
 	private final CraftingBookCategory category;
-	private final Optional<ShapedRecipePattern.Data> data;
 
-	public AbstractShapedRecipe(
-			String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
-			CraftingBookCategory category
-	)
+	public AbstractShapedRecipe(ShapedRecipe vanilla)
 	{
-		this(groupIn, recipeWidth, recipeHeight, recipeItemsIn, recipeOutputIn, category, Optional.empty());
+		this(
+				vanilla.getGroup(),
+				vanilla.getWidth(), vanilla.getHeight(),
+				vanilla.getResultItem(null), vanilla.category(),
+				vanilla.pattern
+		);
 	}
 
 	public AbstractShapedRecipe(
-			String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
-			CraftingBookCategory category, Optional<ShapedRecipePattern.Data> data
+			String groupIn, int recipeWidth, int recipeHeight, ItemStack recipeOutput,
+			CraftingBookCategory category, ShapedRecipePattern pattern
 	)
 	{
-		super(groupIn, recipeItemsIn, recipeOutputIn);
+		super(groupIn, category, pattern, recipeOutput);
 		this.recipeWidth = recipeWidth;
 		this.recipeHeight = recipeHeight;
 		this.category = category;
-		this.data = data;
 	}
 
 	public int getWidth()
@@ -72,11 +71,7 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(
-				getGroup(), category,
-				new ShapedRecipePattern(getWidth(), getHeight(), getIngredients(), data),
-				getResultItem(null)
-		);
+		return new ShapedRecipe(getGroup(), category, pattern, getResultItem(null));
 	}
 
 	@Override
