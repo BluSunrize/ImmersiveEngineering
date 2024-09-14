@@ -122,7 +122,6 @@ repositories {
             includeGroup("cc.tweaked")
         }
     }
-    mavenLocal()
 }
 
 dependencies {

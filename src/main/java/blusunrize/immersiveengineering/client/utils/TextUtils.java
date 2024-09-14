@@ -36,7 +36,7 @@ public class TextUtils
 	{
 		String s;
 		if(!fluid.isEmpty())
-			s = fluid.getDisplayName().getString()+": "+fluid.getAmount()+"mB";
+			s = fluid.getHoverName().getString()+": "+fluid.getAmount()+"mB";
 		else
 			s = I18n.get(Lib.GUI+"empty");
 		return Component.literal(s);

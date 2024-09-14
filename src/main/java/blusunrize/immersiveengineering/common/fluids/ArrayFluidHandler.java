@@ -75,7 +75,7 @@ public record ArrayFluidHandler(
 		// iterating twice is actually faster than streams
 		IFluidTank existing = null;
 		for(IFluidTank tank : internal)
-			if(tank.getFluid().isFluidEqual(remaining))
+			if(FluidStack.isSameFluidSameComponents(tank.getFluid(), remaining))
 			{
 				existing = tank;
 				break;

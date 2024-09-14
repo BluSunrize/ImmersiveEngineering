@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -170,7 +171,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	private final Map<UUID, Integer> animationTimer = new HashMap<>();
 
 	@Override
-	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
+	public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand)
 	{
 		if(canToolBeUsed(stack))
 		{
