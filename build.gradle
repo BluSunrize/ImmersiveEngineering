@@ -15,7 +15,8 @@ def version_replaces = [
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 archivesBaseName = 'ImmersiveEngineering'
-version = buildVersionString()
+version = "${version_minecraft}-${buildVersionString()}"
+group = 'blusunrize.immersiveengineering'
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.FAIL
