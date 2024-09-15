@@ -175,15 +175,13 @@ String buildVersionString() {
             ie_output_version = first_line.substring(first_line.indexOf("-") + 1)
         }
         // Now use describe to get the number of commits since the last tag
-        exec {
+        providers.exec {
             commandLine 'git', 'fetch', '-t'
         }
         def stdout = new ByteArrayOutputStream()
-        exec {
+        String descr = providers.exec {
             commandLine 'git', 'describe', '--long', '--abbrev=8', 'HEAD'
-            standardOutput = stdout
-        }
-        String descr = stdout.toString().trim()
+        }.standardOutput.asText.get().trim()
         descr = descr.substring(0, descr.length() - 10)
         int idx = descr.lastIndexOf("-")
         int pre_version = descr.substring(idx + 1).toInteger()
