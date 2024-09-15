@@ -2,7 +2,7 @@
   "type": "immersiveengineering:ie_ore",
   "config": {
     "type": {
-      "veinType": 1
+      "veinType": "LEAD"
     },
     "targets": [
       {

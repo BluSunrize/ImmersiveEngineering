@@ -5,7 +5,7 @@
       "type": "minecraft:height_range",
       "height": {
         "type": "immersiveengineering:ie_range",
-        "veinType": 5
+        "veinType": "URANIUM"
       }
     },
     {
@@ -13,7 +13,7 @@
     },
     {
       "type": "immersiveengineering:ie_count",
-      "veinType": 5
+      "veinType": "URANIUM"
     }
   ]
 }

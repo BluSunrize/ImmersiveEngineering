@@ -2,7 +2,7 @@
   "type": "immersiveengineering:ie_ore",
   "config": {
     "type": {
-      "veinType": 4
+      "veinType": "DEEP_NICKEL"
     },
     "targets": [
       {

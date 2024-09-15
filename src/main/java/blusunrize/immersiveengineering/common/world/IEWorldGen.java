@@ -82,11 +82,14 @@ public class IEWorldGen
 	public static void onConfigUpdated()
 	{
 		List<PlacedFeature> enabledFeatures = new ArrayList<>();
-		// TODO is the timing OK?
-		Registry<PlacedFeature> registry = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
-		for(final PlacedFeature feature : registry)
-			if(isRetrogenFeature(feature))
-				enabledFeatures.add(feature);
+		var server = ServerLifecycleHooks.getCurrentServer();
+		if(server!=null)
+		{
+			Registry<PlacedFeature> registry = server.registryAccess().registryOrThrow(Registries.PLACED_FEATURE);
+			for(final PlacedFeature feature : registry)
+				if(isRetrogenFeature(feature))
+					enabledFeatures.add(feature);
+		}
 		RETROGEN_FEATURES = List.copyOf(enabledFeatures);
 	}
 

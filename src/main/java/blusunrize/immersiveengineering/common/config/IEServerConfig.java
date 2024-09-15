@@ -15,11 +15,11 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe.RecipeMultiplier;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -520,9 +520,7 @@ public class IEServerConfig
 			URANIUM(EnumMetals.URANIUM, OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9),
 			;
 			public static final VeinType[] VALUES = values();
-			// TODO make nicer (readable) codec
-			public static final MapCodec<VeinType> CODEC = Codec.INT.xmap(i -> VALUES[i], VeinType::ordinal)
-					.fieldOf("veinType");
+			public static final MapCodec<VeinType> CODEC = IECodecs.enumCodec(VALUES).fieldOf("veinType");
 
 			public final EnumMetals metal;
 			private final OreDistribution defaultDistribution;
