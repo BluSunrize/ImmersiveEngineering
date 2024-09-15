@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import com.mojang.blaze3d.pipeline.MainTarget;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.DeltaTracker.Timer;
@@ -65,6 +66,7 @@ public class MinecraftInstanceManager
 		createMinecraft();
 		initializeTimer();
 		initializeRenderSystem();
+		initializeWindow();
 
 		ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, output, helper);
 
@@ -93,16 +95,30 @@ public class MinecraftInstanceManager
 
 	private void createMinecraft()
 	{
+		ObfuscationReflectionHelper.setPrivateValue(
+				Minecraft.class, null, allocateUnsafe(Minecraft.class), "instance"
+		);
+	}
+
+	private void initializeWindow()
+	{
+		Window window = allocateUnsafe(Window.class);
+		ObfuscationReflectionHelper.setPrivateValue(Window.class, window, Window.BASE_HEIGHT, "height");
+		ObfuscationReflectionHelper.setPrivateValue(Window.class, window, Window.BASE_WIDTH, "width");
+		window.setWidth(Window.BASE_WIDTH);
+		window.setHeight(Window.BASE_HEIGHT);
+		setMCField("window", window);
+	}
+
+	private static <T> T allocateUnsafe(Class<T> type)
+	{
 		try
 		{
 			Unsafe unsafe = ObfuscationReflectionHelper.getPrivateValue(Unsafe.class, null, "theUnsafe");
-			Minecraft testingMinecraft = (Minecraft)Objects.requireNonNull(unsafe).allocateInstance(Minecraft.class);
-			// Setting on the null object is correct for static fields, but ORH warns anyway
-			//noinspection ConstantConditions
-			ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, null, testingMinecraft, "instance");
+			return (T)Objects.requireNonNull(unsafe).allocateInstance(type);
 		} catch(InstantiationException e)
 		{
-			throw new IllegalStateException("Failed to load minecraft!");
+			throw new RuntimeException(e);
 		}
 	}
 
