@@ -331,6 +331,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		private void init(FeedthroughCacheKey k, Int2IntFunction colorMultiplierBasic)
 		{
+			RandomSource random = RandomSource.create(0);
 			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
 					.getBlockModel(k.baseState);
 			if(colorMultiplierBasic==null)
@@ -345,7 +346,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				k.specificColorMultipliers.put(i, ret);
 				return ret;
 			};
-			boolean renderBlockInLayer = k.layer==null||model.getRenderTypes(k.baseState, RANDOM_SOURCE, ModelData.EMPTY).contains(k.layer);
+			boolean renderBlockInLayer = k.layer==null||model.getRenderTypes(k.baseState, random, ModelData.EMPTY).contains(k.layer);
 			for(int j = 0; j < 7; j++)
 			{
 				Direction side = j < 6?DirectionUtils.VALUES[j]: null;
@@ -356,7 +357,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						if(renderBlockInLayer)
 						{
 							List<BakedQuad> modelQuads = model.getQuads(
-									k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer
+									k.baseState, side, random, ModelData.EMPTY, k.layer
 							);
 							quads.add(QuadTransformer.color(colorMultiplier).process(modelQuads));
 						}
@@ -365,20 +366,20 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						facing = facing.getOpposite();
 					case -1:
 						if(k.layer==RenderType.solid())
-							quads.add(getConnQuads(facing, side, k.type, new Matrix4(), k.layer));
+							quads.add(getConnQuads(facing, side, k.type, new Matrix4(), k.layer, random));
 						break;
 					case Integer.MAX_VALUE:
 						Matrix4 mat = new Matrix4();
 						mat.translate(0, 0, 1);
-						List<BakedQuad> all = new ArrayList<>(getConnQuads(facing, side, k.type, mat, k.layer));
+						List<BakedQuad> all = new ArrayList<>(getConnQuads(facing, side, k.type, mat, k.layer, random));
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
-						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat, k.layer));
+						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat, k.layer, random));
 						if(renderBlockInLayer)
 						{
 							var tintTransformer = QuadTransformer.color(colorMultiplier);
 							all.addAll(tintTransformer.process(
-									model.getQuads(k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer)
+									model.getQuads(k.baseState, side, random, ModelData.EMPTY, k.layer)
 							));
 						}
 						quads.add(all);
@@ -390,7 +391,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		}
 
 		private List<BakedQuad> getConnQuads(
-				Direction facing, Direction side, WireType type, Matrix4 mat, RenderType layer
+				Direction facing, Direction side, WireType type, Matrix4 mat, RenderType layer, RandomSource source
 		)
 		{
 			//connector model+feedthrough border
@@ -410,7 +411,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			mat.translate(-.5, -.5, -.5);
 			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
 					.getBlockModel(info.connector().setValue(IEProperties.FACING_ALL, Direction.DOWN));
-			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, RANDOM_SOURCE, ModelData.EMPTY, layer));
+			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, source, ModelData.EMPTY, layer));
 			if(side==facing)
 				conn.add(ModelUtils.createBakedQuad(
 						vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
