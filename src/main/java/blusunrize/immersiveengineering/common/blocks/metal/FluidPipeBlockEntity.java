@@ -630,8 +630,8 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 						));
 				}
 			}
-			availableConnections = (byte)(availableConnections >> 1);
-			activeConnections = (byte)(activeConnections >> 1);
+			availableConnections = (byte)(availableConnections>>1);
+			activeConnections = (byte)(activeConnections>>1);
 		}
 		list.add(new AABB(baseAABB[4], baseAABB[0], baseAABB[2], baseAABB[5], baseAABB[1], baseAABB[3]));
 		return list;
