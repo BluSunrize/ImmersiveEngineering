@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
+import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -439,6 +440,9 @@ public class IEServerConfig
 			//Server
 			for(VeinType type : VeinType.values())
 				ores.put(type, new OreConfig(builder, type));
+			retrogenExcavatorVeins = builder
+					.comment("Set to true to generate excavator veins in chunks not generated with IE")
+					.define("retrogen_excavator_veins", false);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");
@@ -453,6 +457,7 @@ public class IEServerConfig
 
 
 		public final Map<VeinType, OreConfig> ores = new EnumMap<>(VeinType.class);
+		public final BooleanValue retrogenExcavatorVeins;
 		public final BooleanValue retrogen_log_flagChunk;
 		public final BooleanValue retrogen_log_remaining;
 		public final ConfigValue<String> retrogen_key;
@@ -515,6 +520,7 @@ public class IEServerConfig
 			URANIUM(EnumMetals.URANIUM, OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9),
 			;
 			public static final VeinType[] VALUES = values();
+			// TODO make nicer (readable) codec
 			public static final MapCodec<VeinType> CODEC = Codec.INT.xmap(i -> VALUES[i], VeinType::ordinal)
 					.fieldOf("veinType");
 
@@ -640,6 +646,13 @@ public class IEServerConfig
 			refresh();
 	}
 
+	@SubscribeEvent
+	public static void onConfigLoad(ModConfigEvent.Loading ev)
+	{
+		if(CONFIG_SPEC==ev.getConfig().getSpec())
+			refresh();
+	}
+
 	public static int getOrDefault(IntValue value)
 	{
 		return CONFIG_SPEC.isLoaded()?value.get(): value.getDefault();
@@ -652,5 +665,6 @@ public class IEServerConfig
 		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
 		ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
 		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
+		IEWorldGen.onConfigUpdated();
 	}
 }
