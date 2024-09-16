@@ -419,7 +419,7 @@ def pngPatterns = ["**/*.png"]
 for (dir in project.sourceSets.main.resources.srcDirs) {
     fileTree(dir: dir, includes: pngPatterns).each { file ->
         // TODO relative to some reasonable root?
-        tasks.create(name: "optimizePng_"+file.getPath().replace('/', '_'), type: Exec) {
+        tasks.create(name: "optimizePng_"+file.getPath().replaceAll('[/\\\\:]', '_'), type: Exec) {
             // TODO log size reductions? Somehow this is all very brittle right now
             executable "optipng"
             args "-q", "-o7", "-zm1-9", "-strip", "all", file
