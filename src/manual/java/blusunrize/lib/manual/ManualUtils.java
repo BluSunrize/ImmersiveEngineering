@@ -31,7 +31,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -292,7 +291,7 @@ public class ManualUtils
 		if(!isNumber(json, "y"))
 			return null;
 		int y = GsonHelper.getAsInt(json, "y");
-		if(GsonHelper.isStringValue(json, "item"))
+		if(GsonHelper.isStringValue(json, "id"))
 			return new PositionedItemStack(readItemStack(json), x, y);
 		else if(GsonHelper.isArrayNode(json, "stacks"))
 		{
@@ -332,7 +331,7 @@ public class ManualUtils
 			JsonObject json = jsonEle.getAsJsonObject();
 			if(GsonHelper.isStringValue(json, "recipe"))
 				return new ManualRecipeRef(ManualUtils.getLocationForManual(GsonHelper.getAsString(json, "recipe"), m));
-			else if(GsonHelper.isStringValue(json, "item"))
+			else if(GsonHelper.isStringValue(json, "id"))
 				return new ManualRecipeRef(readItemStack(json));
 		}
 		else if(jsonEle.isJsonArray())
@@ -380,6 +379,6 @@ public class ManualUtils
 
 	private static ItemStack readItemStack(JsonObject json)
 	{
-		return ItemStack.CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
+		return ItemStack.OPTIONAL_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
 	}
 }

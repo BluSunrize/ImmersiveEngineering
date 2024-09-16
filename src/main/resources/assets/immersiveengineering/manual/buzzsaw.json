@@ -22,7 +22,7 @@
   "grinding_recipe": {
     "type": "bottling",
     "recipe": {
-      "item": "immersiveengineering:grindingdisk"
+      "id": "immersiveengineering:grindingdisk"
     }
   },
   "tank_recipe": {

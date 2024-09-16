@@ -3,7 +3,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:clinker_brick"
+        "id": "immersiveengineering:clinker_brick"
       }
     ]
   },
@@ -22,13 +22,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:stairs_clinker_brick"
+        "id": "immersiveengineering:stairs_clinker_brick"
       },
       {
-        "item": "immersiveengineering:wall_clinker_brick"
+        "id": "immersiveengineering:wall_clinker_brick"
       },
       {
-        "item": "immersiveengineering:slab_clinker_brick"
+        "id": "immersiveengineering:slab_clinker_brick"
       }
     ]
   }

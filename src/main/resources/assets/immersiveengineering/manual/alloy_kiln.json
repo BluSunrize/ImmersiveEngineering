@@ -15,18 +15,18 @@
           {
             "x": 24,
             "y": 0,
-            "item": "minecraft:glass",
+            "id": "minecraft:glass",
             "count": 2
           },
           {
             "x": 42,
             "y": 0,
-            "item": "immersiveengineering:dust_iron"
+            "id": "immersiveengineering:dust_iron"
           },
           {
             "x": 78,
             "y": 0,
-            "item": "immersiveengineering:insulating_glass",
+            "id": "immersiveengineering:insulating_glass",
             "count": 2
           }
         ]

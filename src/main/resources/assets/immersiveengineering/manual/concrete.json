@@ -16,16 +16,16 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:concrete_brick"
+        "id": "immersiveengineering:concrete_brick"
       },
       {
-        "item": "immersiveengineering:concrete_brick_cracked"
+        "id": "immersiveengineering:concrete_brick_cracked"
       },
       {
-        "item": "immersiveengineering:concrete_pillar"
+        "id": "immersiveengineering:concrete_pillar"
       },
       {
-        "item": "immersiveengineering:concrete_chiseled"
+        "id": "immersiveengineering:concrete_chiseled"
       }
     ]
   },
@@ -33,19 +33,19 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:concrete_sheet"
+        "id": "immersiveengineering:concrete_sheet"
       },
       {
-        "item": "immersiveengineering:concrete_quarter"
+        "id": "immersiveengineering:concrete_quarter"
       },
       {
-        "item": "immersiveengineering:slab_concrete"
+        "id": "immersiveengineering:slab_concrete"
       },
       {
-        "item": "immersiveengineering:concrete_three_quarter"
+        "id": "immersiveengineering:concrete_three_quarter"
       },
       {
-        "item": "immersiveengineering:concrete_tile"
+        "id": "immersiveengineering:concrete_tile"
       }
     ]
   },

@@ -3,7 +3,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:creosote_bucket"
+        "id": "immersiveengineering:creosote_bucket"
       }
     ]
   },
@@ -21,13 +21,13 @@
     "type": "bottling",
     "recipes": [
       {
-        "item": "minecraft:exposed_copper"
+        "id": "minecraft:exposed_copper"
       },
       {
-        "item": "minecraft:weathered_copper"
+        "id": "minecraft:weathered_copper"
       },
       {
-        "item": "minecraft:oxidized_copper"
+        "id": "minecraft:oxidized_copper"
       }
     ]
   },
@@ -35,10 +35,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:plantoil_bucket"
+        "id": "immersiveengineering:plantoil_bucket"
       },
       {
-        "item": "immersiveengineering:ethanol_bucket"
+        "id": "immersiveengineering:ethanol_bucket"
       }
     ]
   },
@@ -46,7 +46,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:biodiesel_bucket"
+        "id": "immersiveengineering:biodiesel_bucket"
       }
     ]
   },
@@ -54,7 +54,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:high_power_biodiesel_bucket"
+        "id": "immersiveengineering:high_power_biodiesel_bucket"
       }
     ]
   },
@@ -62,10 +62,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:phenolic_resin_bucket"
+        "id": "immersiveengineering:phenolic_resin_bucket"
       },
       {
-        "item": "immersiveengineering:acetaldehyde_bucket"
+        "id": "immersiveengineering:acetaldehyde_bucket"
       }
     ]
   },
@@ -73,7 +73,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:herbicide_bucket"
+        "id": "immersiveengineering:herbicide_bucket"
       }
     ]
   },
@@ -87,7 +87,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:potion_bucket"
+        "id": "immersiveengineering:potion_bucket"
       }
     ]
   }

@@ -125,8 +125,8 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		registerSpecialElement(name.withPath("item_display"),
 				s -> {
 					NonNullList<ItemStack> stacks;
-					if(s.has("item"))
-						stacks = NonNullList.withSize(1, ManualUtils.getItemStackFromJson(this, s.get("item")));
+					if(s.has("id"))
+						stacks = NonNullList.withSize(1, ManualUtils.getItemStackFromJson(this, s.get("id")));
 					else
 					{
 						JsonElement items = s.get("items");
@@ -362,13 +362,20 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		itemLinks.clear();
 		getAllEntries().forEach((entry) ->
 		{
-			List<SpecialElementData> specials = entry.getSpecialData();
-			for(SpecialElementData page : specials)
+			try
 			{
-				SpecialManualElement p = page.getElement();
-				p.recalculateCraftingRecipes();
-				for(ItemStack s : p.getProvidedRecipes())
-					itemLinks.put(s.copy(), new ManualLink(entry, page.getAnchor(), page.getOffset()));
+				List<SpecialElementData> specials = entry.getSpecialData();
+				for(SpecialElementData page : specials)
+				{
+					SpecialManualElement p = page.getElement();
+					p.recalculateCraftingRecipes();
+					for(ItemStack s : p.getProvidedRecipes())
+						itemLinks.put(s.copy(), new ManualLink(entry, page.getAnchor(), page.getOffset()));
+				}
+			} catch(Exception x)
+			{
+				ManualLogger.LOGGER.error("While calculating recipes for {}", entry.getLocation(), x);
+				++numFailedEntries;
 			}
 		});
 	}
@@ -399,7 +406,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 				manualEntry.initBasic();
 			} catch(Exception x)
 			{
-				x.printStackTrace();
+				ManualLogger.LOGGER.error("During basic init of entry {}", manualEntry.getLocation(), x);
 				++numFailedEntries;
 			}
 		});
@@ -410,7 +417,8 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 			contentsByName.clear();
 			contentTree.leafStream().forEach(e -> this.contentsByName.put(e.getLocation(), e));
 			indexRecipes();
-			initialized = true;
+			if(numFailedEntries==0)
+				initialized = true;
 		}
 	}
 
@@ -516,7 +524,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 				entry.initBasic();
 			} catch(Exception x)
 			{
-				x.printStackTrace();
+				ManualLogger.LOGGER.error("During basic init of auto entry {}", source, x);
 				++numFailedEntries;
 			}
 		}

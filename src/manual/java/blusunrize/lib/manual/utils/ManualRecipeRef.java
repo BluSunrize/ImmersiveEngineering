@@ -12,11 +12,9 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -81,15 +79,11 @@ public class ManualRecipeRef
 	void forEachMatchingRecipe(RecipeType<R> type, Consumer<R> out)
 	{
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-		Map<ResourceLocation, RecipeHolder<R>> recipes = PrivateAccess.getRecipes(recipeManager, type);
 		if(isRecipeName())
-		{
-			RecipeHolder<R> recipe = recipes.get(getRecipeName());
-			if(recipe!=null)
-				out.accept(recipe.value());
-		}
+			recipeManager.byKey(getRecipeName())
+					.ifPresent(recipeHolder -> out.accept((R)recipeHolder.value()));
 		else
-			for(RecipeHolder<R> recipe : recipes.values())
+			for(RecipeHolder<R> recipe : recipeManager.getAllRecipesFor(type))
 				if(ManualUtils.stackMatchesObject(
 						recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
 				))

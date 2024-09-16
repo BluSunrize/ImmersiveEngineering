@@ -3,10 +3,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:minecart_woodencrate"
+        "id": "immersiveengineering:minecart_woodencrate"
       },
       {
-        "item": "immersiveengineering:minecart_reinforcedcrate"
+        "id": "immersiveengineering:minecart_reinforcedcrate"
       }
     ]
   },
@@ -14,10 +14,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:minecart_woodenbarrel"
+        "id": "immersiveengineering:minecart_woodenbarrel"
       },
       {
-        "item": "immersiveengineering:minecart_metalbarrel"
+        "id": "immersiveengineering:minecart_metalbarrel"
       }
     ]
   }

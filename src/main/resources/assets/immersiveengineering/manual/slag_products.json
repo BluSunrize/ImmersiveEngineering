@@ -3,7 +3,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:slag_gravel"
+        "id": "immersiveengineering:slag_gravel"
       }
     ]
   },
@@ -11,7 +11,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:slag_glass"
+        "id": "immersiveengineering:slag_glass"
       }
     ]
   },
@@ -19,16 +19,16 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:slag_brick"
+        "id": "immersiveengineering:slag_brick"
       },
       {
-        "item": "immersiveengineering:stairs_slag_brick"
+        "id": "immersiveengineering:stairs_slag_brick"
       },
       {
-        "item": "immersiveengineering:wall_slag_brick"
+        "id": "immersiveengineering:wall_slag_brick"
       },
       {
-        "item": "immersiveengineering:slab_slag_brick"
+        "id": "immersiveengineering:slab_slag_brick"
       }
     ]
   }

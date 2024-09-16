@@ -24,13 +24,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:mold_packing_4"
+        "id": "immersiveengineering:mold_packing_4"
       },
       {
-        "item": "immersiveengineering:mold_packing_9"
+        "id": "immersiveengineering:mold_packing_9"
       },
       {
-        "item": "immersiveengineering:mold_unpacking"
+        "id": "immersiveengineering:mold_unpacking"
       }
     ]
   }

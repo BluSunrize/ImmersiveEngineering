@@ -3,10 +3,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:coal_coke"
+        "id": "immersiveengineering:coal_coke"
       },
       {
-        "item": "immersiveengineering:dust_coke"
+        "id": "immersiveengineering:dust_coke"
       }
     ]
   },
@@ -14,10 +14,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:dust_hop_graphite"
+        "id": "immersiveengineering:dust_hop_graphite"
       },
       {
-        "item": "immersiveengineering:ingot_hop_graphite"
+        "id": "immersiveengineering:ingot_hop_graphite"
       }
     ]
   },

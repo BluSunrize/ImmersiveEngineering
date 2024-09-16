@@ -29,6 +29,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -63,10 +64,10 @@ public class IEManualInstance extends ManualInstance
 				);
 			// TODO is this right?
 			UnmodifiableConfig actualCfg = IEServerConfig.CONFIG_SPEC.getValues();
-			if(!actualCfg.contains(s))
-				return null;
+			if(actualCfg.get(s) instanceof ConfigValue<?> value)
+				return value.get();
 			else
-				return actualCfg.get(s);
+				return null;
 		});
 		/*
 		TODO no longer easily possible?

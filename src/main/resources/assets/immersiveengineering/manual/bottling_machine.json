@@ -7,21 +7,27 @@
     "type": "bottling",
     "recipes": [
       {
-        "item": "minecraft:potion",
-        "nbt": {
-          "Potion": "minecraft:awkward"
+        "id": "minecraft:potion",
+        "components": {
+          "minecraft:potion_contents": {
+            "potion": "minecraft:awkward"
+          }
         }
       },
       {
-        "item": "minecraft:potion",
-        "nbt": {
-          "Potion": "minecraft:strength"
+        "id": "minecraft:potion",
+        "components": {
+          "minecraft:potion_contents": {
+            "potion": "minecraft:strength"
+          }
         }
       },
       {
-        "item": "minecraft:potion",
-        "nbt": {
-          "Potion": "minecraft:swiftness"
+        "id": "minecraft:potion",
+        "components": {
+          "minecraft:potion_contents": {
+            "potion": "minecraft:swiftness"
+          }
         }
       }
     ]

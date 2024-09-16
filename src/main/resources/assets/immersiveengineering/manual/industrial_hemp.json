@@ -3,10 +3,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:hemp_fiber"
+        "id": "immersiveengineering:hemp_fiber"
       },
       {
-        "item": "immersiveengineering:seed"
+        "id": "immersiveengineering:seed"
       }
     ]
   },

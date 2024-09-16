@@ -15,17 +15,17 @@
           {
             "x": 24,
             "y": 0,
-            "item": "minecraft:iron_ingot"
+            "id": "minecraft:iron_ingot"
           },
           {
             "x": 42,
             "y": 0,
-            "item": "immersiveengineering:coal_coke"
+            "id": "immersiveengineering:coal_coke"
           },
           {
             "x": 78,
             "y": 0,
-            "item": "immersiveengineering:ingot_steel"
+            "id": "immersiveengineering:ingot_steel"
           }
         ]
       ]

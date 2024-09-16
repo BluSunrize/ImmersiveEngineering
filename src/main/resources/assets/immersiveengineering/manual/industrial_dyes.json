@@ -3,13 +3,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:ingot_lead"
+        "id": "immersiveengineering:ingot_lead"
       },
       {
-        "item": "minecraft:white_dye"
+        "id": "minecraft:white_dye"
       },
       {
-        "item": "minecraft:red_dye"
+        "id": "minecraft:red_dye"
       }
     ]
   },
@@ -25,12 +25,12 @@
           {
             "x": 33,
             "y": 0,
-            "item": "immersiveengineering:nugget_lead"
+            "id": "immersiveengineering:nugget_lead"
           },
           {
             "x": 69,
             "y": 0,
-            "item": "minecraft:red_dye"
+            "id": "minecraft:red_dye"
           }
         ]
       ]

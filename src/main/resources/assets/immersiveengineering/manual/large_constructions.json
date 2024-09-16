@@ -3,10 +3,10 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:crusher"
+        "id": "immersiveengineering:crusher"
       },
       {
-        "item": "immersiveengineering:arc_furnace"
+        "id": "immersiveengineering:arc_furnace"
       }
     ]
   }

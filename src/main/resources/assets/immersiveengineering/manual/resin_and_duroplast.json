@@ -3,7 +3,7 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:phenolic_resin_bucket"
+        "id": "immersiveengineering:phenolic_resin_bucket"
       }
     ]
   },
@@ -11,23 +11,23 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:duroplast"
+        "id": "immersiveengineering:duroplast"
       },
       {
-        "item": "immersiveengineering:plate_duroplast"
+        "id": "immersiveengineering:plate_duroplast"
       }
     ]
   },
   "duroplast_sheet": {
     "type": "bottling",
     "recipe": {
-      "item": "immersiveengineering:plate_duroplast"
+      "id": "immersiveengineering:plate_duroplast"
     }
   },
   "duroplast_block": {
     "type": "bottling",
     "recipe": {
-      "item": "immersiveengineering:duroplast"
+      "id": "immersiveengineering:duroplast"
     }
   },
   "fiberboard": {
@@ -37,7 +37,7 @@
   "empty_shell": {
     "type": "bottling",
     "recipe": {
-      "item": "immersiveengineering:empty_shell"
+      "id": "immersiveengineering:empty_shell"
     }
   }
 }

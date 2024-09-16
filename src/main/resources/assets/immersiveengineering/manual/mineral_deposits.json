@@ -9,13 +9,25 @@
   },
   "core_sample": {
     "type": "item_display",
-    "item": {
-      "item": "immersiveengineering:coresample",
-      "nbt": {
-        "mineralInfo": [{
-          "mineral": "immersiveengineering:mineral/chalcopyrite",
-          "percentage": 1.0
-        }]
+    "id": {
+      "id": "immersiveengineering:coresample",
+      "components": {
+        "immersiveengineering:coresample_data": {
+          "veins": [
+            {
+              "mineral": "immersiveengineering:mineral/chalcopyrite",
+              "percentage": 1.0,
+              "depletion": 0,
+              "saturation": 1
+            }
+          ],
+          "timestamp": 0,
+          "position": {
+            "dimension": "minecraft:overworld",
+            "x": 0,
+            "z": 0
+          }
+        }
       }
     }
   },
@@ -23,13 +35,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "minecraft:cobbled_deepslate"
+        "id": "minecraft:cobbled_deepslate"
       },
       {
-        "item": "minecraft:cobblestone"
+        "id": "minecraft:cobblestone"
       },
       {
-        "item": "minecraft:gravel"
+        "id": "minecraft:gravel"
       }
     ]
   }
