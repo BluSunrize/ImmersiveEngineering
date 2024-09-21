@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -47,7 +48,11 @@ public class PotionHelper
 
 	public static void applyToAllPotionRecipes(PotionRecipeProcessor out)
 	{
-		PotionBrewing brewingData = ServerLifecycleHooks.getCurrentServer().potionBrewing();
+		final PotionBrewing brewingData;
+		if(ServerLifecycleHooks.getCurrentServer()!=null)
+			brewingData = ServerLifecycleHooks.getCurrentServer().potionBrewing();
+		else
+			brewingData = ImmersiveEngineering.proxy.getClientWorld().potionBrewing();
 		// Vanilla
 		for(var mixPredicate : ((PotionBrewingAccess)brewingData).getConversions())
 			if(mixPredicate.getTo()!=Potions.MUNDANE&&mixPredicate.getTo()!=Potions.THICK)
@@ -57,7 +62,7 @@ public class PotionHelper
 				);
 
 		// Modded
-		for(IBrewingRecipe recipe : ((PotionBrewingAccess)brewingData).getRegistry().recipes())
+		for(IBrewingRecipe recipe : brewingData.getRecipes())
 			if(recipe instanceof BrewingRecipe brewingRecipe)
 			{
 				IngredientWithSize ingredient = new IngredientWithSize(brewingRecipe.getIngredient());

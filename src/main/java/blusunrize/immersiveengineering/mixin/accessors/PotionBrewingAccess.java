@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.mixin.accessors;
 
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -22,7 +21,4 @@ public interface PotionBrewingAccess
 {
 	@Accessor("potionMixes")
 	List<PotionMixAccess<Potion>> getConversions();
-
-	@Accessor("registry")
-	BrewingRecipeRegistry getRegistry();
 }
