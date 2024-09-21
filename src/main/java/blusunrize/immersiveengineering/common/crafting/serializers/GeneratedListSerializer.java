@@ -10,20 +10,31 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import malte0811.dualcodecs.DualCodecs;
-import malte0811.dualcodecs.DualMapCodec;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import com.mojang.serialization.MapCodec;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRecipe<?, ?>>
 {
-	public static final DualMapCodec<RegistryFriendlyByteBuf, GeneratedListRecipe<?, ?>> CODECS = DualCodecs.RESOURCE_LOCATION
-			.<RegistryFriendlyByteBuf>castStream()
+	private static final MapCodec<GeneratedListRecipe<?, ?>> CODEC = ResourceLocation.CODEC
 			.fieldOf("generatorID")
-			.map(GeneratedListRecipe::from, GeneratedListRecipe::getGeneratorID);
+			.xmap(GeneratedListRecipe::from, GeneratedListRecipe::getGeneratorID);
+	private static final StreamCodec<RegistryFriendlyByteBuf, GeneratedListRecipe<?, ?>> STREAM_CODEC = StreamCodec.composite(
+			ResourceLocation.STREAM_CODEC, GeneratedListRecipe::getGeneratorID,
+			Recipe.STREAM_CODEC.apply(ByteBufCodecs.list()), GeneratedListRecipe::getSubRecipes,
+			GeneratedListRecipe::resolved
+	);
+	public static final DualMapCodec<RegistryFriendlyByteBuf, GeneratedListRecipe<?, ?>> CODECS = new DualMapCodec<>(
+			CODEC, STREAM_CODEC
+	);
 
 	@Override
 	protected DualMapCodec<RegistryFriendlyByteBuf, GeneratedListRecipe<?, ?>> codecs()

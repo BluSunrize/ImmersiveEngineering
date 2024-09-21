@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.crafting.cache;
 
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.List;
 
 public interface IListRecipe
 {
-	List<? extends IESerializableRecipe> getSubRecipes();
+	List<Recipe<?>> getSubRecipes();
 }
