@@ -38,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,6 +53,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 		IScrewdriverInteraction, IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop,
 		IBlockBounds
 {
+	@NotNull
 	public Color4 colour = Color4.WHITE;
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
@@ -211,7 +213,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		this.colour = stack.get(IEDataComponents.COLOR);
+		this.colour = stack.getOrDefault(IEDataComponents.COLOR, Color4.WHITE);
 	}
 
 	@Override
