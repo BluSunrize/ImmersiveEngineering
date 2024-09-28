@@ -180,7 +180,7 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 			int targetedSlot = getTargetedSlot(bhr.getDirection(), hitX, hitY, hitZ);
 			ItemStack stackInSlot = this.inventory.get(targetedSlot);
 			String key = stackInSlot.get(IEApiDataComponents.BLUEPRINT_TYPE);
-			if(key.isEmpty())
+			if(key==null||key.isEmpty())
 				return null;
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.get(formatKey);
