@@ -125,7 +125,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("identStack", identStack.save(provider));
+			nbt.put("identStack", identStack.saveOptional(provider));
 			nbt.putInt("count", storageAmount);
 		}
 
