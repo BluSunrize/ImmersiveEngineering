@@ -17,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class LogicCircuitBoardItem extends IEBaseItem
@@ -25,13 +24,6 @@ public class LogicCircuitBoardItem extends IEBaseItem
 	public LogicCircuitBoardItem()
 	{
 		super(new Properties().stacksTo(1));
-	}
-
-	@Nonnull
-	@Override
-	public String getDescriptionId(ItemStack stack)
-	{
-		return this.getDescriptionId();
 	}
 
 	@Override

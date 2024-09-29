@@ -202,7 +202,7 @@ public class Language extends LanguageProvider
 		final var failed = new MutableBoolean();
 		for(var item : IEItems.REGISTER.getEntries())
 			if(!item.getKey().location().getPath().startsWith("fake_icon"))
-				assertMapped(mapData, failed, item.get().getDescriptionId());
+				assertMapped(mapData, failed, item.get().getDescriptionId(item.get().getDefaultInstance()));
 		for(var shader : ShaderRegistry.shaderRegistry.keySet())
 			assertMapped(mapData, failed, ShaderItem.getShaderNameKey(shader));
 		if(failed.booleanValue())

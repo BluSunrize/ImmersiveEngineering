@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
@@ -217,8 +218,8 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("blueprint/bullet_potion"));
 
 		ItemStack flare = new ItemStack(BulletHandler.getBulletItem(IEBullets.FLARE), 4);
-		DataComponentType<Integer> flareComponent = (DataComponentType<Integer>)IEDataComponents.getBulletData(BulletHandler.getBullet(IEBullets.FLARE));
-		flare.set(flareComponent, 0xcc2e06);
+		DataComponentType<Color4> flareComponent = IEDataComponents.getBulletData(IEBullets.FLARE_TYPE);
+		flare.set(flareComponent, Color4.fromRGB(0xcc2e06));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())
@@ -227,7 +228,7 @@ public class MiscRecipes extends IERecipeProvider
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
-		flare.set(flareComponent, 0x2ca30b);
+		flare.set(flareComponent, Color4.fromRGB(0x2ca30b));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())
@@ -236,7 +237,7 @@ public class MiscRecipes extends IERecipeProvider
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
-		flare.set(flareComponent, 0xffff82);
+		flare.set(flareComponent, Color4.fromRGB(0xffff82));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())

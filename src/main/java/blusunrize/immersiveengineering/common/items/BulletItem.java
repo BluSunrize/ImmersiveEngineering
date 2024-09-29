@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -42,18 +40,6 @@ public class BulletItem<T> extends IEBaseItem implements IColouredItem
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		type.addTooltip(stack.get(component), ctx, list, flag);
-	}
-
-	@Nonnull
-	@Override
-	public Component getName(@Nonnull ItemStack stack)
-	{
-		// TODO fix
-		String s = "item.immersiveengineering.bullet.";
-		String key = BuiltInRegistries.ITEM.getKey(this).getPath();
-		s += key;
-		s = type.getTranslationKey(stack.get(component), s);
-		return Component.translatable(s);
 	}
 
 	@Override

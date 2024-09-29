@@ -50,7 +50,7 @@ public class BlockItemIE extends BlockItem
 	}
 
 	@Override
-	public String getDescriptionId(ItemStack stack)
+	public String getDescriptionId()
 	{
 		return getBlock().getDescriptionId();
 	}

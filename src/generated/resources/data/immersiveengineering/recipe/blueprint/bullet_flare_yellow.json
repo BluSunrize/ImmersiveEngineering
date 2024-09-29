@@ -20,7 +20,12 @@
   ],
   "result": {
     "components": {
-      "immersiveengineering:flare": 16777090
+      "immersiveengineering:flare": {
+        "a": 1.0,
+        "b": 0.50980395,
+        "g": 1.0,
+        "r": 1.0
+      }
     },
     "count": 4,
     "id": "immersiveengineering:bullet_flare"

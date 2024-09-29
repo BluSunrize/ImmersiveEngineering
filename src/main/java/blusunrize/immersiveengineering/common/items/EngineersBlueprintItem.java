@@ -33,13 +33,6 @@ public class EngineersBlueprintItem extends IEBaseItem
 		super(new Properties().stacksTo(1));
 	}
 
-	@Nonnull
-	@Override
-	public String getDescriptionId(ItemStack stack)
-	{
-		return this.getDescriptionId();
-	}
-
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
