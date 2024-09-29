@@ -56,7 +56,7 @@ public class SawmillRenderer extends IEMultiblockRenderer<State>
 			matrixStack.pushPose();
 			matrixStack.translate(1, .125, -.5);
 			float spin = state.animation_bladeRotation;
-			if(state.active!=ActiveState.DISABLED)
+			if(state.active!=ActiveState.NOT_RUNNING)
 				spin += 36f*partialTicks;
 			matrixStack.mulPose(new Quaternionf().rotateZ(spin*Mth.DEG_TO_RAD));
 			RenderUtils.renderModelTESRFast(

@@ -119,12 +119,16 @@ public class SawmillLogic
 		for(ItemStack output : secondaries)
 			state.secondaryOutput.insertOrDrop(output.copy(), level);
 		ActiveState renderActive;
-		if(state.energy.getEnergyStored() <= 0||!rsAllowed||state.sawblade.isEmpty())
-			renderActive = ActiveState.DISABLED;
-		else if(state.sawmillProcessQueue.isEmpty())
-			renderActive = ActiveState.IDLE;
-		else
+		boolean noJobs = state.sawmillProcessQueue.isEmpty();
+		boolean hasBlade = !state.sawblade.isEmpty();
+		if(state.energy.getEnergyStored() <= 0||!rsAllowed||(noJobs&&!hasBlade))
+			renderActive = ActiveState.NOT_RUNNING;
+		else if(noJobs)
+			renderActive = ActiveState.IDLE_WITH_BLADE;
+		else if(hasBlade)
 			renderActive = ActiveState.SAWING;
+		else
+			renderActive = ActiveState.RUNNING_NO_BLADE;
 		if(state.active!=renderActive)
 		{
 			state.active = renderActive;
@@ -138,23 +142,25 @@ public class SawmillLogic
 		final IMultiblockLevel level = ctx.getLevel();
 		final State state = ctx.getState();
 		//Handle sound
-		final boolean shouldPlay = state.active!=ActiveState.DISABLED||state.lastSoundState!=ActiveState.DISABLED;
+		final boolean shouldPlay = state.active.hasSound()||state.lastSoundState.hasSound();
 		if(shouldPlay&&!state.soundPlaying.get(state.active).getAsBoolean())
 		{
 			final Vec3 soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
 			final ActiveState active = state.active;
 			Holder<SoundEvent> sound = switch(active)
-					{
-						case DISABLED -> IESounds.saw_shutdown;
-						case IDLE -> IESounds.saw_empty;
-						case SAWING -> IESounds.saw_full;
-					};
-			state.soundPlaying.put(state.active, MultiblockSound.startSound(
-					() -> state.active==active, ctx.isValid(), soundPos, sound, state.active!=ActiveState.DISABLED, 0.4f
-			));
+			{
+				case NOT_RUNNING -> IESounds.saw_shutdown;
+				case RUNNING_NO_BLADE -> null;
+				case IDLE_WITH_BLADE -> IESounds.saw_empty;
+				case SAWING -> IESounds.saw_full;
+			};
+			if(sound!=null)
+				state.soundPlaying.put(state.active, MultiblockSound.startSound(
+						() -> state.active==active, ctx.isValid(), soundPos, sound, state.active!=ActiveState.NOT_RUNNING, 0.4f
+				));
 		}
 		state.lastSoundState = state.active;
-		if(state.active==ActiveState.DISABLED)
+		if(state.active==ActiveState.NOT_RUNNING)
 			return;
 		state.animation_bladeRotation += 36f;
 		state.animation_bladeRotation %= 360f;
@@ -365,12 +371,12 @@ public class SawmillLogic
 		private final IMachineInterfaceConnection mifHandler;
 
 		// Client fields
-		public ActiveState active = ActiveState.DISABLED;
+		public ActiveState active = ActiveState.NOT_RUNNING;
 		//Temporary counter for making sure sounds tick properly
 		private int count = 0;
 		public float animation_bladeRotation = 0;
 		private final EnumMap<ActiveState, BooleanSupplier> soundPlaying = new EnumMap<>(ActiveState.class);
-		private ActiveState lastSoundState = ActiveState.DISABLED;
+		private ActiveState lastSoundState = ActiveState.NOT_RUNNING;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -467,6 +473,14 @@ public class SawmillLogic
 
 	public enum ActiveState
 	{
-		DISABLED, IDLE, SAWING;
+		NOT_RUNNING,
+		RUNNING_NO_BLADE,
+		IDLE_WITH_BLADE,
+		SAWING;
+
+		boolean hasSound()
+		{
+			return this!=NOT_RUNNING&&this!=IDLE_WITH_BLADE;
+		}
 	}
 }

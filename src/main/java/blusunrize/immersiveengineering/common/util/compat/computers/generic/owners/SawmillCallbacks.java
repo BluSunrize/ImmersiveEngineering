@@ -27,6 +27,6 @@ public class SawmillCallbacks extends Callback<State>
 	@ComputerCallable
 	public boolean isRunning(CallbackEnvironment<State> env)
 	{
-		return env.object().active!=ActiveState.DISABLED;
+		return env.object().active!=ActiveState.NOT_RUNNING;
 	}
 }
