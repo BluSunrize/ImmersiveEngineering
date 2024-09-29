@@ -78,7 +78,7 @@ public class BucketWheelLogic
 			nbt.putFloat("rotation", rotation);
 			ListTag stacksNBT = new ListTag();
 			for(final ItemStack stack : digStacks)
-				stacksNBT.add(stack.save(provider));
+				stacksNBT.add(stack.saveOptional(provider));
 			nbt.put("stacks", stacksNBT);
 			nbt.putBoolean("active", active);
 			nbt.putBoolean("renderReverse", reverseRotation);

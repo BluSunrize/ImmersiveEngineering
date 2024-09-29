@@ -438,7 +438,7 @@ public class SawmillLogic
 
 		private void writeCommonNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("sawblade", sawblade.save(provider));
+			nbt.put("sawblade", sawblade.saveOptional(provider));
 			ListTag processes = new ListTag();
 			for(final SawmillProcess process : sawmillProcessQueue)
 				processes.add(process.writeToNBT(provider));
