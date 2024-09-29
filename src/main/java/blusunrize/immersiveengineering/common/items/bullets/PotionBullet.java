@@ -12,14 +12,15 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.DamagingBullet;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
-import malte0811.dualcodecs.DualCodec;
-import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.bullets.PotionBullet.Data;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,9 +30,10 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -67,22 +69,13 @@ public class PotionBullet extends DamagingBullet<Data>
 	}
 
 	@Override
-	public Entity getProjectile(Player shooter, Data potion, Entity projectile, boolean electro)
+	public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot, Data bulletData)
 	{
-		// TODO replace by automatic attachment of bullet data
-		((RevolvershotEntity)projectile).bulletPotion = potion.makePotion();
-		return projectile;
-	}
-
-	@Override
-	public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot)
-	{
-		super.onHitTarget(world, target, shooterUUID, projectile, headshot);
+		super.onHitTarget(world, target, shooterUUID, projectile, headshot, bulletData);
 		RevolvershotEntity bullet = (RevolvershotEntity)projectile;
-		PotionContents potionType = bullet.bulletPotion.get(DataComponents.POTION_CONTENTS);
-		if(potionType!=null&&potionType.hasEffects())
+		if(bulletData.contents!=null&&bulletData.contents.hasEffects())
 		{
-			var effects = potionType.getAllEffects();
+			var effects = bulletData.contents.getAllEffects();
 			LivingEntity shooter = null;
 			if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
 			{
@@ -90,54 +83,53 @@ public class PotionBullet extends DamagingBullet<Data>
 				if(e instanceof LivingEntity)
 					shooter = (LivingEntity)e;
 			}
-			if(effects!=null)
-				if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
-				{
-					AreaEffectCloud entityareaeffectcloud = new AreaEffectCloud(bullet.level(), bullet.getX(), bullet.getY(), bullet.getZ());
-					entityareaeffectcloud.setOwner(shooter);
-					entityareaeffectcloud.setRadius(3.0F);
-					entityareaeffectcloud.setRadiusOnUse(-0.5F);
-					entityareaeffectcloud.setWaitTime(10);
-					entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius()/(float)entityareaeffectcloud.getDuration());
-					entityareaeffectcloud.setPotionContents(potionType);
-					for(MobEffectInstance potioneffect : effects)
-						entityareaeffectcloud.addEffect(new MobEffectInstance(potioneffect.getEffect(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-					bullet.level().addFreshEntity(entityareaeffectcloud);
-				}
-				else if(bullet.bulletPotion.getItem() instanceof SplashPotionItem)
-				{
-					List<LivingEntity> livingEntities = bullet.level().getEntitiesOfClass(LivingEntity.class, bullet.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
-					if(livingEntities!=null&&!livingEntities.isEmpty())
-						for(LivingEntity living : livingEntities)
-							if(living.isAffectedByPotions())
+			if(bulletData.type==PotionType.LINGERING)
+			{
+				AreaEffectCloud entityareaeffectcloud = new AreaEffectCloud(bullet.level(), bullet.getX(), bullet.getY(), bullet.getZ());
+				entityareaeffectcloud.setOwner(shooter);
+				entityareaeffectcloud.setRadius(3.0F);
+				entityareaeffectcloud.setRadiusOnUse(-0.5F);
+				entityareaeffectcloud.setWaitTime(10);
+				entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius()/(float)entityareaeffectcloud.getDuration());
+				entityareaeffectcloud.setPotionContents(bulletData.contents);
+				for(MobEffectInstance potioneffect : effects)
+					entityareaeffectcloud.addEffect(new MobEffectInstance(potioneffect.getEffect(), potioneffect.getDuration(), potioneffect.getAmplifier()));
+				bullet.level().addFreshEntity(entityareaeffectcloud);
+			}
+			else if(bulletData.type==PotionType.SPLASH)
+			{
+				List<LivingEntity> livingEntities = bullet.level().getEntitiesOfClass(LivingEntity.class, bullet.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+				if(livingEntities!=null&&!livingEntities.isEmpty())
+					for(LivingEntity living : livingEntities)
+						if(living.isAffectedByPotions())
+						{
+							double dist = bullet.distanceToSqr(living);
+							if(dist < 16D)
 							{
-								double dist = bullet.distanceToSqr(living);
-								if(dist < 16D)
-								{
-									double dist2 = 1-Math.sqrt(dist)/4D;
-									if(target instanceof EntityHitResult&&living==((EntityHitResult)target).getEntity())
-										dist2 = 1D;
-									for(MobEffectInstance p : effects)
-										if(p.getEffect().value().isInstantenous())
-											p.getEffect().value().applyInstantenousEffect(bullet, shooter, living, p.getAmplifier(), dist2);
-										else
-										{
-											int j = (int)(dist2*p.getDuration()+.5D);
-											if(j > 20)
-												living.addEffect(new MobEffectInstance(p.getEffect(), j, p.getAmplifier()));
-										}
-								}
+								double dist2 = 1-Math.sqrt(dist)/4D;
+								if(target instanceof EntityHitResult&&living==((EntityHitResult)target).getEntity())
+									dist2 = 1D;
+								for(MobEffectInstance p : effects)
+									if(p.getEffect().value().isInstantenous())
+										p.getEffect().value().applyInstantenousEffect(bullet, shooter, living, p.getAmplifier(), dist2);
+									else
+									{
+										int j = (int)(dist2*p.getDuration()+.5D);
+										if(j > 20)
+											living.addEffect(new MobEffectInstance(p.getEffect(), j, p.getAmplifier()));
+									}
 							}
+						}
 
+			}
+			else if(target instanceof EntityHitResult&&((EntityHitResult)target).getEntity() instanceof LivingEntity)
+				for(MobEffectInstance p : effects)
+				{
+					if(p.getDuration() < 1)
+						p = new MobEffectInstance(p.getEffect(), 1);
+					((LivingEntity)((EntityHitResult)target).getEntity()).addEffect(p);
 				}
-				else if(target instanceof EntityHitResult&&((EntityHitResult)target).getEntity() instanceof LivingEntity)
-					for(MobEffectInstance p : effects)
-					{
-						if(p.getDuration() < 1)
-							p = new MobEffectInstance(p.getEffect(), 1);
-						((LivingEntity)((EntityHitResult)target).getEntity()).addEffect(p);
-					}
-			world.levelEvent(2002, bullet.blockPosition(), potionType.getColor());
+			world.levelEvent(2002, bullet.blockPosition(), bulletData.contents.getColor());
 		}
 	}
 
@@ -150,11 +142,11 @@ public class PotionBullet extends DamagingBullet<Data>
 	}
 
 	@Override
-	public int getColour(Data data, int layer)
+	public Color4 getColour(Data data, int layer)
 	{
 		if(layer==1)
-			return data.contents.getColor();
-		return 0xffffffff;
+			return Color4.fromRGB(data.contents.getColor());
+		return Color4.WHITE;
 	}
 
 	public record Data(PotionContents contents, PotionType type)

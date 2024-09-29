@@ -41,9 +41,9 @@ public class WolfpackBullet extends BulletHandler.DamagingBullet<Unit>
 	}
 
 	@Override
-	public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot)
+	public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot, Unit bulletData)
 	{
-		super.onHitTarget(world, target, shooterUUID, projectile, headshot);
+		super.onHitTarget(world, target, shooterUUID, projectile, headshot, bulletData);
 		Vec3 v = projectile.getDeltaMovement().scale(-1);
 		int split = 6;
 		for(int i = 0; i < split; i++)

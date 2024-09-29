@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.common.items.bullets;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -46,6 +48,8 @@ public class IEBullets
 	public static final ResourceLocation WOLFPACK = IEApi.ieLoc("wolfpack");
 	public static final ResourceLocation WOLFPACK_PART = IEApi.ieLoc("wolfpack_part");
 
+	public static final IBullet<Color4> FLARE_TYPE = new FlareBullet();
+
 	public static void initBullets()
 	{
 		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet<>(
@@ -78,9 +82,9 @@ public class IEBullets
 			}
 
 			@Override
-			public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
+			public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot, Unit bulletData)
 			{
-				super.onHitTarget(world, rtr, shooterUUID, projectile, headshot);
+				super.onHitTarget(world, rtr, shooterUUID, projectile, headshot, bulletData);
 				if(rtr instanceof EntityHitResult target&&target.getEntity() instanceof LivingEntity livingTarget)
 					if(livingTarget.isBlocking()&&livingTarget.getRandom().nextFloat() < .15f)
 						ShieldDisablingHandler.attemptDisabling(livingTarget);
@@ -92,7 +96,7 @@ public class IEBullets
 		)
 		{
 			@Override
-			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
+			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot, Unit bulletData)
 			{
 				Entity shooter = null;
 				if(shooterId!=null&&world instanceof ServerLevel serverLevel)
@@ -161,7 +165,7 @@ public class IEBullets
 
 		BulletHandler.registerBullet(POTION, new PotionBullet());
 
-		BulletHandler.registerBullet(FLARE, new FlareBullet());
+		BulletHandler.registerBullet(FLARE, FLARE_TYPE);
 
 		BulletHandler.registerBullet(FIREWORK, new FireworkBullet());
 

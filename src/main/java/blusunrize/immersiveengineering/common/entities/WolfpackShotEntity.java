@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,14 +29,14 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 		redirectionSpeed = .1875;
 	}
 
-	public WolfpackShotEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	public WolfpackShotEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet<Unit> type)
 	{
 		super(IEEntityTypes.WOLFPACK_SHOT.get(), world, x, y, z, ax, ay, az, type);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
-	public WolfpackShotEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public WolfpackShotEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet<Unit> type)
 	{
 		super(IEEntityTypes.WOLFPACK_SHOT.get(), world, living, ax, ay, az, type);
 		trackCountdown = 15;

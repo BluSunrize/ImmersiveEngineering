@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -124,13 +125,16 @@ public class BulletHandler
 		 */
 		default Entity getProjectile(@Nullable Player shooter, StackData data, Entity projectile, boolean charged)
 		{
+			// TODO why is charged not passed through globally?
 			return projectile;
 		}
 
 		/**
 		 * called when the bullet hits a target
 		 */
-		void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile, boolean headshot);
+		void onHitTarget(
+				Level world, HitResult target, @Nullable UUID shooter, Entity projectile, boolean headshot,
+				StackData bulletData);
 
 		/**
 		 * @return the casing left when fired. Can return the static ItemStacks in BulletHandler
@@ -145,7 +149,10 @@ public class BulletHandler
 		/**
 		 * @return the colour applied to the given layer
 		 */
-		int getColour(StackData data, int layer);
+		default Color4 getColour(StackData data, int layer)
+		{
+			return Color4.WHITE;
+		}
 
 		/**
 		 * @return whether this cartridge should be allowed to be placed in, and used from a turret.<br>
@@ -207,7 +214,7 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot, StackData bulletData)
 		{
 			if(!(rtr instanceof EntityHitResult))
 				return;
@@ -238,12 +245,6 @@ public class BulletHandler
 		public ResourceLocation[] getTextures()
 		{
 			return textures;
-		}
-
-		@Override
-		public int getColour(StackData data, int layer)
-		{
-			return 0xffffffff;
 		}
 
 		@Override

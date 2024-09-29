@@ -9,15 +9,21 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class BulletItem<T> extends IEBaseItem implements IColouredItem
@@ -42,6 +48,7 @@ public class BulletItem<T> extends IEBaseItem implements IColouredItem
 	@Override
 	public Component getName(@Nonnull ItemStack stack)
 	{
+		// TODO fix
 		String s = "item.immersiveengineering.bullet.";
 		String key = BuiltInRegistries.ITEM.getKey(this).getPath();
 		s += key;
@@ -52,11 +59,29 @@ public class BulletItem<T> extends IEBaseItem implements IColouredItem
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		return type.getColour(stack.get(component), pass);
+		return type.getColour(stack.get(component), pass).toInt();
 	}
 
 	public IBullet<?> getType()
 	{
 		return type;
+	}
+
+	public Entity createBullet(
+			Level world,
+			@Nullable Player shooter,
+			Vec3 startPosition, Vec3 vecDir,
+			ItemStack bulletStack, boolean electro
+	)
+	{
+		T data = bulletStack.get(IEDataComponents.getBulletData(type));
+		RevolvershotEntity bullet = new RevolvershotEntity(
+				world,
+				startPosition.x+vecDir.x, startPosition.y+vecDir.y, startPosition.z+vecDir.z,
+				vecDir.x, vecDir.y, vecDir.z,
+				type, data
+		);
+		bullet.bulletElectro = electro;
+		return type.getProjectile(shooter, data, bullet, false);
 	}
 }

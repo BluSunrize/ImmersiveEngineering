@@ -14,6 +14,7 @@ import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.DyeColor;
+import org.joml.Vector3f;
 
 public record Color4(float r, float g, float b, float a)
 {
@@ -67,5 +68,10 @@ public record Color4(float r, float g, float b, float a)
 		final int bInt = (int)(255*b);
 		final int aInt = (int)(255*a);
 		return (aInt<<24)|(rInt<<16)|(gInt<<8)|bInt;
+	}
+
+	public Vector3f toVector3f()
+	{
+		return new Vector3f(r, g, b);
 	}
 }

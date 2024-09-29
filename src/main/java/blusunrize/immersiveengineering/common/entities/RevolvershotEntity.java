@@ -10,14 +10,22 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
+import blusunrize.immersiveengineering.common.register.IEEntityDataSerializers;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.base.Preconditions;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -35,11 +43,16 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.UUID;
+
 public class RevolvershotEntity extends IEProjectileEntity
 {
-	private IBullet bulletType;
+	private static final EntityDataAccessor<BulletData<?>> DATAMARKER_BULLET = SynchedEntityData.defineId(
+			RevolvershotEntity.class, IEEntityDataSerializers.BULLET.get()
+	);
+
+	private BulletData<?> bullet;
 	public boolean bulletElectro = false;
-	public ItemStack bulletPotion = ItemStack.EMPTY;
 	private float gravity;
 	private float movementDecay;
 
@@ -48,28 +61,43 @@ public class RevolvershotEntity extends IEProjectileEntity
 		super(type, world);
 	}
 
-	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, Level world, LivingEntity shooter, double x, double y, double z,
-							  double ax, double ay, double az, IBullet type)
+	public <T> RevolvershotEntity(
+			EntityType<? extends RevolvershotEntity> eType, Level world, LivingEntity shooter,
+			double x, double y, double z, double ax, double ay, double az,
+			IBullet<T> bullet, T bulletData
+	)
 	{
 		super(eType, world, shooter, x, y, z, ax, ay, az);
 		this.setPos(x, y, z);
-		this.bulletType = type;
+		this.bullet = new BulletData<>(bullet, bulletData);
+		this.entityData.set(DATAMARKER_BULLET, this.bullet);
 	}
 
-	public RevolvershotEntity(Level world, double x, double y, double z,
-							  double ax, double ay, double az, IBullet type)
+	public <T> RevolvershotEntity(
+			Level world,
+			double x, double y, double z, double ax, double ay, double az,
+			IBullet<T> bullet, T bulletData
+	)
 	{
-		this(IEEntityTypes.REVOLVERSHOT.get(), world, null, x, y, z, ax, ay, az, type);
+		this(IEEntityTypes.REVOLVERSHOT.get(), world, null, x, y, z, ax, ay, az, bullet, bulletData);
 	}
 
-	public RevolvershotEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public <T> RevolvershotEntity(
+			Level world, LivingEntity living,
+			double ax, double ay, double az,
+			IBullet<T> bullet, T bulletData
+	)
 	{
-		this(IEEntityTypes.REVOLVERSHOT.get(), world, living, ax, ay, az, type);
+		this(IEEntityTypes.REVOLVERSHOT.get(), world, living, ax, ay, az, bullet, bulletData);
 	}
 
-	public RevolvershotEntity(EntityType<? extends RevolvershotEntity> eType, Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public <T> RevolvershotEntity(
+			EntityType<? extends RevolvershotEntity> eType, Level world, LivingEntity living,
+			double ax, double ay, double az,
+			IBullet<T> bullet, T bulletData
+	)
 	{
-		this(eType, world, living, living.getX()+ax, living.getY()+living.getEyeHeight()+ay, living.getZ()+az, ax, ay, az, type);
+		this(eType, world, living, living.getX()+ax, living.getY()+living.getEyeHeight()+ay, living.getZ()+az, ax, ay, az, bullet, bulletData);
 		setShooterSynced();
 		setDeltaMovement(Vec3.ZERO);
 	}
@@ -83,6 +111,21 @@ public class RevolvershotEntity extends IEProjectileEntity
 	}
 
 	@Override
+	protected void defineSynchedData(Builder builder)
+	{
+		super.defineSynchedData(builder);
+		builder.define(DATAMARKER_BULLET, new BulletData<>(BulletHandler.getBullet(IEBullets.CASULL)));
+	}
+
+	public BulletData<?> getBullet()
+	{
+		if(level().isClientSide)
+			return entityData.get(DATAMARKER_BULLET);
+		else
+			return bullet;
+	}
+
+	@Override
 	public void onHit(HitResult mop)
 	{
 		boolean headshot = false;
@@ -93,9 +136,9 @@ public class RevolvershotEntity extends IEProjectileEntity
 				headshot = Utils.isVecInEntityHead((LivingEntity)hitEntity, position());
 		}
 
-		if(this.bulletType!=null)
+		if(this.bullet!=null)
 		{
-			bulletType.onHitTarget(level(), mop, this.shooterUUID, this, headshot);
+			bullet.onHitTarget(level(), mop, this.shooterUUID, this, headshot);
 			if(mop instanceof EntityHitResult)
 			{
 				Entity hitEntity = ((EntityHitResult)mop).getEntity();
@@ -125,7 +168,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(bulletElectro&&hitEntity instanceof LivingEntity&&shooterUUID!=null)
 		{
 			Player shooter = level().getPlayerByUUID(shooterUUID);
-			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
+			float percentualDrain = .15f/(bullet==null?1: bullet.bullet.getProjectileCount(shooter));
 			((LivingEntity)hitEntity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 15, 4));
 			for(EquipmentSlot slot : EquipmentSlot.values())
 			{
@@ -151,18 +194,14 @@ public class RevolvershotEntity extends IEProjectileEntity
 	{
 		super.addAdditionalSaveData(nbt);
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
-		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType).toString());
-		if(!bulletPotion.isEmpty())
-			nbt.put("bulletPotion", bulletPotion.save(level().registryAccess()));
+		nbt.put("bullet", BulletData.CODECS.toNBT(bullet));
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt)
 	{
 		super.readAdditionalSaveData(nbt);
-		this.bulletType = BulletHandler.getBullet(ResourceLocation.parse(nbt.getString("bulletType")));
-		if(nbt.contains("bulletPotion", Tag.TAG_COMPOUND))
-			this.bulletPotion = ItemStack.parseOptional(level().registryAccess(), nbt.getCompound("bulletPotion"));
+		this.bullet = BulletData.CODECS.fromNBT(nbt.get("bullet"));
 	}
 
 	@Override
@@ -209,5 +248,45 @@ public class RevolvershotEntity extends IEProjectileEntity
 	protected float getMotionDecayFactor()
 	{
 		return movementDecay;
+	}
+
+	public record BulletData<T>(IBullet<T> bullet, T data)
+	{
+		public static final DualCodec<RegistryFriendlyByteBuf, BulletData<?>> CODECS = DualCodecs.RESOURCE_LOCATION
+				.<RegistryFriendlyByteBuf>castStream()
+				.dispatch(
+						bd -> BulletHandler.findRegistryName(bd.bullet),
+						rl -> specificCodec(BulletHandler.getBullet(rl))
+				);
+
+		public BulletData(IBullet<T> bullet)
+		{
+			this(bullet, bullet.getCodec().defaultValue());
+		}
+
+		public void onHitTarget(
+				Level level, HitResult mop, UUID shooterUUID, RevolvershotEntity revolvershotEntity, boolean headshot
+		)
+		{
+			bullet.onHitTarget(level, mop, shooterUUID, revolvershotEntity, headshot, data);
+		}
+
+		public <T1> T1 getForOptional(IBullet<T1> type)
+		{
+			return type==bullet?(T1)data: null;
+		}
+
+		public <T1> T1 getFor(IBullet<T1> type)
+		{
+			return Preconditions.checkNotNull(getForOptional(type));
+		}
+
+		private static <T> DualMapCodec<RegistryFriendlyByteBuf, BulletData<?>> specificCodec(IBullet<T> bullet)
+		{
+			DualCodec<? super RegistryFriendlyByteBuf, BulletData<?>> codec = bullet.getCodec().codecs().map(
+					t -> new BulletData<>(bullet, t), bd -> (T)bd.data
+			);
+			return codec.<RegistryFriendlyByteBuf>castStream().fieldOf("data");
+		}
 	}
 }

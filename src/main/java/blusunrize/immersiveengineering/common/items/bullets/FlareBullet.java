@@ -12,12 +12,10 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
-import malte0811.dualcodecs.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.RevolvershotFlareEntity;
-import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -30,38 +28,36 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 import java.util.UUID;
 
-public class FlareBullet implements BulletHandler.IBullet<Integer>
+public class FlareBullet implements BulletHandler.IBullet<Color4>
 {
 	static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_flare"), IEApi.ieLoc("item/bullet_flare_layer")};
-	private static final CodecsAndDefault<Integer> CODEC = new CodecsAndDefault<>(DualCodecs.INT, 0xcc2e06);
+	private static final CodecsAndDefault<Color4> CODEC = new CodecsAndDefault<>(Color4.CODECS, Color4.fromRGB(0xcc2e06));
 
 	public FlareBullet()
 	{
 	}
 
 	@Override
-	public CodecsAndDefault<Integer> getCodec()
+	public CodecsAndDefault<Color4> getCodec()
 	{
 		return CODEC;
 	}
 
 	@Override
-	public Entity getProjectile(Player shooter, Integer color, Entity projectile, boolean electro)
+	public Entity getProjectile(Player shooter, Color4 color, Entity projectile, boolean electro)
 	{
 		RevolvershotFlareEntity flare = shooter!=null?new RevolvershotFlareEntity(projectile.level(), shooter,
 				projectile.getDeltaMovement().x*1.5,
 				projectile.getDeltaMovement().y*1.5,
-				projectile.getDeltaMovement().z*1.5, this):
-				new RevolvershotFlareEntity(projectile.level(), projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
+				projectile.getDeltaMovement().z*1.5, color):
+				new RevolvershotFlareEntity(projectile.level(), projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, color);
 		flare.setDeltaMovement(projectile.getDeltaMovement());
 		flare.bulletElectro = electro;
-		flare.colour = color;
-		flare.setColourSynced();
 		return flare;
 	}
 
 	@Override
-	public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
+	public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot, Color4 bulletData)
 	{
 	}
 
@@ -78,16 +74,16 @@ public class FlareBullet implements BulletHandler.IBullet<Integer>
 	}
 
 	@Override
-	public void addTooltip(Integer color, TooltipContext world, List<Component> list, TooltipFlag flag)
+	public void addTooltip(Color4 color, TooltipContext world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(FontUtils.withAppendColoredColour(Component.translatable(Lib.DESC_INFO+"bullet.flareColour"), color));
+		list.add(FontUtils.withAppendColoredColour(Component.translatable(Lib.DESC_INFO+"bullet.flareColour"), color.toInt()));
 	}
 
 	@Override
-	public int getColour(Integer color, int layer)
+	public Color4 getColour(Color4 color, int layer)
 	{
 		if(layer!=1)
-			return 0xffffffff;
+			return Color4.WHITE;
 		return color;
 	}
 

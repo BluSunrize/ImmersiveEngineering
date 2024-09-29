@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -27,24 +28,24 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		super(type, world);
 	}
 
-	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> eType, Level world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> eType, Level world, double x, double y, double z, double ax, double ay, double az, IBullet<Unit> type)
 	{
-		super(eType, world, null, x, y, z, ax, ay, az, type);
+		super(eType, world, null, x, y, z, ax, ay, az, type, Unit.INSTANCE);
 	}
 
-	public RevolvershotHomingEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	public RevolvershotHomingEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet<Unit> type)
 	{
 		this(IEEntityTypes.HOMING_REVOLVERSHOT.get(), world, x, y, z, ax, ay, az, type);
 	}
 
-	public RevolvershotHomingEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public RevolvershotHomingEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet<Unit> type)
 	{
-		super(IEEntityTypes.HOMING_REVOLVERSHOT.get(), world, living, ax, ay, az, type);
+		super(IEEntityTypes.HOMING_REVOLVERSHOT.get(), world, living, ax, ay, az, type, Unit.INSTANCE);
 	}
 
-	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> type, Level world, LivingEntity living, double ax, double ay, double az, IBullet type1)
+	public RevolvershotHomingEntity(EntityType<? extends RevolvershotHomingEntity> type, Level world, LivingEntity living, double ax, double ay, double az, IBullet<Unit> type1)
 	{
-		super(type, world, living, ax, ay, az, type1);
+		super(type, world, living, ax, ay, az, type1, Unit.INSTANCE);
 	}
 
 	@Override
@@ -75,10 +76,10 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		double r = 20D;
 		AABB aabb = new AABB(getX()-r, getY()-r, getZ()-r, getX()+r, getY()+r, getZ()+r);
 		LivingEntity target = null;
-		for(Object o : level().getEntitiesOfClass(LivingEntity.class, aabb))
-			if(o instanceof LivingEntity&&!((LivingEntity)o).getUUID().equals(this.shooterUUID))
-				if(target==null||((LivingEntity)o).distanceToSqr(this) < target.distanceToSqr(this))
-					target = (LivingEntity)o;
+		for(LivingEntity o : level().getEntitiesOfClass(LivingEntity.class, aabb))
+			if(o!=null&&!o.getUUID().equals(this.shooterUUID))
+				if(target==null||o.distanceToSqr(this) < target.distanceToSqr(this))
+					target = o;
 		return target;
 	}
 }

@@ -20,10 +20,7 @@ import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
-import malte0811.dualcodecs.DualCodec;
-import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
-import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
@@ -37,6 +34,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
@@ -337,16 +336,12 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 		boolean electro = getUpgradesStatic(revolver).has(UpgradeEffect.ELECTRO);
 		int count = bullet.getProjectileCount(player);
 		if(count==1)
-		{
-			Entity entBullet = getBullet(shooter, vec, bullet, electro);
-			shooter.level().addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
-		}
+			shooter.level().addFreshEntity(getBullet(shooter, player, vec, bulletStack, electro));
 		else
 			for(int i = 0; i < count; i++)
 			{
 				Vec3 vecDir = vec.add(shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1);
-				Entity entBullet = getBullet(shooter, vecDir, bullet, electro);
-				shooter.level().addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
+				shooter.level().addFreshEntity(getBullet(shooter, player, vecDir, bulletStack, electro));
 			}
 
 		var upgrades = getUpgradesStatic(revolver);
@@ -379,12 +374,13 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 
 	/* ------------- BULLET UTILITY ------------- */
 
-	private static RevolvershotEntity getBullet(LivingEntity living, Vec3 vecDir, IBullet type, boolean electro)
+	private static Entity getBullet(
+			LivingEntity living, @Nullable Player player, Vec3 vecDir, ItemStack bulletStack, boolean electro
+	)
 	{
-		RevolvershotEntity bullet = new RevolvershotEntity(living.level(), living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
-		bullet.setDeltaMovement(vecDir.scale(2));
-		bullet.bulletElectro = electro;
-		return bullet;
+		return ((BulletItem<?>)bulletStack.getItem()).createBullet(
+				living.level(), player, living.getEyePosition(), vecDir, bulletStack, electro
+		);
 	}
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets, boolean ignoreExtendedMag)

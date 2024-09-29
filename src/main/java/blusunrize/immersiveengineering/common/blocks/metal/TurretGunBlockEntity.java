@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
@@ -33,7 +32,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -91,7 +89,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 		ItemStack bulletStack = inventory.get(0);
 		if(bulletStack.getItem() instanceof BulletItem&&this.energyStorage.extractEnergy(energy, true)==energy)
 		{
-			IBullet bullet = ((BulletItem)bulletStack.getItem()).getType();
+			IBullet<?> bullet = ((BulletItem<?>)bulletStack.getItem()).getType();
 			if(bullet!=null&&bullet.isValidForTurret())
 			{
 				ItemStack casing = bullet.getCasing(bulletStack);
@@ -105,16 +103,12 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 
 					int count = bullet.getProjectileCount(null);
 					if(count==1)
-					{
-						Entity entBullet = getBulletEntity(level, vec, bullet);
-						level.addFreshEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
-					}
+						level.addFreshEntity(getBulletEntity(vec, bulletStack));
 					else
 						for(int i = 0; i < count; i++)
 						{
 							Vec3 vecDir = vec.add(ApiUtils.RANDOM.nextGaussian()*.1, ApiUtils.RANDOM.nextGaussian()*.1, ApiUtils.RANDOM.nextGaussian()*.1);
-							Entity entBullet = getBulletEntity(level, vecDir, bullet);
-							level.addFreshEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
+							level.addFreshEntity(getBulletEntity(vecDir, bulletStack));
 						}
 					bulletStack.shrink(1);
 					if(bulletStack.getCount() <= 0)
@@ -158,12 +152,11 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 		);
 	}
 
-	RevolvershotEntity getBulletEntity(Level world, Vec3 vecDir, IBullet type)
+	private Entity getBulletEntity(Vec3 vecDir, ItemStack bulletStack)
 	{
-		Vec3 gunPos = getGunPosition();
-		RevolvershotEntity bullet = new RevolvershotEntity(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
-		bullet.setDeltaMovement(vecDir);
-		return bullet;
+		return ((BulletItem<?>)bulletStack.getItem()).createBullet(
+				level, null, getGunPosition(), vecDir, bulletStack, false
+		);
 	}
 
 	@Override

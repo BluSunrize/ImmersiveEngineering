@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.items.bullets;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
-import malte0811.dualcodecs.DualCodec;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import malte0811.dualcodecs.DualCodec;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -67,7 +67,7 @@ public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 	}
 
 	@Override
-	public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
+	public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot, Fireworks bulletData)
 	{
 	}
 
@@ -89,12 +89,6 @@ public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 		ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 		fireworkStack.set(DataComponents.FIREWORKS, data);
 		Items.FIREWORK_ROCKET.appendHoverText(fireworkStack, world, list, flag);
-	}
-
-	@Override
-	public int getColour(Fireworks data, int layer)
-	{
-		return 0xffffffff;
 	}
 
 	@Override
