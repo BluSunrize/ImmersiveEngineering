@@ -143,8 +143,8 @@ dependencies {
     }
     jarJar(implementation("malte0811:DualCodecs")) {
         version {
-            strictly '[0.1,1)'
-            prefer '0.1'
+            strictly '[0.1.1,1)'
+            prefer '0.1.1'
         }
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
