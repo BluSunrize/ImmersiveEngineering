@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
-import malte0811.dualcodecs.DualCodec;
-import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
@@ -26,6 +24,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeCodecs;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -432,8 +432,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 				{
 					CompoundTag itemTag = new CompoundTag();
 					itemTag.putByte("Slot", (byte)i);
-					slot.save(provider, itemTag);
-					list.add(itemTag);
+					list.add(slot.save(provider, itemTag));
 				}
 			}
 		}
