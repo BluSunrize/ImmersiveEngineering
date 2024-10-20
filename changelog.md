@@ -1,3 +1,7 @@
+##### Version 1.21.1-12.0.0-pre
+- First release for 1.21.1
+- **All** of the porting work and bugfixing were done by Malte
+
 ##### Version 1.20.4-11.6.1-181
 - Fix pipe valves causing a crash when used in a loop of pipes (BluSunrize)
 
