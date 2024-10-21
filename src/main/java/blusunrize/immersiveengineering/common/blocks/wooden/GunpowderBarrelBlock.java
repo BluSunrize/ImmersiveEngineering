@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
+import blusunrize.immersiveengineering.common.entities.GunpowderBarrelEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -51,7 +51,7 @@ public class GunpowderBarrelBlock extends TntBlock
 	@Override
 	public void onCaughtFire(BlockState state, Level world, BlockPos pos, @org.jetbrains.annotations.Nullable Direction face, @org.jetbrains.annotations.Nullable LivingEntity igniter)
 	{
-		IEExplosiveEntity explosive = spawnExplosive(world, pos, state, igniter);
+		GunpowderBarrelEntity explosive = spawnExplosive(world, pos, state, igniter);
 		world.playSound(null, explosive.getX(), explosive.getY(), explosive.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos, false);
 	}
@@ -62,15 +62,14 @@ public class GunpowderBarrelBlock extends TntBlock
 		super.onBlockExploded(state, world, pos, explosion);
 		if(!world.isClientSide)
 		{
-			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getIndirectSourceEntity());
+			GunpowderBarrelEntity explosive = spawnExplosive(world, pos, state, explosion.getIndirectSourceEntity());
 			explosive.setFuse((short)(world.random.nextInt(explosive.getFuse()/4)+explosive.getFuse()/8));
 		}
 	}
 
-	private IEExplosiveEntity spawnExplosive(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity igniter)
+	private GunpowderBarrelEntity spawnExplosive(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity igniter)
 	{
-		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, state, 5);
-		explosive.setDropChance(1);
+		GunpowderBarrelEntity explosive = new GunpowderBarrelEntity(world, pos, igniter, state, 8);
 		world.addFreshEntity(explosive);
 		return explosive;
 	}
