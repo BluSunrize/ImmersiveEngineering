@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_concrete_brick": {
+    "has_concrete": {
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:concrete_brick"
+              "immersiveengineering:concrete"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "immersiveengineering:stonecutting/concrete_tile"
+        "recipe": "immersiveengineering:stonecutting/slab_concrete_tile2"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -23,12 +23,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_concrete_brick"
+      "has_concrete"
     ]
   ],
   "rewards": {
     "recipes": [
-      "immersiveengineering:stonecutting/concrete_tile"
+      "immersiveengineering:stonecutting/slab_concrete_tile2"
     ]
   }
 }

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "immersiveengineering:hempcrete"
+  },
+  "result": "immersiveengineering:slab_hempcrete_brick"
+}
