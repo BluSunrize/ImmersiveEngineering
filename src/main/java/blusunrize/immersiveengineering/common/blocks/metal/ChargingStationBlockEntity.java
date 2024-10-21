@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
-import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -58,8 +57,6 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 {
 	public AveragingEnergyStorage energyStorage = new AveragingEnergyStorage(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-	// Using Mutable to "hide" the reference to a client-only type behind generics type erasure
-	public final Mutable<CustomParticleManager> particles;
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 	private final IEnergyStorage energyCap = makeEnergyInput(energyStorage);
@@ -67,16 +64,11 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public ChargingStationBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.CHARGING_STATION.get(), pos, state);
-		if(FMLLoader.getDist().isClient())
-			this.particles = new MutableObject<>(new CustomParticleManager());
-		else
-			this.particles = new MutableObject<>();
 	}
 
 	@Override
 	public void tickClient()
 	{
-		particles.getValue().clientTick();
 		IEnergyStorage itemEnergy = inventory.get(0).getCapability(EnergyStorage.ITEM);
 		if(itemEnergy!=null&&charging)
 		{
@@ -91,12 +83,10 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 				if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 				{
 					int shift = i-1;
-					double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
-					double y = .25;
-					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
-					particles.getValue().add(
-							new DustParticleOptions(new Vector3f(1-charge, charge, 0), .5f), x, y, z, .25, .25, .25, -1
-					);
+					double x = getBlockPos().getX()+.5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
+					double y = getBlockPos().getY()+.25;
+					double z = getBlockPos().getZ()+.5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
+					level.addParticle(new DustParticleOptions(new Vector3f(1-charge, charge, 0), .5f), x, y, z, .25, .25, .25);
 				}
 			}
 		}

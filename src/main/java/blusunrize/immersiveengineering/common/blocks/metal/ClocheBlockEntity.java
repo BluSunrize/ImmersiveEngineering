@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -33,6 +32,9 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import blusunrize.immersiveengineering.mixin.accessors.client.ParticleManagerAccess;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -100,8 +102,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(
 			ENERGY_CAPACITY, Math.max(256, getOrDefault(IEServerConfig.MACHINES.cloche_consumption))
 	);
-	// Using Mutable to "hide" the reference to a client-only type behind generics type erasure
-	public final Mutable<CustomParticleManager> particles;
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
 			ClocheRecipe::findRecipe, () -> level, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
 	);
@@ -122,10 +122,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public ClocheBlockEntity(BlockEntityType<ClocheBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
-		if(FMLLoader.getDist().isClient())
-			this.particles = new MutableObject<>(new CustomParticleManager());
-		else
-			this.particles = new MutableObject<>();
 	}
 
 	@Override
@@ -137,7 +133,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	@Override
 	public void tickClient()
 	{
-		particles.getValue().clientTick();
 		ItemStack seed = inventory.get(SLOT_SEED);
 		ItemStack soil = inventory.get(SLOT_SOIL);
 		if(renderActive)
@@ -151,7 +146,11 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 				else
 					renderGrowth = 0;
 				if(ApiUtils.RANDOM.nextInt(8)==0)
-					particles.getValue().add(new DustParticleOptions(new Vector3f(.55f, .1f, .1f), 1), .5, 2.6875, .5, .25, .25, .25, 20);
+				{
+					Particle p = ((ParticleManagerAccess)Minecraft.getInstance().particleEngine).invokeMakeParticle(new DustParticleOptions(new Vector3f(.55f, .1f, .1f), 1), getBlockPos().getX() + .5, getBlockPos().getY() + 2.6875, getBlockPos().getZ() + .5, .25, .25, .25);
+					p.setLifetime(20);
+					Minecraft.getInstance().particleEngine.add(p);
+				}
 			}
 		}
 	}
