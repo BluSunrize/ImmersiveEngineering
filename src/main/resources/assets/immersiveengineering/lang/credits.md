@@ -11,7 +11,7 @@ LOCALIZATION
 	- de_DE: astrutz
 	- it_IT: maicol07
     - ko_KR: Taki_B, PixVoxel, FreddyYJ
-    - ja_JP: karakufire
+    - ja_JP: karakufire, momo-i
     - fr_FR: Juknum
     - uk_ua: Сommunity «СУМ», CakesTwix, ICHTLAY, hnufelka, Sinqoire, SKZGx
     - cs_CZ: RomanPlayer22

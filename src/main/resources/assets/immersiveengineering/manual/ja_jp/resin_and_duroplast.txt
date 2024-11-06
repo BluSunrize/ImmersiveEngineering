@@ -1,0 +1,13 @@
+樹脂とデュロプラスト
+素晴らしい！
+<&resin><link;industrial_fluids;フェノール樹脂;resin_acetaldehyde>はプラスチック製品を生産するための第一歩です。<br>
+この樹脂を製造するには§2銀板§rを触媒として<link;industrial_fluids;エタノール;plant_oil_ethanol>を酸化して前駆体<link;industrial_fluids;アセトアルデヒド;resin_acetaldehyde>を生成する必要があります。<br>
+次に、この前駆体を<link;industrial_fluids;クレオソート油;creosote_oil>と混合する必要があります。これらのプロセスは両方とも<link;refinery;§o§n工業用精製機§r>で行われます。<np>
+<&duroplast>
+デュロプラストは<link;resin_and_duroplast;フェノール樹脂;resin>から作られた合成プラスチックです。この驚くべき新素材は硬く不燃性で導電性がないため、電気工学において優れた絶縁体となります。<br>
+プラスチック樹脂は成形が容易なため、シートやブロックなどさまざまな形状に成形することができます。<np>
+<&duroplast_sheet>デュロプラスト製品は<link;bottling_machine;§o§n瓶詰§o§n機§r>で適切な<link;metal_press;工業金型;mold_recipes>に樹脂を充填することで作成されます。マシンはこれらの型内に十分な熱と圧力を与えて樹脂を硬化させることができます。<br>
+得られたシートは<link;crafting_components;先進電子部品;elec_components>や<link;crafting_components;回路基板;pcb>の作成に使用され、絶縁体として機能します。<np>
+<&duroplast_block>デュロプラストの固形ブロックは建築や装飾に使用できますがその色を好まない人もいます。しかしより重要なのは<link;basic_wiring;ワイヤコネクタやリレー;connector_recipes>を作成するときに§2テラコッタ§rの代わりに使用できるため、必要な粘土の量を減らすことができることです！<np>
+<&fiberboard>ファイバーボードは圧縮された<link;sawmill;おがくず;sawdust>から作られ、樹脂と混合されて高密度で圧縮されたブロックになります。木材と同じ特性を持ち、ほとんどのレシピで板材の代わりに使用できます。本来は廃棄物になるものをリサイクルする優れた方法です！
+<&empty_shell>また、樹脂を使用して<link;revolver_cartridges;リボルバーのカートリッジ;empty>の空の薬莢を作成することもできます。これにより安価で簡単に大量生産できるようになります。

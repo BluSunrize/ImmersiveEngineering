@@ -1,0 +1,12 @@
+鉱石
+穴を掘って掘って
+<&alu>§lボーキサイト鉱石§rは高さ<config;i;ores.bauxite.min_y>から<config;i;ores.bauxite.max_y>の間で見つかり、採取するには石以上のツルハシまたは道具が必要です。<br>
+原鉱石は精錬されてアルミニウムインゴットとなり、高電圧建築に不可欠な要素となります。
+<&lead>§l鉛鉱石§rは高さ<config;i;ores.lead.min_y>から<config;i;ores.lead.max_y>の間で見つかり、採取するには鉄以上のツルハシまたは道具が必要です。<br>
+未精製の鉱石は精錬されて鉛インゴットとなり、初期の蓄電池、弾丸、工業用染料の製造に使用されます。
+<&silver>§l銀鉱石§rは高さ<config;i;ores.silver.min_y>から<config;i;ores.silver.max_y>の間で見つかり、採取するには鉄以上のツルハシまたは道具が必要です。<br>
+原鉱石は銀インゴットに精錬され、鏡に使用したり、金と合金にしてはるかに効果的な導体であるエレクトラムを作ったりすることができます。
+<&nickel>§lニッケル鉱石§rは<config;i;ores.nickel.min_y>から<config;i;ores.nickel.max_y>の間で見つかりますが、<config;i;ores.deep_nickel.max_y>より下層の方が豊富です。採取するには鉄以上のツルハシまたは道具が必要です。<br>
+原鉱石はニッケルインゴットに精錬され、蓄電池に使用したり、銅と合金にしてコンスタンタンを生成し、<link;thermoelectric_generator;熱電発電機;start>に使用したりすることができます。
+<&uranium>§lウラニウム鉱石§rは高さ<config;i;ores.uranium.min_y>から<config;i;ores.uranium.max_y>の間で見つかり、採取するには鉄以上のツルハシまたは道具が必要です。<br>
+原鉱石は精錬されてウラニウムインゴットになりますがこの金属の用途はほとんどありません。ウラニウムブロックは<link;thermoelectric_generator;熱電発電機;start>の熱源として利用でき、この金属は将来の取り組みに使用されます。
