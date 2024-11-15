@@ -1364,7 +1364,7 @@
     "ie.manual.newerVersion": " - New!",
     "ie.manual.currentVersion": " - 現在",
     "ie.manual.entry.mineralsDimAny": "§l%1$s§rはどのディメンションでも見つかる鉱脈です。",
-    "immersiveengineering.optifinePoseStackWarning": "Immersive Engineeringは互​​換性のないバージョンのOptifineを検出しました。Optifineのパッチ処理により、このバージョンのOptifineではImmersive Engineeringや他の多くのMODによって直接的または間接的に使用されているForge追加メソッドが削除されます。その結果、検索が特定のアイテムに一致する場合など、事実上ランダムなタイミングでクラッシュが発生する可能性があります。これが修正されるまでOptifineを使用しないことをお勧めします。",
+    "immersiveengineering.optifinePoseStackWarning": "Immersive Engineeringは互換性のないバージョンのOptifineを検出しました。Optifineのパッチ処理により、このバージョンのOptifineではImmersive Engineeringや他の多くのMODによって直接的または間接的に使用されているForge追加メソッドが削除されます。その結果、検索が特定のアイテムに一致する場合など、事実上ランダムなタイミングでクラッシュが発生する可能性があります。これが修正されるまでOptifineを使用しないことをお勧めします。",
     "config.jade.plugin_immersiveengineering.hemp": "工業用麻の成長速度",
     "config.jade.plugin_immersiveengineering.multiblock_icon": "マルチブロックアイコン",
     "config.jade.plugin_immersiveengineering.multiblock_tank": "マルチブロックタンク",
