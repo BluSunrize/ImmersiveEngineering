@@ -1,0 +1,15 @@
+工業副産物
+バックスタッフの悪夢
+<&sulfur>§l硫黄の粉§rは<link;mineral_deposits;鉱床>でよく見られる粉末です。<br>
+§2ラピスラズリ鉱石§rや§2石炭鉱石§rを<link;crusher;砕くこと>で時々見つかりますが、§2ネザークォーツ鉱石§rや§2ブレイズロッド§rの中に見つかることが多いです。<br>
+火薬や<link;industrial_byproducts;工業用肥料;fertilizer>と組み合わせると最も効果的です。<np>
+<&nitrate>§l硝酸塩の粉§r(硝石とも呼ばれる)は§2砂岩§rを<link;crusher;工業用粉砕機>で処理することによって得られるアルカリ塩の混合物です。<br>
+硫黄と同様に硝酸塩の粉は<link;industrial_byproducts;工業用肥料;fertilizer>に使用できます。また、<link;industrial_fluids;バイオディーゼル>生産の触媒とするためにも使用できます。<np>
+<&slag>§l鉱滓§rは<link;crude_blast_furnace;鉄鋼生産>でよく見られる金属酸化物と硫化物の混合物です。<br>
+鉱滓は<link;concrete;コンクリート>などの建築ブロックに加工することができ、<link;industrial_byproducts;工業用肥料;fertilizer>の作成にも使用できます。<np>
+<&fertilizer>
+硫黄、鉱滓、硝酸塩はそれ自体では<link;garden_cloche;園芸クローシュ>での作物の栽培に少し役立ちますが、作物に直接使用するには不十分です。<br>
+§2工業用肥料§rは園芸用クローシュに大きな効果をもたらし、上記の3つの栄養素すべてとそれらを効果的に混合するための水から作られています。
+<&gunpowder>
+硝酸塩、硫黄、木炭を混ぜると火薬を作ることができます。これはモンスターから略奪するよりもはるかに工業的で一貫したプロセスです。<br>
+火薬は<link;revolver_cartridges;弾薬>や<link;gunpowder_barrels;爆薬>を迅速かつ安価に製造するために使用できます。
