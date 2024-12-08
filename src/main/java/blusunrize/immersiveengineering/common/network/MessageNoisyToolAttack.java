@@ -8,47 +8,44 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.sound.NoisyToolSoundHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import static net.minecraft.network.protocol.PacketFlow.CLIENTBOUND;
-
-public class MessageNoisyToolAttack implements IMessage
+public record MessageNoisyToolAttack(int holderID) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("noisy_tool_attack");
-	private final int holderID;
+	public static final Type<MessageNoisyToolAttack> ID = IMessage.createType("noisy_tool_attack");
+	public static final StreamCodec<ByteBuf, MessageNoisyToolAttack> CODEC = ByteBufCodecs.INT
+			.map(MessageNoisyToolAttack::new, MessageNoisyToolAttack::holderID);
 
 	public MessageNoisyToolAttack(LivingEntity holder)
 	{
-		this.holderID = holder.getId();
-	}
-
-	public MessageNoisyToolAttack(FriendlyByteBuf buf)
-	{
-		this.holderID = buf.readInt();
+		this(holder.getId());
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeInt(holderID);
+		context.enqueueWork(() -> {
+			Level world = ImmersiveEngineering.proxy.getClientWorld();
+			if(world!=null)
+			{
+				Entity entity = world.getEntity(holderID);
+				if(entity instanceof LivingEntity holder)
+					NoisyToolSoundHandler.handleAttack(holder);
+			}
+		});
 	}
 
 	@Override
-	public void process(PlayPayloadContext context)
-	{
-		assert context.flow().equals(CLIENTBOUND); //todo: remove me?
-
-		NoisyToolSoundHandler.handleAttack((LivingEntity)Minecraft.getInstance().level.getEntity(holderID));
-	}
-
-	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

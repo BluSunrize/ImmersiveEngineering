@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.INoisyTool;
 import blusunrize.immersiveengineering.common.network.MessageNoisyToolAttack;
 import blusunrize.immersiveengineering.common.network.MessageNoisyToolHarvestUpdate;
@@ -22,20 +21,22 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.neoforged.neoforge.event.level.LevelEvent.Unload;
+import net.neoforged.neoforge.event.tick.EntityTickEvent.Post;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
+import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
+@EventBusSubscriber(modid = MODID, bus = Bus.GAME)
 public class NoisyToolSoundHandler
 {
 	private static Map<LivingEntity, Map<EquipmentSlot, NoisyToolSoundGroup>> noisyToolSoundGroups = new HashMap<>();
@@ -124,20 +125,21 @@ public class NoisyToolSoundHandler
 	}
 
 	@SubscribeEvent
-	public static void toolHeldCheck(LivingTickEvent ev)
+	public static void toolHeldCheck(Post ev)
 	{
-		LivingEntity holder = ev.getEntity();
+		if(ev.getEntity() instanceof LivingEntity holder) //todo
+		{
+			if(!holder.level().isClientSide()) // client side only
+				return;
 
-		if(!holder.level().isClientSide()) // client side only
-			return;
+			NoisyToolSoundGroup ntsgMainHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.MAINHAND);
+			NoisyToolSoundGroup ntsgOffHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.OFFHAND);
 
-		NoisyToolSoundGroup ntsgMainHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.MAINHAND);
-		NoisyToolSoundGroup ntsgOffHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.OFFHAND);
-
-		if(ntsgMainHand!=null)
-			ntsgMainHand.switchMotorOnOff(true);
-		if(ntsgOffHand!=null)
-			ntsgOffHand.switchMotorOnOff(true);
+			if(ntsgMainHand!=null)
+				ntsgMainHand.switchMotorOnOff(true);
+			if(ntsgOffHand!=null)
+				ntsgOffHand.switchMotorOnOff(true);
+		}
 	}
 
 	@SubscribeEvent
@@ -155,13 +157,13 @@ public class NoisyToolSoundHandler
 			}
 			else
 			{
-				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageNoisyToolHarvestUpdate(holder, ev.getAction(), targetPos));
+				PacketDistributor.sendToPlayersTrackingEntity(holder, new MessageNoisyToolHarvestUpdate(holder, ev.getAction(), targetPos));
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public static void attackCheck(LivingAttackEvent ev)
+	public static void attackCheck(LivingIncomingDamageEvent ev)
 	{
 		if(ev.getSource()!=null&&ev.getSource().getEntity() instanceof LivingEntity holder&&INoisyTool.isAbleNoisyTool(holder.getItemBySlot(EquipmentSlot.MAINHAND)))
 		{
@@ -171,7 +173,7 @@ public class NoisyToolSoundHandler
 			}
 			else
 			{
-				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageNoisyToolAttack(holder));
+				PacketDistributor.sendToPlayersTrackingEntity(holder, new MessageNoisyToolAttack(holder));
 			}
 		}
 	}

@@ -9,66 +9,49 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.sound.NoisyToolSoundHandler;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import static net.minecraft.network.protocol.PacketFlow.CLIENTBOUND;
-
-public class MessageNoisyToolHarvestUpdate implements IMessage
+public record MessageNoisyToolHarvestUpdate(int holderID, byte actionOrdinal, BlockPos targetPos) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("noisy_tool_harvesting_update");
-	private final int holderID;
-	private final BlockPos targetPos;
-	private final LeftClickBlock.Action action;
+	public static final Type<MessageNoisyToolHarvestUpdate> ID = IMessage.createType("noisy_tool_harvesting_update");
+	public static final StreamCodec<ByteBuf, MessageNoisyToolHarvestUpdate> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MessageNoisyToolHarvestUpdate::holderID,
+			ByteBufCodecs.BYTE, MessageNoisyToolHarvestUpdate::actionOrdinal,
+			BlockPos.STREAM_CODEC, MessageNoisyToolHarvestUpdate::targetPos,
+			MessageNoisyToolHarvestUpdate::new
+	);
 
 	public MessageNoisyToolHarvestUpdate(LivingEntity holder, LeftClickBlock.Action action, BlockPos targetPos)
 	{
-		this.holderID = holder.getId();
-		this.targetPos = targetPos;
-		this.action = action;
-	}
-
-	public MessageNoisyToolHarvestUpdate(FriendlyByteBuf buf)
-	{
-		this.holderID = buf.readInt();
-		this.targetPos = buf.readBlockPos();
-		this.action = LeftClickBlock.Action.class.getEnumConstants()[buf.readByte()];
+		this(holder.getId(), (byte)action.ordinal(), targetPos);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeInt(holderID);
-		buf.writeBlockPos(targetPos);
-		buf.writeByte(action.ordinal()); // saves 4 bytes, has 4 bit overhead, should be fine
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		assert context.flow().equals(CLIENTBOUND); //todo: remove me?
-
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
-			if(world!=null) // This can happen if the task is scheduled right before leaving the world
+			if(world!=null)
 			{
 				Entity entity = world.getEntity(holderID);
 				if(entity instanceof LivingEntity holder)
-					NoisyToolSoundHandler.handleHarvestAction(holder, action, targetPos);
+					NoisyToolSoundHandler.handleHarvestAction(holder, LeftClickBlock.Action.class.getEnumConstants()[actionOrdinal], targetPos);
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}
