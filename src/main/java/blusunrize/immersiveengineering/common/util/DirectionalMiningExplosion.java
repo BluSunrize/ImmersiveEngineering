@@ -42,14 +42,14 @@ public class DirectionalMiningExplosion extends Explosion
 {
 	private static final int SIZE = 8;
 	private static final int SCAN = SIZE-1;
-	private static final float BLASTING_LENGTH = 150;
-	private static final float SUBSURFACE_LENGTH = 300;
+	private static final float BLASTING_LENGTH = 80;
+	private static final float SUBSURFACE_LENGTH = 175;
 	private static final int THIRD_VOLUME = (int)((1.0/3)*(4.0/3)*Math.PI*SIZE*SIZE*SIZE);
-	private static final int MIN_AIR = 3;
 	private static final float MAX_SHOCKWAVE_RESISTANCE = 0.4f;
 	private static final float MAX_SURFACE_RESISTANCE = 1.75f;
 	private static final float MAX_SUBSURFACE_RESISTANCE = 6f;
 	private static final float MAX_BLASTING_RESISTANCE = 25f;
+	private static final float BLASTING_SHAPING_RESISTANCE = 10000;
 
 	private final Level world;
 	private final DamageSource damageSource;
@@ -85,7 +85,8 @@ public class DirectionalMiningExplosion extends Explosion
 		// iteration to identify the basic characteristics of the explosion
 		// variables collated during the iteration
 		int totalBlocks = 0;
-		Vec3 openSpace =  new Vec3(0,0, 0);
+		float totalResistance = 0;
+		Vec3 weaknesses = new Vec3(0,0, 0);
 		BlockState cBlock;
 		FluidState cFluid;
 		// iterate over an area of size (2*(power-1)+1)^3 and collect the resistance of blocks in a sphere around our center
@@ -99,19 +100,21 @@ public class DirectionalMiningExplosion extends Explosion
 						cBlock = world.getBlockState(pos);
 						cFluid = world.getFluidState(pos);
 						if(!cBlock.isAir()||!cFluid.isEmpty())
-							totalBlocks+=1;
+						{
+							totalResistance += cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
+							totalBlocks += 1;
+						}
 						if(cBlock.canBeReplaced()&&cFluid.isEmpty())
-							openSpace = openSpace.add(x == 0 ? 0 : 1.0 / x, y == 0 ? 0 : 1.0 / y, z == 0 ? 0 : 1.0 / z);
+							weaknesses = weaknesses.add(x == 0 ? 0 : 1.0 / x, y == 0 ? 0 : 1.0 / y, z == 0 ? 0 : 1.0 / z);
 					}
 				}
 		// establish the weakest direction and the length of the explosive step we should be taking
-		Vec3 step = openSpace.scale((0.5*SIZE+1-Math.sqrt(openSpace.length()/SIZE))/openSpace.length());
+		Vec3 step = weaknesses.scale((0.5*SIZE+1-Math.sqrt(weaknesses.length()/SIZE))/weaknesses.length());
 		// handle explosion based on criteria for explosions: either surface, subsurface, or blasting
-		int air = checkAir(centerBlock);
-		if(air<MIN_AIR&&openSpace.length()<BLASTING_LENGTH&&totalBlocks>=THIRD_VOLUME)
+		if(weaknesses.length()<BLASTING_LENGTH&&totalBlocks>=THIRD_VOLUME&&totalResistance<=BLASTING_SHAPING_RESISTANCE)
 			stagedExplosionDetonation(centerBlock, step, 0.4f * SIZE, 0.4f * SIZE, MAX_BLASTING_RESISTANCE, true);
-		else if(air<=MIN_AIR&&openSpace.length()<SUBSURFACE_LENGTH&&totalBlocks>=THIRD_VOLUME)
-			stagedExplosionDetonation(centerBlock, null, 3, SIZE*1.25f, MAX_SUBSURFACE_RESISTANCE, false);
+		else if(weaknesses.length()<SUBSURFACE_LENGTH&&totalBlocks>=THIRD_VOLUME)
+			stagedExplosionDetonation(centerBlock, null, 3, SIZE*1.375f, MAX_SUBSURFACE_RESISTANCE, false);
 		else
 			stagedExplosionDetonation(centerBlock, null, 2, SIZE*2, MAX_SURFACE_RESISTANCE, false);
 	}
@@ -237,14 +240,6 @@ public class DirectionalMiningExplosion extends Explosion
 				entity.hurt(damageSource, damage);
 				entity.setDeltaMovement(entity.getDeltaMovement().add(knockback/(x*x), knockback/(y*y), knockback/(z*z)));
 			}
-	}
-
-	private int checkAir(BlockPos pos)
-	{
-		int air = 0;
-		for (Direction direction : Direction.values())
-			air += world.getBlockState(pos.relative(direction)).getExplosionResistance(world, pos.relative(direction), this)<MAX_SHOCKWAVE_RESISTANCE?1:0;
-		return air;
 	}
 
 	@Override
