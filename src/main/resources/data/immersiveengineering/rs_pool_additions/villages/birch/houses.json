@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/birch/houses",
+  "fallback": "repurposed_structures:villages/birch/terminators",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "location": "immersiveengineering:villages/houses/birch_engineer",
+        "processors": "repurposed_structures:villages/birch/mossify",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}

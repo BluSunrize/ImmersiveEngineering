@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/oak/houses",
+  "fallback": "repurposed_structures:villages/oak/terminators",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "location": "immersiveengineering:villages/houses/oak_engineer",
+        "processors": "repurposed_structures:villages/oak/mossify",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}

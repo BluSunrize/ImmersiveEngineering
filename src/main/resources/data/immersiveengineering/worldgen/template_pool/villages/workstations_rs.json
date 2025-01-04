@@ -1,0 +1,51 @@
+{
+  "name": "immersiveengineering:villages/workstations_rs",
+  "fallback": "immersiveengineering:villages/workstations_rs",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "immersiveengineering:villages/workstations/turntable",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "immersiveengineering:villages/workstations/banner",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "immersiveengineering:villages/workstations/circuit",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "immersiveengineering:villages/workstations/crafting",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "immersiveengineering:villages/workstations/workbench",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/badlands/houses",
+  "fallback": "repurposed_structures:villages/badlands/terminators",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "location": "immersiveengineering:villages/houses/badlands_engineer",
+        "processors": "repurposed_structures:villages/badlands/randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}
