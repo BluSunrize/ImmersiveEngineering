@@ -410,7 +410,7 @@ public class Villages
 		public MerchantOffer getOffer(@Nullable Entity trader, @Nonnull RandomSource rand)
 		{
 			ItemStack buying = this.lazyItem.apply(trader!=null?trader.level(): null);
-			return this.outline.generateOffer(buying, priceInfo, rand, maxUses, xp, priceMultiplier);
+			return buying.is(Items.AIR) ? null : this.outline.generateOffer(buying, priceInfo, rand, maxUses, xp, priceMultiplier);
 		}
 	}
 
