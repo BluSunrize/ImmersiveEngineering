@@ -17,7 +17,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -37,6 +36,7 @@ public class DirectionalMiningExplosion extends Explosion
 	private static final float MAX_SUBSURFACE_RESISTANCE = 6f;
 	private static final float MAX_BLASTING_RESISTANCE = 25f;
 	private static final float BLASTING_SHAPING_RESISTANCE = 10000;
+	private static final int BASE_DAMAGE = (int)(0.375f*SIZE*SIZE*SIZE);
 
 	private final Level world;
 	private final DamageSource damageSource;
@@ -191,7 +191,10 @@ public class DirectionalMiningExplosion extends Explosion
 	}
 
 	/**
-	 * This code is copied and modified from the base explosion class because I don't care about fine-tuning it for a mining explosive
+	 * This code is copied and modified from the base explosion class because I don't care about fine-tuning the exact for a mining explosive
+	 * It ahs been partially modified to mostly fit the necessary parameters but is not rigorously defined like the other functions in this class
+	 * @param list List of entities to damage
+	 * @param intensity float intensity for the intensity of the shockwave
 	 */
 	private void damageEntities(List<Entity> list, float intensity)
 	{
@@ -205,17 +208,16 @@ public class DirectionalMiningExplosion extends Explosion
 				double z = entity.getZ()-center().z();
 				float length = (float)Math.sqrt(x*x+y*y+z*z);
 				if(length<intensity*SIZE) {
-					x = (x / length) * (x / length);
-					y = (y / length) * (y / length);
-					z = (z / length) * (z / length);
+					double x2 = (x / length);
+					double y2 = (y / length);
+					double z2 = (z / length);
 					// other useful variables
-					float exposed = getSeenPercent(center(), entity);
-					float damage = exposed * (float) ((SIZE * SIZE * SIZE) / (4 * Math.PI * length * length)) * intensity;
-					double knockback = (entity instanceof LivingEntity living) ? ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage) : damage;
+					float damage = ((intensity*intensity*intensity)/(length * length)) * BASE_DAMAGE;
+					double knockback = Math.sqrt((entity instanceof LivingEntity living) ? ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage) : damage);
 					// actually do damage & knockback
 					entity.hurt(damageSource, damage);
-					// TODO: Knockback was causing some lag issues, so was disabled. FIX!
-					//entity.setDeltaMovement(entity.getDeltaMovement().add(knockback / (x * x), knockback / (y * y), knockback / (z * z)));
+					entity.setDeltaMovement(entity.getDeltaMovement().add(org.joml.Math.clamp(-5f, 5f, x2*knockback), org.joml.Math.clamp(-5f, 5f, y2*knockback), org.joml.Math.clamp(-5f, 5f, z2*knockback)));
+					System.out.println(entity.getDeltaMovement().length());
 				}
 			}
 	}
