@@ -17,6 +17,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -73,29 +74,35 @@ public class DirectionalMiningExplosion extends Explosion
 		int totalBlocks = 0;
 		float totalResistance = 0;
 		Vec3 weaknesses = new Vec3(0,0, 0);
+		Vec3 blastWeaknesses = new Vec3(0,0, 0);
 		BlockState cBlock;
 		FluidState cFluid;
+		double length;
 		// iterate over an area of size (2*(power-1)+1)^3 and collect the resistance of blocks in a sphere around our center
 		for (int x=-SCAN;x<=SCAN;x++)
 			for (int y=-SCAN;y<=SCAN;y++)
 				for (int z=-SCAN;z<=SCAN;z++)
 				{
 					BlockPos pos = centerBlock.offset(x, y, z);
-					if (new Vec3(x, y, z).length()<=SCAN)
+					length = new Vec3(x, y, z).length();
+					if (length<=SCAN)
 					{
 						cBlock = world.getBlockState(pos);
 						cFluid = world.getFluidState(pos);
-						if(!cBlock.isAir()||!cFluid.isEmpty())
+						if (!cBlock.isAir()||!cFluid.isEmpty())
 						{
 							totalResistance += cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
 							totalBlocks += 1;
 						}
-						if(cBlock.canBeReplaced()&&cFluid.isEmpty())
+						if (cBlock.canBeReplaced()&&cFluid.isEmpty())
 							weaknesses = weaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
+						if (length<SCAN-2 && (cBlock.canBeReplaced()&&cFluid.isEmpty())) blastWeaknesses = blastWeaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
+						/*if (length<SCAN-1) world.setBlockAndUpdate(centerBlock.offset(x, y, z), Blocks.BLUE_STAINED_GLASS.defaultBlockState());
+						else world.setBlockAndUpdate(centerBlock.offset(x, y, z), Blocks.LIME_STAINED_GLASS.defaultBlockState());*/
 					}
 				}
 		// establish the weakest direction and the length of the explosive step we should be taking
-		Vec3 step = weaknesses.scale((0.5*SIZE+1-Math.sqrt(weaknesses.length()/SIZE))/weaknesses.length());
+		Vec3 step = blastWeaknesses.scale((0.5*SIZE+1-Math.sqrt(blastWeaknesses.length()/SIZE))/blastWeaknesses.length());
 		// handle explosion based on criteria for explosions: either surface, subsurface, or blasting
 		if(weaknesses.length()<BLASTING_LENGTH&&totalBlocks>=THIRD_VOLUME&&totalResistance<=BLASTING_SHAPING_RESISTANCE)
 			stagedExplosionDetonation(centerBlock, step, 0.4f * SIZE, 0.4f * SIZE, MAX_BLASTING_RESISTANCE, true);
@@ -118,6 +125,8 @@ public class DirectionalMiningExplosion extends Explosion
 	 */
 	private void stagedExplosionDetonation(BlockPos center, Vec3 step, float crater, float shockwave, float resistance, boolean blasting)
 	{
+		// clear toBlow in case it has blocks still in it
+		this.clearToBlow();
 		// handle shockwave and crater block damage that come with any explosion
 		int shock = (int)shockwave;
 		for(int x = -shock; x <= shock; x++)
@@ -129,8 +138,8 @@ public class DirectionalMiningExplosion extends Explosion
 						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0f);
 					else if (length<crater)
 						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0.1f);
-					else if(length<shock)
-						scheduleBlockExplosion(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
+					//else if(length<shock)
+						//scheduleBlockExplosion(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
 				}
 		// handle entity damage from shockwave
 		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
@@ -206,7 +215,8 @@ public class DirectionalMiningExplosion extends Explosion
 					double knockback = (entity instanceof LivingEntity living) ? ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage) : damage;
 					// actually do damage & knockback
 					entity.hurt(damageSource, damage);
-					entity.setDeltaMovement(entity.getDeltaMovement().add(knockback / (x * x), knockback / (y * y), knockback / (z * z)));
+					// TODO: Knockback was causing some lag issues, so was disabled. FIX!
+					//entity.setDeltaMovement(entity.getDeltaMovement().add(knockback / (x * x), knockback / (y * y), knockback / (z * z)));
 				}
 			}
 	}
