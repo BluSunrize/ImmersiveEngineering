@@ -96,7 +96,7 @@ public class DirectionalMiningExplosion extends Explosion
 						}
 						if (cBlock.canBeReplaced()&&cFluid.isEmpty()) {
 							weaknesses = weaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
-							blastWeaknesses = blastWeaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
+							if (length<SCAN-2) blastWeaknesses = blastWeaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
 						}
 					}
 				}
@@ -137,8 +137,8 @@ public class DirectionalMiningExplosion extends Explosion
 						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0f);
 					else if (length<crater)
 						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0.1f);
-					//else if(length<shock)
-						//scheduleBlockExplosion(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
+					else if(length<shock)
+						scheduleBlockExplosion(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
 				}
 		// handle entity damage from shockwave
 		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
