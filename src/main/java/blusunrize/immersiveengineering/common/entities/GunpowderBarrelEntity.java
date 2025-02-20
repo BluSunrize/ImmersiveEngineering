@@ -164,13 +164,13 @@ public class GunpowderBarrelEntity extends PrimedTnt
 		this.setFuse(newFuse);
 		if(newFuse < 0)
 		{
-			this.discard();
 			Explosion explosion = new DirectionalMiningExplosion(level(), this, getX(), getY(), getZ(), isFlaming);
 			if(!EventHooks.onExplosionStart(level(), explosion))
 			{
 				if(!this.level().isClientSide()) explosion.explode();
 				explosion.finalizeExplosion(true);
 			}
+			this.discard();
 		}
 		else
 		{
