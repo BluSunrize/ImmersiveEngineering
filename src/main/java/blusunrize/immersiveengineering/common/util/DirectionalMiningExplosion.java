@@ -94,11 +94,10 @@ public class DirectionalMiningExplosion extends Explosion
 							totalResistance += cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
 							totalBlocks += 1;
 						}
-						if (cBlock.canBeReplaced()&&cFluid.isEmpty())
+						if (cBlock.canBeReplaced()&&cFluid.isEmpty()) {
 							weaknesses = weaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
-						if (length<SCAN-2 && (cBlock.canBeReplaced()&&cFluid.isEmpty())) blastWeaknesses = blastWeaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
-						/*if (length<SCAN-1) world.setBlockAndUpdate(centerBlock.offset(x, y, z), Blocks.BLUE_STAINED_GLASS.defaultBlockState());
-						else world.setBlockAndUpdate(centerBlock.offset(x, y, z), Blocks.LIME_STAINED_GLASS.defaultBlockState());*/
+							blastWeaknesses = blastWeaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
+						}
 					}
 				}
 		// establish the weakest direction and the length of the explosive step we should be taking
