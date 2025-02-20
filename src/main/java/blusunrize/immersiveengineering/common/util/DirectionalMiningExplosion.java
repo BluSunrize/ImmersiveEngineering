@@ -65,7 +65,6 @@ public class DirectionalMiningExplosion extends Explosion
 		this.damageSource = world.damageSources().explosion(this);
 	}
 
-	@Override
 	/**
 	 * This method is the entry method for starting the explosion, and does most of the pre-explosion calculation to assess explosion dynamics.
 	 * First, a spherical area is scanned around the entity, and four properties are collected:
@@ -76,11 +75,12 @@ public class DirectionalMiningExplosion extends Explosion
 	 * These properties are then composed into a vector in which the explosion should propagate
 	 * Finally, a subtype (surface, subsurface, blasting) of explosion is selected based on these parameters, and DirectionalMiningExplosion#stagedExplosionDetonation() is called
 	 */
+	@Override
 	public void explode()
 	{
 		// variables used for the rest of the explosion
 		Vec3 center = center();
-		BlockPos centerBlock = new BlockPos((int)(center.x-0.5f), (int)(center.y-0.5f), (int)(center.z-0.5f));
+		BlockPos centerBlock = new BlockPos((int)(center.x-0.5f), (int)(center.y>0?(center.y+0.5f):(center.y-0.5f)), (int)(center.z-0.5f));
 		// iteration to identify the basic characteristics of the explosion
 		// variables collated during the iteration
 		int totalBlocks = 0;
