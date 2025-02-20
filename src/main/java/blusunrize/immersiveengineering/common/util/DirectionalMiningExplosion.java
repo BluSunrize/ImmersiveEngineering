@@ -9,29 +9,16 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -60,7 +47,7 @@ public class DirectionalMiningExplosion extends Explosion
 	 */
 	public DirectionalMiningExplosion(Level world, Entity igniter, double x, double y, double z, boolean isFlaming)
 	{
-		super(world, igniter, x, y, z, SIZE, isFlaming, BlockInteraction.KEEP);
+		super(world, igniter, x, y, z, SIZE, isFlaming, BlockInteraction.DESTROY);
 		this.world = world;
 		this.damageSource = world.damageSources().explosion(this);
 	}
@@ -139,11 +126,11 @@ public class DirectionalMiningExplosion extends Explosion
 				{
 					double length = Math.sqrt(x*x+y*y+z*z);
 					if (length<crater-0.9f)
-						removeExplodedBlock(center.offset(x, y, z), resistance, 0f);
+						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0f);
 					else if (length<crater)
-						removeExplodedBlock(center.offset(x, y, z), resistance, 0.1f);
+						scheduleBlockExplosion(center.offset(x, y, z), resistance, 0.1f);
 					else if(length<shock)
-						removeExplodedBlock(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
+						scheduleBlockExplosion(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
 				}
 		// handle entity damage from shockwave
 		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
@@ -162,9 +149,9 @@ public class DirectionalMiningExplosion extends Explosion
 					{
 						int length = (int)Math.sqrt(x*x+y*y+z*z);
 						if (length<blast1-0.9f)
-							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0f);
+							scheduleBlockExplosion(centerOffset.offset(x, y, z), resistance, 0f);
 						else if (length<blast1)
-							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0.1f);
+							scheduleBlockExplosion(centerOffset.offset(x, y, z), resistance, 0.1f);
 					}
 			// second explosion propagation sphere
 			centerOffset = center.offset((int)step.x()*2, (int)step.y()*2, (int)step.z()*2);
@@ -175,42 +162,24 @@ public class DirectionalMiningExplosion extends Explosion
 					{
 						int length = (int)Math.sqrt(x*x+y*y+z*z);
 						if (length<blast2-0.9f)
-							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0f);
+							scheduleBlockExplosion(centerOffset.offset(x, y, z), resistance, 0f);
 						else if (length<blast2)
-							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0.1f);
+							scheduleBlockExplosion(centerOffset.offset(x, y, z), resistance, 0.1f);
 					}
 		}
 	}
 
 	/**
-	 * This method removes blocks that were exploded by a DirectionalMiningExplosion, including BEs and special blocks
-	 * BE drops are dropped alongside the other block drops, and are all popped without silk touch
+	 * This method queues up blocks to be destroyed in the super method Explosion#finalizeExplosion at a given chance & under a given resistance
 	 * @param pos BlockPos position at which to remove the block
 	 * @param resistance float maximum blast resistance that can be removed at this position
 	 * @param chance float chance not to remove the block
 	 */
-	private void removeExplodedBlock(BlockPos pos, float resistance, float chance)
+	private void scheduleBlockExplosion(BlockPos pos, float resistance, float chance)
 	{
-		ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
 		BlockState state = this.world.getBlockState(pos);
-
 		if(!state.isAir()&&state.getExplosionResistance(world, pos, this)<=resistance&&ApiUtils.RANDOM.nextFloat()>chance)
-		{
-			if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
-			{
-				BlockEntity tile = this.world.getBlockEntity(pos);
-				LootParams.Builder lootCtx = new LootParams.Builder((ServerLevel)this.world)
-						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-						.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-						.withOptionalParameter(LootContextParams.BLOCK_ENTITY, tile);
-				state.getDrops(lootCtx).forEach((stack) -> {
-					ExplosionAccess.callAddOrAppendStack(objectarraylist, stack, pos);
-				});
-				state.onBlockExploded(world, pos, this);
-			}
-		}
-		for(Pair<ItemStack, BlockPos> pair : objectarraylist)
-			Block.popResource(this.world, pair.getSecond(), pair.getFirst());
+			this.getToBlow().add(pos);
 	}
 
 	/**
@@ -240,14 +209,5 @@ public class DirectionalMiningExplosion extends Explosion
 					entity.setDeltaMovement(entity.getDeltaMovement().add(knockback / (x * x), knockback / (y * y), knockback / (z * z)));
 				}
 			}
-	}
-
-	@Override
-	public void finalizeExplosion(boolean spawnParticles)
-	{
-		Vec3 pos = center();
-		if(this.world.isClientSide)
-			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
-		this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 	}
 }
