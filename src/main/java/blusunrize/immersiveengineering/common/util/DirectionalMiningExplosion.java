@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -105,7 +104,7 @@ public class DirectionalMiningExplosion extends Explosion
 							totalBlocks += 1;
 						}
 						if(cBlock.canBeReplaced()&&cFluid.isEmpty())
-							weaknesses = weaknesses.add(x == 0 ? 0 : 1.0 / x, y == 0 ? 0 : 1.0 / y, z == 0 ? 0 : 1.0 / z);
+							weaknesses = weaknesses.add(x==0?0: 1.0/x, y==0?0: 1.0/y, z==0?0: 1.0/z);
 					}
 				}
 		// establish the weakest direction and the length of the explosive step we should be taking
@@ -150,7 +149,6 @@ public class DirectionalMiningExplosion extends Explosion
 		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
 				new AABB(center.getX()-shock, center.getY()-shock, center.getZ()-shock,
 						 center.getX()+shock, center.getY()+shock, center.getZ()+shock)));
-		damage = damage.stream().filter(e -> center().distanceTo(e.position())<=shock).filter(e -> !(e instanceof ItemEntity)).toList();
 		damageEntities(damage, shockwave/SIZE);
 		// handle directional explosions that come with a buried explosive barrel
 		if(blasting)
@@ -185,7 +183,7 @@ public class DirectionalMiningExplosion extends Explosion
 	}
 
 	/**
-	 * This method removes a block that was exploded by a DirectionalMiningExplosion, including BEs and special blocks
+	 * This method removes blocks that were exploded by a DirectionalMiningExplosion, including BEs and special blocks
 	 * BE drops are dropped alongside the other block drops, and are all popped without silk touch
 	 * @param pos BlockPos position at which to remove the block
 	 * @param resistance float maximum blast resistance that can be removed at this position
@@ -215,30 +213,32 @@ public class DirectionalMiningExplosion extends Explosion
 			Block.popResource(this.world, pair.getSecond(), pair.getFirst());
 	}
 
-	/*
+	/**
 	 * This code is copied and modified from the base explosion class because I don't care about fine-tuning it for a mining explosive
 	 */
 	private void damageEntities(List<Entity> list, float intensity)
 	{
 		net.neoforged.neoforge.event.EventHooks.onExplosionDetonate(this.world, this, list, SIZE*2);
 		for(Entity entity : list)
-			if(!entity.ignoreExplosion(this))
+			if(!entity.ignoreExplosion(this)&&!(entity instanceof ItemEntity))
 			{
 				// relative distance
 				double x = entity.getX()-center().x();
 				double y = entity.getY()+entity.getBbHeight()/2-center().y();
 				double z = entity.getZ()-center().z();
 				float length = (float)Math.sqrt(x*x+y*y+z*z);
-				x = (x/length)*(x/length);
-				y = (y/length)*(y/length);
-				z = (z/length)*(z/length);
-				// other useful variables
-				float exposed = getSeenPercent(center(), entity);
-				float damage = exposed*(float)((SIZE*SIZE*SIZE)/(4*Math.PI*length*length))*intensity;
-				double knockback = (entity instanceof LivingEntity living)?ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage): damage;
-				// actually do damage & knockback
-				entity.hurt(damageSource, damage);
-				entity.setDeltaMovement(entity.getDeltaMovement().add(knockback/(x*x), knockback/(y*y), knockback/(z*z)));
+				if(length<intensity*SIZE) {
+					x = (x / length) * (x / length);
+					y = (y / length) * (y / length);
+					z = (z / length) * (z / length);
+					// other useful variables
+					float exposed = getSeenPercent(center(), entity);
+					float damage = exposed * (float) ((SIZE * SIZE * SIZE) / (4 * Math.PI * length * length)) * intensity;
+					double knockback = (entity instanceof LivingEntity living) ? ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage) : damage;
+					// actually do damage & knockback
+					entity.hurt(damageSource, damage);
+					entity.setDeltaMovement(entity.getDeltaMovement().add(knockback / (x * x), knockback / (y * y), knockback / (z * z)));
+				}
 			}
 	}
 
