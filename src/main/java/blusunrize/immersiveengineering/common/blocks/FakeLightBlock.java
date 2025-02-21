@@ -96,8 +96,6 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		public void onLoad()
 		{
 			super.onLoad();
-			if(floodlightCoords==null||!(Utils.getExistingTileEntity(level, floodlightCoords) instanceof FloodlightBlockEntity floodlight)||!floodlight.getIsActive())
-				level.removeBlock(getBlockPos(), false);
 			SpawnInterdictionHandler.addInterdictionTile(this);
 		}
 
