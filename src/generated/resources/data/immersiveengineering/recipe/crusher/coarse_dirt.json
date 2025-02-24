@@ -1,0 +1,10 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 1600,
+  "input": {
+    "item": "minecraft:coarse_dirt"
+  },
+  "result": {
+    "item": "minecraft:dirt"
+  }
+}
