@@ -100,7 +100,6 @@ public class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<Ite
 	public int getSlotLimit(int slot)
 	{
 		int limit = Math.min(64, rawHandler.getSlotLimit(slot));
-		System.out.println("Getting slot limit for: " + this.getClass() + " with limit " + limit);
 		return limit;
 	}
 
