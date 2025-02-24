@@ -2,7 +2,7 @@
   "type": "immersiveengineering:coke_oven",
   "creosote": 250,
   "input": {
-    "tag": "minecraft:logs"
+    "tag": "minecraft:logs_that_burn"
   },
   "result": {
     "item": "minecraft:charcoal"

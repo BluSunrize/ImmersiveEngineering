@@ -707,7 +707,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("cokeoven/coke_block"));
 		CokeOvenRecipeBuilder.builder()
 				.output(Items.CHARCOAL)
-				.input(ItemTags.LOGS)
+				.input(ItemTags.LOGS_THAT_BURN)
 				.creosoteAmount(FluidType.BUCKET_VOLUME/4)
 				.setTime(900)
 				.build(out, toRL("cokeoven/charcoal"));
