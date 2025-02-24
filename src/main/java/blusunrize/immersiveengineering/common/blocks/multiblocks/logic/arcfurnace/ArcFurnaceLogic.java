@@ -347,7 +347,13 @@ public class ArcFurnaceLogic
 	public static class State implements IMultiblockState, ProcessContextInMachine<ArcFurnaceRecipe>
 	{
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
-		public ItemStackHandler inventory = new ItemStackHandler(NUM_SLOTS);
+		public ItemStackHandler inventory = new ItemStackHandler(NUM_SLOTS){
+			@Override
+			public int getSlotLimit(int slot)
+			{
+				return 64;
+			}
+		};
 		private final InMachineProcessor<ArcFurnaceRecipe> processor;
 
 		// Utilities

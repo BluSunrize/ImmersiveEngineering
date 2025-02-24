@@ -291,7 +291,7 @@ public class SqueezerLogic
 		@Override
 		public IItemHandlerModifiable getInventory()
 		{
-			return inventory.getRawHandler();
+			return inventory;
 		}
 
 		@Override

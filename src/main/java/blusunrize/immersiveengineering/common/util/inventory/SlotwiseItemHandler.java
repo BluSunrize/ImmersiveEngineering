@@ -99,8 +99,7 @@ public class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<Ite
 	@Override
 	public int getSlotLimit(int slot)
 	{
-		int limit = Math.min(64, rawHandler.getSlotLimit(slot));
-		return limit;
+		return Math.min(64, rawHandler.getSlotLimit(slot));
 	}
 
 	@Override
