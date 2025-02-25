@@ -305,6 +305,11 @@ public class MultiblockRecipes extends IERecipeProvider
 				.setEnergy(1600)
 				.build(out, toRL("crusher/clay"));
 		CrusherRecipeBuilder.builder()
+				.output(Items.DIRT)
+				.input(Items.COARSE_DIRT)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/coarse_dirt"));
+		CrusherRecipeBuilder.builder()
 				.output(Items.AMETHYST_SHARD, 4)
 				.input(Items.AMETHYST_BLOCK)
 				.setEnergy(3200)

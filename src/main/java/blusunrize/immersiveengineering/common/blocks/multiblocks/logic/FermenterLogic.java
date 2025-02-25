@@ -327,7 +327,7 @@ public class FermenterLogic
 		@Override
 		public IItemHandlerModifiable getInventory()
 		{
-			return inventory.getRawHandler();
+			return inventory;
 		}
 
 		public FluidTank getTank()
