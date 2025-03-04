@@ -30,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -155,7 +156,10 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
-			tag.put("filter", fluid.save(provider));
+			if(fluid == FluidStack.EMPTY || fluid.getFluid() == Fluids.EMPTY)
+				tag.remove("filter");
+			else
+				tag.put("filter", fluid.save(provider));
 		sendUpdateToServer(tag);
 	}
 
