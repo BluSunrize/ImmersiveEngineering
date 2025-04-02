@@ -96,7 +96,7 @@ public class DieselGeneratorLogic
 					{
 						if(!active)
 							active = true;
-						state.consumeTick = 10*(int)(fluidConsumed/toConsume);
+						state.consumeTick = (int)(10*(fluidConsumed/toConsume));
 					}
 					else if(active)
 						active = false;
