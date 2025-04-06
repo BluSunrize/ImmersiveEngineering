@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -92,6 +93,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.*;
+
+import static blusunrize.immersiveengineering.api.fluid.FluidUtils.getFluidContained;
+import static net.minecraft.core.component.DataComponents.POTION_CONTENTS;
 
 public class Utils
 {
@@ -765,5 +769,15 @@ public class Utils
 		if(flipFront)
 			result = new AABB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
 		return result;
+	}
+
+	public static FluidStack deriveFluidStack(@Nonnull ItemStack stack)
+	{
+		{
+			var potionContents = stack.get(POTION_CONTENTS);
+			return (potionContents==null)?
+					getFluidContained(stack).orElse(FluidStack.EMPTY):
+					PotionFluid.getFluidStackForType(potionContents.potion(), 250);
+		}
 	}
 }

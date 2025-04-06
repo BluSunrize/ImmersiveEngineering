@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,11 +30,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -73,16 +71,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			{
 				if(getSlotArea(side, i).contains((int)mouseX, (int)mouseY))
 				{
-					ItemStack stack = menu.getCarried();
-					if(stack.isEmpty())
-						setFluidInSlot(side, i, FluidStack.EMPTY, registries);
-					else
-					{
-						int finalSide = side;
-						int finalI = i;
-						FluidUtil.getFluidContained(stack)
-								.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs, registries));
-					}
+					setFluidInSlot(side, i, Utils.deriveFluidStack(menu.getCarried()), registries);
 					return true;
 				}
 			}
@@ -156,7 +145,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
-			if(fluid == FluidStack.EMPTY || fluid.getFluid() == Fluids.EMPTY)
+			if(fluid.isEmpty())
 				tag.remove("filter");
 			else
 				tag.put("filter", fluid.save(provider));
