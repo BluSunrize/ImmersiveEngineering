@@ -1,7 +1,9 @@
 Gunpowder Barrels
 Volatile, Yet Decorative
 <&recipe>Gunpowder can be made into TNT and other explosives, but these are hard to control and impractical for mining.<br>
-By containing black powder in a <link;storage_barrels;Wooden Barrel>, powder barrels allow for more bang for buck.<np>
-Gunpowder Barrels work as mining explosives with a very predictable explosion that do not destroy items.
-The regular shape of their explosive pattern makes them perfect for mining tunnels in particular.<br>
-Additionally, they inflict much higher damage to anything living nearby, so it's best to stay away from their explosions.
+By containing black powder in a <link;storage_barrels;Wooden Barrel>, powder barrels allow for a much more effective explosion than a lose collection of explosive and sand.<np>
+Gunpowder Barrels are most effective as mining explosives, as they do not destroy items and can cut a regular tunnel through stone with ease via their predictable explosions.<br>
+However, without the ability to transmute black powder into trinitrotoluene and encase it, gunpowder barrels do not explode like TNT does.<np>
+To tunnel through stone effectively, gunpowder barrels must be placed in holes drilled into the rock before being blasted, rather than simply being placed on a surface.<br>
+When placed on a surface, the shockwave produced will flatten grass and destroy leaves, but does not have the force to break stone.<np>
+Due to the concentration effect of the wooden barrel, gunpowder barrel shockwaves inflict much higher damage and knocback than TNT to anything living nearby, so it's best to stay away from their explosions.
