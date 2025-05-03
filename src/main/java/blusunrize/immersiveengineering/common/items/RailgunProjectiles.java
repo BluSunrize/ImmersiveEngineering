@@ -61,7 +61,7 @@ public class RailgunProjectiles
 				new RailgunRenderColors(0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555)
 		);
 
-		// Steel
+		// Netherite
 		RailgunHandler.registerStandardProjectile(IETags.netheriteRod, 30, 1.25).setColorMap(
 				new RailgunRenderColors(0x5a575a, 0x484548, 0x484548, 0x3c3232, 0x31292a, 0x31292a)
 		);
