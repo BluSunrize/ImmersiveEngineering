@@ -1,0 +1,3 @@
+§lCondensadores§r
+§oPoder para llevar§r
+<&recipes>Los §lcondensadores§r almacenan energía. Usa el §lmartillo§r para ajustar la configuración de cada lado: el azul indica una entrada, el naranja una salida y ninguna marca impide la conexión. Usa el martillo agachado para configurar el lado opuesto al que apuntas.
