@@ -21,10 +21,12 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.neoforged.neoforge.event.level.LevelEvent.Unload;
 import net.neoforged.neoforge.event.tick.EntityTickEvent.Post;
@@ -94,9 +96,9 @@ public class NoisyToolSoundHandler
 		return soundGroup;
 	}
 
-	public static void handleHarvestAction(LivingEntity holder, LeftClickBlock.Action action, BlockPos targetBlockPos)
+	public static void handleHarvestAction(LivingEntity noisyToolHolder, LeftClickBlock.Action action, BlockPos targetBlockPos)
 	{
-		NoisyToolSoundGroup ntsg = getSafeNTSG(holder, EquipmentSlot.MAINHAND);
+		NoisyToolSoundGroup ntsg = getSafeNTSG(noisyToolHolder, EquipmentSlot.MAINHAND);
 
 		if(ntsg!=null)
 		{
@@ -116,9 +118,9 @@ public class NoisyToolSoundHandler
 		}
 	}
 
-	public static void handleAttack(LivingEntity holder)
+	public static void handleAttack(LivingEntity noisyToolHolder)
 	{
-		NoisyToolSoundGroup ntsg = getSafeNTSG(holder, EquipmentSlot.MAINHAND);
+		NoisyToolSoundGroup ntsg = getSafeNTSG(noisyToolHolder, EquipmentSlot.MAINHAND);
 
 		if(ntsg!=null)
 			ntsg.triggerAttack();
@@ -127,13 +129,13 @@ public class NoisyToolSoundHandler
 	@SubscribeEvent
 	public static void toolHeldCheck(Post ev)
 	{
-		if(ev.getEntity() instanceof LivingEntity holder) //todo
+		if(ev.getEntity() instanceof LivingEntity noisyToolHolder) //todo
 		{
-			if(!holder.level().isClientSide()) // client side only
+			if(!noisyToolHolder.level().isClientSide()) // client side only
 				return;
 
-			NoisyToolSoundGroup ntsgMainHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.MAINHAND);
-			NoisyToolSoundGroup ntsgOffHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.OFFHAND);
+			NoisyToolSoundGroup ntsgMainHand = NoisyToolSoundHandler.getSafeNTSG(noisyToolHolder, EquipmentSlot.MAINHAND);
+			NoisyToolSoundGroup ntsgOffHand = NoisyToolSoundHandler.getSafeNTSG(noisyToolHolder, EquipmentSlot.OFFHAND);
 
 			if(ntsgMainHand!=null)
 				ntsgMainHand.switchMotorOnOff(true);
@@ -147,34 +149,43 @@ public class NoisyToolSoundHandler
 	{
 		if(INoisyTool.isAbleNoisyTool(ev.getItemStack()))
 		{
-			LivingEntity holder = ev.getEntity();
-			if(holder instanceof Player player&&player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
-				return;
-			BlockPos targetPos = ev.getPos();
-			if(ev.getLevel().isClientSide()&&holder.equals(Minecraft.getInstance().player))
+			LivingEntity noisyToolHolder = ev.getEntity();
+			if(noisyToolHolder instanceof Player player&&player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
 			{
-				handleHarvestAction(holder, ev.getAction(), targetPos);
+				return;
+			}
+			BlockPos targetPos = ev.getPos();
+			if(ev.getLevel().isClientSide()&&noisyToolHolder.equals(Minecraft.getInstance().player))
+			{
+				handleHarvestAction(noisyToolHolder, ev.getAction(), targetPos);
 			}
 			else
 			{
-				PacketDistributor.sendToPlayersTrackingEntity(holder, new MessageNoisyToolHarvestUpdate(holder, ev.getAction(), targetPos));
+				PacketDistributor.sendToPlayersTrackingEntity(noisyToolHolder, new MessageNoisyToolHarvestUpdate(noisyToolHolder, ev.getAction(), targetPos));
 			}
 		}
 	}
 
 	@SubscribeEvent
-	public static void attackCheck(LivingIncomingDamageEvent ev)
+	public static void clientSideAttackCheck(AttackEntityEvent ev)
 	{
-		if(ev.getSource()!=null&&ev.getSource().getEntity() instanceof LivingEntity holder&&INoisyTool.isAbleNoisyTool(holder.getItemBySlot(EquipmentSlot.MAINHAND)))
+		Player player = ev.getEntity();
+		if (INoisyTool.isAbleNoisyTool(player.getItemBySlot(EquipmentSlot.MAINHAND)))
 		{
-			if(holder.level().isClientSide()&&holder.equals(Minecraft.getInstance().player))
-			{
-				handleAttack(holder);
-			}
-			else
-			{
-				PacketDistributor.sendToPlayersTrackingEntity(holder, new MessageNoisyToolAttack(holder));
-			}
+			handleAttack(player);
+		}
+	}
+
+	@SubscribeEvent
+	public static void serverSideAttackCheck(LivingIncomingDamageEvent ev)
+	{
+		// ev.getSource() is never null according to intelliJ: "Method 'getSource' inherits container annotation, thus 'non-null'"
+		// All I see are final fields and no annotations, but should be the same thing.
+		// if stuff burns some day down the line because that changes, here's a place to check, I guess
+		if(ev.getSource().getEntity() instanceof LivingEntity noisyToolHolder&&INoisyTool.isAbleNoisyTool(noisyToolHolder.getItemBySlot(EquipmentSlot.MAINHAND)))
+		{
+			//sends the packet to every tracking player, except noisyToolHolder (if noisyToolHolder is a player)
+			PacketDistributor.sendToPlayersTrackingEntity(noisyToolHolder, new MessageNoisyToolAttack(noisyToolHolder));
 		}
 	}
 

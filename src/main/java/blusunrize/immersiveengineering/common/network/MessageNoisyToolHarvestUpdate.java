@@ -21,19 +21,19 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record MessageNoisyToolHarvestUpdate(int holderID, byte actionOrdinal, BlockPos targetPos) implements IMessage
+public record MessageNoisyToolHarvestUpdate(int noisyToolHolderID, byte actionOrdinal, BlockPos targetPos) implements IMessage
 {
 	public static final Type<MessageNoisyToolHarvestUpdate> ID = IMessage.createType("noisy_tool_harvesting_update");
 	public static final StreamCodec<ByteBuf, MessageNoisyToolHarvestUpdate> CODEC = StreamCodec.composite(
-			ByteBufCodecs.INT, MessageNoisyToolHarvestUpdate::holderID,
+			ByteBufCodecs.INT, MessageNoisyToolHarvestUpdate::noisyToolHolderID,
 			ByteBufCodecs.BYTE, MessageNoisyToolHarvestUpdate::actionOrdinal,
 			BlockPos.STREAM_CODEC, MessageNoisyToolHarvestUpdate::targetPos,
 			MessageNoisyToolHarvestUpdate::new
 	);
 
-	public MessageNoisyToolHarvestUpdate(LivingEntity holder, LeftClickBlock.Action action, BlockPos targetPos)
+	public MessageNoisyToolHarvestUpdate(LivingEntity noisyToolHolder, LeftClickBlock.Action action, BlockPos targetPos)
 	{
-		this(holder.getId(), (byte)action.ordinal(), targetPos);
+		this(noisyToolHolder.getId(), (byte)action.ordinal(), targetPos);
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public record MessageNoisyToolHarvestUpdate(int holderID, byte actionOrdinal, Bl
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
-				Entity entity = world.getEntity(holderID);
-				if(entity instanceof LivingEntity holder)
-					NoisyToolSoundHandler.handleHarvestAction(holder, LeftClickBlock.Action.class.getEnumConstants()[actionOrdinal], targetPos);
+				Entity entity = world.getEntity(noisyToolHolderID);
+				if(entity instanceof LivingEntity noisyToolHolder)
+					NoisyToolSoundHandler.handleHarvestAction(noisyToolHolder, LeftClickBlock.Action.class.getEnumConstants()[actionOrdinal], targetPos);
 			}
 		});
 	}

@@ -30,7 +30,7 @@ public class NoisyToolSoundGroup
 	private final INoisyTool noisyToolItem;
 	private ItemStack noisyToolStack;
 	private final int hotbarSlot;
-	private final LivingEntity holder;
+	private final LivingEntity noisyToolHolder;
 	private final int harvestTimeoutGrace;
 
 	private ToolMotorState currentMotorState = OFF;
@@ -38,15 +38,15 @@ public class NoisyToolSoundGroup
 	private BlockPos currentTargetPos = null;
 	private long groupLastTickHelper = 0;
 
-	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity holder, int hotbarSlot)
+	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity noisyToolHolder, int hotbarSlot)
 	{
 		this.noisyToolStack = noisyToolStack;
 		this.noisyToolItem = (INoisyTool)noisyToolStack.getItem();
-		this.holder = holder;
+		this.noisyToolHolder = noisyToolHolder;
 		this.hotbarSlot = hotbarSlot;
 		// shut off remote player's harvesting sound after 2 minutes
 		// grace for local player to deal with hard 5 tick delay between LeftClickBlock.START and .CLIENT_HOLD action
-		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?(5-1): 2400;
+		this.harvestTimeoutGrace = noisyToolHolder.equals(Minecraft.getInstance().player)?(5-1): 2400;
 	}
 
 	private static void play(AbstractTickableSoundInstance soundInstance)
@@ -151,7 +151,7 @@ public class NoisyToolSoundGroup
 
 	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{
-		groupLastTickHelper = holder.level().getGameTime();
+		groupLastTickHelper = noisyToolHolder.level().getGameTime();
 		if(currentMotorState!=BUSY)
 			groupLastTickHelper += harvestTimeoutGrace; //initial start needs grace period before stopping for remote AND local players
 
@@ -192,18 +192,18 @@ public class NoisyToolSoundGroup
 		{
 			super(sound);
 
-			this.x = holder.getX();
-			this.y = holder.getY()+0.5d; //todo: get tool coordinates?
-			this.z = holder.getZ();
+			this.x = noisyToolHolder.getX();
+			this.y = noisyToolHolder.getY()+0.5d; //todo: get tool coordinates?
+			this.z = noisyToolHolder.getZ();
 			this.state = state;
 			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
 		protected void updateCoordinates()
 		{
-			this.x = holder.getX();
-			this.y = holder.getY()+0.5d;
-			this.z = holder.getZ();
+			this.x = noisyToolHolder.getX();
+			this.y = noisyToolHolder.getY()+0.5d;
+			this.z = noisyToolHolder.getZ();
 		}
 
 		@Override
@@ -241,7 +241,7 @@ public class NoisyToolSoundGroup
 		protected NoisyToolMotorSoundFinite(SoundEvent sound, ToolMotorState state, int duration)
 		{
 			super(sound, state);
-			this.thisSoundsLastTick = holder.level().getGameTime()+duration;
+			this.thisSoundsLastTick = noisyToolHolder.level().getGameTime()+duration;
 			groupLastTickHelper = thisSoundsLastTick;
 
 		}
@@ -255,7 +255,7 @@ public class NoisyToolSoundGroup
 			{
 				if(thisSoundsLastTick!=NoisyToolSoundGroup.this.groupLastTickHelper) //second attack happened. I hate this.
 					this.stop();
-				else if(holder.level().getGameTime() > thisSoundsLastTick)
+				else if(noisyToolHolder.level().getGameTime() > thisSoundsLastTick)
 					currentMotorState = ToolMotorState.TRANSITION;
 			}
 		}
@@ -282,7 +282,7 @@ public class NoisyToolSoundGroup
 		{
 			if(!isStopped())
 			{
-				if(currentTargetPos!=null&&(holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir())) // air check is slapped on addition, because of creative insta break
+				if(currentTargetPos!=null&&(noisyToolHolder.level().getGameTime() > groupLastTickHelper||noisyToolHolder.level().getBlockState(currentTargetPos).isAir())) // air check is slapped on addition, because of creative insta break
 					currentTargetPos = null;
 				if(currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))
 					this.stop();

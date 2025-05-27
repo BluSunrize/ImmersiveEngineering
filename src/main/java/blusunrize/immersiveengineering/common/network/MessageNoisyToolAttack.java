@@ -19,11 +19,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record MessageNoisyToolAttack(int holderID) implements IMessage
+public record MessageNoisyToolAttack(int noisyToolHolderID) implements IMessage
 {
 	public static final Type<MessageNoisyToolAttack> ID = IMessage.createType("noisy_tool_attack");
 	public static final StreamCodec<ByteBuf, MessageNoisyToolAttack> CODEC = ByteBufCodecs.INT
-			.map(MessageNoisyToolAttack::new, MessageNoisyToolAttack::holderID);
+			.map(MessageNoisyToolAttack::new, MessageNoisyToolAttack::noisyToolHolderID);
 
 	public MessageNoisyToolAttack(LivingEntity holder)
 	{
@@ -37,9 +37,9 @@ public record MessageNoisyToolAttack(int holderID) implements IMessage
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
-				Entity entity = world.getEntity(holderID);
-				if(entity instanceof LivingEntity holder)
-					NoisyToolSoundHandler.handleAttack(holder);
+				Entity entity = world.getEntity(noisyToolHolderID);
+				if(entity instanceof LivingEntity noisyToolHolder)
+					NoisyToolSoundHandler.handleAttack(noisyToolHolder);
 			}
 		});
 	}
