@@ -204,7 +204,7 @@
         "attenuation_distance": 28
       }
     ],
-    "subtitle": "subtitle.immersiveengineering.buzzsaw_sawing"
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_harvest_sawing"
   },
   "buzzsaw_harvest_grind": {
     "category": "block",
@@ -214,7 +214,7 @@
         "attenuation_distance": 28
       }
     ],
-    "subtitle": "subtitle.immersiveengineering.buzzsaw_grinding"
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_harvest_grinding"
   },
 	"tesla": {
 		"category": "block",
