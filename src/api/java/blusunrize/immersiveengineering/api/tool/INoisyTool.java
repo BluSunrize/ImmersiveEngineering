@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 public interface INoisyTool
 {
-	static final float TEST_VOLUME_ADJUSTMENT = 1.0f; //temporary measure, remove after settling on a volume for the PR and re-adjusting the sounds themselves
+	static final float TEST_VOLUME_ADJUSTMENT = 1.0f; //TODO: temporary measure, remove after settling on a volume for the PR and re-adjusting the sounds themselves
 
 	Holder<SoundEvent> getIdleSound(ItemStack stack);
 
