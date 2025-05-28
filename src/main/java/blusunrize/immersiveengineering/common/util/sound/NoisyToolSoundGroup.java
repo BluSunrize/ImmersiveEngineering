@@ -25,8 +25,8 @@ import static blusunrize.immersiveengineering.common.util.sound.NoisyToolSoundGr
 
 public class NoisyToolSoundGroup
 {
-	private static final int ATTACK_DURATION = 7-1;
-	private static final int FADE_DURATION = 20-1;
+	private static final int ATTACK_DURATION = 6-1; // in ticks. -1 cause first tick is free
+	private static final int FADE_DURATION = 20-1; // in ticks. -1 cause first tick is free
 	private final INoisyTool noisyToolItem;
 	private ItemStack noisyToolStack;
 	private final int hotbarSlot;

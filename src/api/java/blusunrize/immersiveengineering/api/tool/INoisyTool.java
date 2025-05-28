@@ -22,7 +22,7 @@ public interface INoisyTool
 
 	/**
 	 * Due to lacking information on sound duration, the duration is hard coded. Any Fading sounds need to be <b>more</b> than <b>1.0s</b> in duration.
-	 * The sound cuts off after <b>1.0s</b>, but a little bit of excess duration (~0.01s) is required for the noisy tool sound stage machine to work correctly
+	 * The sound cuts off after <b>1.0s</b>, but a little bit of excess duration (>~0.01s) is required for the noisy tool sound stage machine to work correctly
 	 *
 	 * @param stack
 	 * @return fading sound
@@ -30,8 +30,10 @@ public interface INoisyTool
 	Holder<SoundEvent> getFadingSound(ItemStack stack);
 
 	/**
-	 * Due to lacking information on sound duration, the duration is hard coded. Any Attack sounds need to be <b>more</b> than <b>0.35s</b> in duration.
-	 * The sound cuts off after <b>0.35s</b>, but a little bit of excess duration (~0.01s) is required for the noisy tool sound stage machine to work correctly
+	 * Due to lacking information on sound duration, the duration is hard coded. Any Attack sounds need to be <b>more</b> than <b>0.3s</b> in duration.
+	 * The sound cuts off after <b>0.3s</b>, but a little bit of excess duration (>~0.01s) is required for the noisy tool sound stage machine to work correctly
+	 * Having a too small excess duration leads to notable gaps in the audio when transitioning, which is why the default attack sounds have ~0.06s extra.
+	 * Cause they used to be 0.35s and then it caused issues.. Take heed ^^
 	 *
 	 * @param stack
 	 * @return attack sound
