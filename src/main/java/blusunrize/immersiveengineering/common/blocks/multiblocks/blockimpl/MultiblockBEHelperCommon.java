@@ -53,6 +53,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	protected final MultiblockOrientation orientation;
 	private IMultiblockBEHelperMaster<State> masterHelperDuringDisassembly;
 	private final EnumMap<ShapeType, CachedValue<BlockPos, MultiblockOrientation, VoxelShape>> cachedShape;
+	private State originalState = null;
 
 	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
@@ -120,6 +121,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		final IMultiblockLevel levelWrapper = ctx.getLevel();
 		final BlockPos absolutePos = levelWrapper.toAbsolute(getPositionInMB());
 		final Level levelRaw = levelWrapper.getRawLevel();
+		this.originalState = getState();
 		getMultiblock().disassemble().disassemble(
 				levelRaw, levelWrapper.getAbsoluteOrigin(), levelWrapper.getOrientation()
 		);
@@ -187,9 +189,9 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	public BlockState getOriginalBlock(Level level)
 	{
 		IMultiblockLogic<State> logic = getMultiblock().logic();
-		if(logic instanceof MBMemorizeStructure<State> memo && getState()!=null)
+		if(logic instanceof MBMemorizeStructure<State> memo && this.originalState!=null)
 		{
-			BlockState memorized = memo.getMemorizedBlockState(getState(), getPositionInMB());
+			BlockState memorized = memo.getMemorizedBlockState(this.originalState, getPositionInMB());
 			if(memorized!=null)
 				return memorized;
 		}
