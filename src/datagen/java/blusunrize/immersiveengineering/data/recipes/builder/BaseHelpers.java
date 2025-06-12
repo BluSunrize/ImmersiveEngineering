@@ -29,7 +29,7 @@ public class BaseHelpers
 
 		default T output(Item output, int count)
 		{
-			return output(new TagOutput(new IngredientWithSize(Ingredient.of(output), count)));
+			return output(new TagOutput(output, count));
 		}
 
 		default T output(ItemStack itemStack)

@@ -54,6 +54,11 @@ public interface IMultiblockComponent<State>
 	{
 	}
 
+	default void onRemoved(IMultiblockContext<State> context)
+	{
+	}
+
+
 	interface StateWrapper<OuterState, OwnState>
 	{
 		OwnState wrapState(OuterState outer);

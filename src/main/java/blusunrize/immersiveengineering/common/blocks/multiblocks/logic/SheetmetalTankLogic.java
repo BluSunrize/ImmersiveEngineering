@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBMemorizeStructure;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloTankShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
@@ -31,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
@@ -45,9 +47,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBOverlayText<State>
+public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBOverlayText<State>, MBMemorizeStructure<State>
 {
-	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(4);
+	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(4, false);
 	public static final BlockPos IO_POS = new BlockPos(1, 0, 1);
 	private static final BlockPos INPUT_POS = new BlockPos(1, 4, 1);
 
@@ -128,6 +130,18 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
+	@Override
+	public void setMemorizedBlockState(State state, BlockPos pos, BlockState blockState)
+	{
+		state.structureMemo.put(pos, blockState);
+	}
+
+	@Override
+	public BlockState getMemorizedBlockState(State state, BlockPos pos)
+	{
+		return state.structureMemo.get(pos);
+	}
+
 	public static class State implements IMultiblockState
 	{
 		public final FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
@@ -136,6 +150,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		private final IFluidHandler inputHandler;
 		private final IFluidHandler ioHandler;
 		public final RSState rsState = RSState.disabledByDefault();
+		private final StructureMemo structureMemo = new StructureMemo();
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
@@ -160,12 +175,14 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
+			structureMemo.writeSaveNBT(nbt, provider);
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			tank.readFromNBT(provider, nbt.getCompound("tank"));
+			structureMemo.readSaveNBT(nbt, provider);
 		}
 
 		@Override

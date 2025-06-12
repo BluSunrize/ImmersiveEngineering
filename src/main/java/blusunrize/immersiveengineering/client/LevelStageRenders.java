@@ -231,7 +231,6 @@ public class LevelStageRenders
 	{
 		PoseStack transform = event.getPoseStack();
 		transform.pushPose();
-		transform.mulPose(event.getModelViewMatrix());
 		final Vec3 cameraPos = event.getCamera().getPosition();
 		transform.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 		MultiBufferSource.BufferSource buffers = mc().renderBuffers().bufferSource();

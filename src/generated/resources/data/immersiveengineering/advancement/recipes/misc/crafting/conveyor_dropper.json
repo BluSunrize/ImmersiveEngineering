@@ -16,22 +16,11 @@
         "recipe": "immersiveengineering:crafting/conveyor_dropper"
       },
       "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_trapdoor": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:iron_trapdoor"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_trapdoor",
       "has_conveyor"
     ]
   ],

@@ -26,9 +26,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -64,6 +67,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -204,7 +208,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		if(sawblade.getItem() instanceof SawbladeItem blade)
 		{
 			ItemEnchantments.Mutable mutable = new Mutable(superEnchants);
-			blade.getExtraEnchantments();
+			blade.getExtraEnchantments().forEach((enchantmentResourceKey, integer) ->
+					lookup.get(enchantmentResourceKey).ifPresent(enchantmentReference -> mutable.upgrade(enchantmentReference, integer))
+			);
 			return mutable.toImmutable();
 		}
 		else

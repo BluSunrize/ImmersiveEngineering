@@ -7,12 +7,14 @@ Note that many multiblocks feature comparator-support, as described on the follo
 §lTank: §rAs detailed in its <link;tank;manual entry>
 §lSilo: §rAs detailed in its <link;silo;manual entry>
 §lAssembler: §rOutputs a signal relative to the fill of the inventory.
-§lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.
+§lAutomated Workbench: §rOutputs a signal relative to the fill of the inventory.
 §lCrusher: §rOutputs a signal relative to the fill of the inventory.
+§lSawmill: §rOutputs a signal relative to the integrity of the sawblade.<np>
+§lArc Furnace: §rOutputs a signal relative to the fill of the inventory.
+A comparator at the electrodes at the top will send a signal reflecting the integrity of the most damaged electrode.
 §lSqueezer: §rOutputs a signal relative to the fill of the inventory.
 §lFermenter: §rOutputs a signal relative to the fill of the inventory.
-§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.
-§lArcFurnace: §rOutputs a signal relative to the fill of the inventory.
-Additionally, connecting a comparator to the electrodes at the top will send a signal based on their integrity.
 §lMixer: §rOutputs a signal relative to the fill of the inventory.<np>
+§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.<br>
+<br>
 For more detailed analysis of the various multiblocks, their inventories, energy- and fluid storages, consider using the <link;machine_interface;Machine Interface> instead.

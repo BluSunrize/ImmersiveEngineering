@@ -793,6 +793,68 @@
           "functions": [
             {
               "components": {
+                "immersiveengineering:blueprint": "components"
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:max_stack_size": 1
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:lore": []
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:enchantments": {
+                  "levels": {}
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:repair_cost": 0
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:attribute_modifiers": {
+                  "modifiers": []
+                }
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "components": {
+                "minecraft:rarity": "common"
+              },
+              "function": "minecraft:set_components"
+            },
+            {
+              "conditions": [
+                {
+                  "chance": 0.125,
+                  "condition": "minecraft:random_chance"
+                }
+              ],
+              "function": "immersiveengineering:secret_bluprintz"
+            }
+          ],
+          "name": "immersiveengineering:blueprint",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
                 "immersiveengineering:blueprint": "bullet"
               },
               "function": "minecraft:set_components"
@@ -917,7 +979,7 @@
           "functions": [
             {
               "components": {
-                "immersiveengineering:blueprint": "electrode"
+                "immersiveengineering:blueprint": "molds"
               },
               "function": "minecraft:set_components"
             },

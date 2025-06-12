@@ -12,7 +12,9 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTex
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import net.minecraft.network.chat.Component;
 
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class GuiButtonBoolean extends GuiButtonState<Boolean>
@@ -28,6 +30,21 @@ public class GuiButtonBoolean extends GuiButtonState<Boolean>
 				x, y, w, h, name,
 				new Boolean[]{false, true}, () -> state.get()?1: 0, Map.of(false, falseTex, true, trueTex),
 				handler
+		);
+	}
+
+	public GuiButtonBoolean(
+			int x, int y, int w, int h,
+			Component name,
+			Supplier<Boolean> state, ButtonTexture falseTex, ButtonTexture trueTex,
+			IIEPressable<GuiButtonState<Boolean>> handler,
+			BiConsumer<List<Component>, Boolean> tooltip
+	)
+	{
+		super(
+				x, y, w, h, name,
+				new Boolean[]{false, true}, () -> state.get()?1: 0, Map.of(false, falseTex, true, trueTex),
+				handler, tooltip
 		);
 	}
 }

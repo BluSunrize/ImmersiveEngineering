@@ -30,11 +30,14 @@
     "accessors.TNTEntityAccess",
     "accessors.TrimModelDataAccess",
     "coremods.AbstractBlockStateMixin",
+    "coremods.BreezeDeflectionMixin",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin",
+    "coremods.WallMixin",
     "coremods.WaterwheelBoundsMixin"
   ],
   "client": [
+    "accessors.client.AdvancementToastAccess",
     "accessors.client.ChatComponentAccess",
     "accessors.client.CompiledSectionAccess",
     "accessors.client.FontResourceManagerAccess",

@@ -10,28 +10,24 @@
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:granite"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:diorite"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:andesite"
       }
     },
     {
       "chance": 0.1,
       "output": {
-        "count": 1,
         "id": "minecraft:obsidian"
       }
     }
@@ -40,21 +36,18 @@
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
         "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:cobbled_deepslate"
       }
     }

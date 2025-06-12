@@ -118,7 +118,7 @@ public class PotionBucketItem extends IEBaseItem
 			if(empty)
 				return FluidStack.EMPTY;
 			else
-				return PotionFluid.getFluidStackForType(stack.get(POTION_CONTENTS).potion(), FluidType.BUCKET_VOLUME);
+				return PotionFluid.getFluidStackForType(stack.get(POTION_CONTENTS).potion(), FluidType.BUCKET_VOLUME, PotionFluid.PotionBottleType.REGULAR);
 		}
 
 		@Nonnull

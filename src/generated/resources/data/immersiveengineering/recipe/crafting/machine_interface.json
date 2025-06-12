@@ -5,19 +5,20 @@
     "a": {
       "tag": "c:wires/aluminum"
     },
-    "c": {
-      "item": "immersiveengineering:circuit_board"
-    },
     "e": {
       "item": "immersiveengineering:component_electronic_adv"
     },
+    "r": {
+      "tag": "c:dusts/redstone"
+    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "aea",
-    "wcw"
+    " r ",
+    "awa",
+    " e "
   ],
   "result": {
     "count": 1,

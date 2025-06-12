@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
@@ -33,11 +34,11 @@ public class MixerRecipe extends MultiblockRecipe
 	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final List<IngredientWithSize> itemInputs;
-	public final FluidTagInput fluidInput;
+	public final SizedFluidIngredient fluidInput;
 	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 
-	public MixerRecipe(FluidStack fluidOutput, FluidTagInput fluidInput, List<IngredientWithSize> itemInputs, int energy)
+	public MixerRecipe(FluidStack fluidOutput, SizedFluidIngredient fluidInput, List<IngredientWithSize> itemInputs, int energy)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.MIXER, fluidOutput.getAmount(), energy, MULTIPLIERS);
 		this.fluidOutput = fluidOutput;
@@ -76,10 +77,10 @@ public class MixerRecipe extends MultiblockRecipe
 		return compareToInputs(fluid, components, this.fluidInput, this.itemInputs);
 	}
 
-	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidTagInput fluidInput,
+	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, SizedFluidIngredient fluidInput,
 									  List<IngredientWithSize> itemInputs)
 	{
-		if(fluid!=null&&fluidInput.test(fluid))
+		if(fluidInput.test(fluid))
 		{
 			ArrayList<ItemStack> queryList = new ArrayList<>(components.size());
 			for(ItemStack s : components)

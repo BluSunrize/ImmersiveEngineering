@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApiDataComponents;
+import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
+import blusunrize.immersiveengineering.client.gui.elements.ManualUnlockToast;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -39,18 +41,24 @@ import blusunrize.immersiveengineering.common.network.MessageScrollwheelItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.client.AdvancementToastAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
+import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.ManualInstance;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.AdvancementToast;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -94,11 +102,15 @@ import org.joml.Quaternionf;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class ClientEventHandler implements ResourceManagerReloadListener
 {
@@ -115,7 +127,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onPlayerTick(PlayerTickEvent.Post event)
 	{
 		final var player = event.getEntity();
-		if(player==null||!player.level().isClientSide||player!=ClientUtils.mc().player)
+		if(!player.level().isClientSide||player!=ClientUtils.mc().player)
 			return;
 		if(this.shieldToggleTimer > 0)
 			this.shieldToggleTimer--;
@@ -164,6 +176,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						if(steps!=null&&steps.length > 0)
 							ZoomHandler.fovZoom = steps[ZoomHandler.getCurrentZoomStep(steps)];
 					}
+					break;
 				}
 			}
 	}
@@ -263,9 +276,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						MultiBufferSource buffer = event.getMultiBufferSource();
 						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI/4));
 						transform.translate(-.5, .5, -.001);
-						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
+						VertexConsumer builder = buffer.getBuffer(RenderType.entityCutout(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
-						transform.translate(.75, -.25, -.002);
+						transform.translate(.796875, -.25, -.002);
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
 						transform.scale(-scale, -scale, scale);
 
@@ -306,78 +319,95 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent
 	public void onRenderOverlayPre(RenderGuiLayerEvent.Pre event)
 	{
-		if(!ZoomHandler.isZooming||!event.getLayer().equals(VanillaGuiLayers.CROSSHAIR))
+		if(event.getName().equals(VanillaGuiLayers.SUBTITLE_OVERLAY))
+			ItemOverlayUtils.handleTooltipOffset(event.getGuiGraphics(), true);
+
+		// early exit if not handling zooming
+		if(!event.getName().equals(VanillaGuiLayers.CROSSHAIR)||!ZoomHandler.isZooming)
 			return;
 
+		// check for a zoom tool and get its step array
+		Player player = ClientUtils.mc().player;
+		float[] zoomSteps = Arrays.stream(InteractionHand.values())
+				.map(player::getItemInHand)
+				.mapMulti((BiConsumer<ItemStack, Consumer<float[]>>)(itemStack, consumer) -> {
+					if(itemStack.getItem() instanceof IZoomTool zoomTool&&zoomTool.canZoom(itemStack, player))
+						consumer.accept(zoomTool.getZoomSteps(itemStack, player));
+				}).findFirst().orElse(null);
+
+		if(zoomSteps==null||zoomSteps.length <= 1)
+			return;
+
+		// cancel default crosshair
 		event.setCanceled(true);
-		MultiBufferSource.BufferSource buffers = event.getGuiGraphics().bufferSource();
-		PoseStack transform = new PoseStack();
+
+		GuiGraphics graphics = event.getGuiGraphics();
+		PoseStack transform = graphics.pose();
 		transform.pushPose();
 		int width = ClientUtils.mc().getWindow().getGuiScaledWidth();
 		int height = ClientUtils.mc().getWindow().getGuiScaledHeight();
 		int resMin = Math.min(width, height);
-		float offsetX = (width-resMin)/2f;
-		float offsetY = (height-resMin)/2f;
+		float offsetX = Math.round((width-resMin)/2f);
+		float offsetY = Math.round((height-resMin)/2f);
 
 		if(resMin==width)
 		{
-			GuiHelper.drawColouredRect(0, 0, width, (int)offsetY+1, 0xff000000, buffers, transform);
-			GuiHelper.drawColouredRect(0, (int)offsetY+resMin, width, (int)offsetY+1, 0xff000000, buffers, transform);
+			graphics.fill(0, 0, width, (int)offsetY+1, 0xff000000);
+			graphics.fill(0, (int)offsetY+resMin, width, (int)(offsetY+resMin+offsetY+1), 0xff000000);
 		}
 		else
 		{
-			GuiHelper.drawColouredRect(0, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
-			GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
+			graphics.fill(0, 0, (int)offsetX+1, height, 0xff000000);
+			graphics.fill((int)offsetX+resMin, 0, (int)(offsetX+resMin+offsetX+1), height, 0xff000000);
 		}
 		transform.translate(offsetX, offsetY, 0);
-		VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGuiTranslucent(rl("textures/gui/scope.png")));
-		GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
-		builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-		GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
-		ItemStack equipped = ClientUtils.mc().player.getItemInHand(InteractionHand.MAIN_HAND);
-		if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool tool)
+		RenderSystem.enableBlend();
+		graphics.blitSprite(ieLoc("hud/scope"), 0, 0, resMin, resMin);
+		RenderSystem.disableBlend();
+
+		// draw gauge on the right side
+		transform.translate(218/256f*resMin, 64/256f*resMin, 0);
+		graphics.blitSprite(ieLoc("hud/gauge_vertical"), 0, 0, Math.round(24/256f*resMin), Math.round(128/256f*resMin));
+
+		float stepLength = 118/(float)zoomSteps.length;
+		float stepOffset = (stepLength-7)/2f;
+		// move inside the gauge
+		RenderSystem.enableBlend();
+		transform.translate(5/256f*resMin, (5+stepOffset)/256f*resMin, 0);
+
+		// draw markers for the possible steps
+		int curStep = -1;
+		float dist = 0;
+		int innerWidth = Math.round(14/256f*resMin);
+		int innerHeight = Math.round(7/256f*resMin);
+
+		for(int i = 0; i < zoomSteps.length; i++)
 		{
-			float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().player);
-			if(steps!=null&&steps.length > 1)
+			graphics.blitSprite(ieLoc("hud/gauge_vertical_step"), 0, 0, innerWidth, innerHeight);
+			transform.translate(0, stepLength/256*resMin, 0);
+			if(curStep==-1||Math.abs(zoomSteps[i]-ZoomHandler.fovZoom) < dist)
 			{
-				int curStep = -1;
-				float dist = 0;
-
-				float totalOffset = 0;
-				float stepLength = 118/(float)steps.length;
-				float stepOffset = (stepLength-7)/2f;
-				transform.translate(223/256f*resMin, 64/256f*resMin, 0);
-				transform.translate(0, (5+stepOffset)/256*resMin, 0);
-				for(int i = 0; i < steps.length; i++)
-				{
-					GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
-					transform.translate(0, stepLength/256*resMin, 0);
-					totalOffset += stepLength;
-
-					if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
-					{
-						curStep = i;
-						dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
-					}
-				}
-				transform.translate(0, -totalOffset/256*resMin, 0);
-
-				if(curStep < steps.length)
-				{
-					transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
-					GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
-					ClientUtils.font().drawInBatch((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
-							transform.last().pose(), buffers, DisplayMode.NORMAL, 0, 0xf000f0);
-					transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
-				}
-				transform.translate(0, -((5+stepOffset)/256*resMin), 0);
-				transform.translate(-223/256f*resMin, -64/256f*resMin, 0);
+				curStep = i;
+				dist = Math.abs(zoomSteps[i]-ZoomHandler.fovZoom);
 			}
 		}
+		transform.translate(0, -118/256f*resMin, 0);
 
-		transform.translate(-offsetX, -offsetY, 0);
-		buffers.endBatch();
+		// draw the pointer and text for current level
+		transform.translate(0, curStep*stepLength/256*resMin, 0);
+		graphics.blitSprite(ieLoc("hud/gauge_vertical_pointer"), 0, 0, innerWidth, innerHeight);
+		transform.translate(16/256f*resMin, 1/256f*resMin, 0);
+		graphics.drawString(ClientUtils.font(), (1/zoomSteps[curStep])+"x", 0, 0, 0xffffff, false);
+		RenderSystem.disableBlend();
+		transform.popPose();
+	}
+
+	@SubscribeEvent
+	public void onRenderOverlayPost(RenderGuiLayerEvent.Post event)
+	{
+		if(event.getName().equals(VanillaGuiLayers.SUBTITLE_OVERLAY))
+			ItemOverlayUtils.handleTooltipOffset(event.getGuiGraphics(), false);
 	}
 
 	@SubscribeEvent()
@@ -416,8 +446,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		Player player = ClientUtils.mc().player;
 
 		// Check if player is holding a zoom-allowing item
-		ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
-		boolean mayZoom = equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player);
+		boolean mayZoom = Arrays.stream(InteractionHand.values())
+				.map(player::getItemInHand)
+				.anyMatch(s -> s.getItem() instanceof IZoomTool zoomTool&&zoomTool.canZoom(s, player));
 		// Set zoom if allowed, otherwise stop zooming
 		if(ZoomHandler.isZooming)
 		{
@@ -432,39 +463,70 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			event.setNewFovModifier(1);
 	}
 
+	@SubscribeEvent()
+	public void onPlayerTurn(CalculatePlayerTurnEvent event)
+	{
+		if(event.getCinematicCameraEnabled())
+			return;
+
+		// Check if player is holding a zoom-allowing item and using them
+		Player player = ClientUtils.mc().player;
+		boolean mayZoom = Arrays.stream(InteractionHand.values())
+				.map(player::getItemInHand)
+				.anyMatch(s -> s.getItem() instanceof IZoomTool zoomTool&&zoomTool.canZoom(s, player));
+		if(ZoomHandler.isZooming&&mayZoom)
+		{
+			// final math is: (m*0.6 + 0.2)³ * 8; where m is the mouse sensitivity
+			// we want to avoid the "* 8" so the modifier to fix that is: (6m + 1)/(3m)
+			// however this only applies for the spyglass which has a fov modifier of 0.1,
+			// so we'll also scale it by the current zoom level
+			double mouseSensitivity = event.getMouseSensitivity();
+			double mod = 0.5-1/(6*mouseSensitivity);
+			double fovMod = 0.1/ZoomHandler.fovZoom;
+			event.setMouseSensitivity(mod*mouseSensitivity/fovMod);
+		}
+	}
+
 	@SubscribeEvent
 	public void onMouseEvent(MouseScrollingEvent event)
 	{
 		Player player = ClientUtils.mc().player;
 		if(event.getScrollDeltaY()!=0&&ClientUtils.mc().screen==null&&player!=null)
 		{
-			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
-			// Handle zoom steps
-			if(equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player)&&ZoomHandler.isZooming)
+			// Handle zooming in and out
+			if(ZoomHandler.isZooming)
 			{
-				float[] steps = ((IZoomTool)equipped.getItem()).getZoomSteps(equipped, player);
-				if(steps!=null&&steps.length > 0)
+				float[] zoomSteps = Arrays.stream(InteractionHand.values())
+						.map(player::getItemInHand)
+						.mapMulti((BiConsumer<ItemStack, Consumer<float[]>>)(itemStack, consumer) -> {
+							if(itemStack.getItem() instanceof IZoomTool zoomTool&&zoomTool.canZoom(itemStack, player))
+								consumer.accept(zoomTool.getZoomSteps(itemStack, player));
+						}).findFirst().orElse(null);
+				if(zoomSteps!=null&&zoomSteps.length > 0)
 				{
-					int curStep = ZoomHandler.getCurrentZoomStep(steps);
+					int curStep = ZoomHandler.getCurrentZoomStep(zoomSteps);
 					int newStep = curStep+(event.getScrollDeltaY() > 0?-1: 1);
-					if(newStep >= 0&&newStep < steps.length)
-						ZoomHandler.fovZoom = steps[newStep];
+					if(newStep >= 0&&newStep < zoomSteps.length)
+						ZoomHandler.fovZoom = zoomSteps[newStep];
 					event.setCanceled(true);
 				}
 			}
-
-			// Handle sneak + scrolling
-			if(player.isShiftKeyDown())
+			else
 			{
-				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
+				ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
+				// Handle sneak + scrolling
+				if(player.isShiftKeyDown())
 				{
-					PacketDistributor.sendToServer(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
-					event.setCanceled(true);
-				}
-				if(equipped.getItem() instanceof RevolverItem)
-				{
-					PacketDistributor.sendToServer(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
-					event.setCanceled(true);
+					if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
+					{
+						PacketDistributor.sendToServer(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
+						event.setCanceled(true);
+					}
+					if(equipped.getItem() instanceof RevolverItem)
+					{
+						PacketDistributor.sendToServer(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
+						event.setCanceled(true);
+					}
 				}
 			}
 		}
@@ -596,5 +658,30 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
 			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity().getId(), Optional.empty()));
+	}
+
+	@SubscribeEvent
+	public void onToast(ToastAddEvent event)
+	{
+		if(event.getToast() instanceof AdvancementToast advToast)
+		{
+			AdvancementHolder advancement = ((AdvancementToastAccess)advToast).getAdvancement();
+			ManualInstance manual = ManualHelper.getManual();
+			if(manual.contentsByName.isEmpty()) // we need to load the manual if not already done
+				manual.reload();
+			List<ManualEntry> entries = manual.contentsByName.values().stream()
+					.filter(entry -> entry.getRequiredAdvancement().map(loc -> loc.equals(advancement.id())).orElse(false))
+					.toList();
+			if(!entries.isEmpty())
+			{
+				// wrap the toast if it has a title, cancel the original
+				Optional<AdvancementToast> wrapped = advancement.value().display().map(
+						displayInfo -> displayInfo.getTitle().getString().isEmpty()?null: advToast
+				);
+				event.setCanceled(true);
+				// then enqueue the manual toast
+				ClientUtils.mc().getToasts().addToast(new ManualUnlockToast(wrapped, entries));
+			}
+		}
 	}
 }

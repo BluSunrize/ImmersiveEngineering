@@ -9,10 +9,14 @@
 package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
 import blusunrize.immersiveengineering.common.items.PotionBucketItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
+import io.netty.buffer.ByteBuf;
+import malte0811.dualcodecs.DualCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,11 +26,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -43,10 +49,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -54,12 +62,13 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
-	public static FluidStack getFluidStackForType(Optional<Holder<Potion>> type, int amount)
+	public static FluidStack getFluidStackForType(Optional<Holder<Potion>> type, int amount, PotionBottleType bottleType)
 	{
 		if(type.isEmpty()||type.get().is(Potions.WATER))
 			return new FluidStack(Fluids.WATER, amount);
 		FluidStack stack = new FluidStack(IEFluids.POTION.get(), amount);
 		stack.set(DataComponents.POTION_CONTENTS, new PotionContents(type.get()));
+		stack.set(IEDataComponents.POTION_BOTTLE_TYPE, bottleType);
 		return stack;
 	}
 
@@ -195,7 +204,8 @@ public class PotionFluid extends Fluid
 		public Component getDescription(FluidStack stack)
 		{
 			var potionData = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-			return Component.translatable(Potion.getName(potionData.potion(), "item.minecraft.potion.effect."));
+			PotionBottleType s = stack.getOrDefault(IEDataComponents.POTION_BOTTLE_TYPE, PotionBottleType.REGULAR);
+			return Component.translatable(Potion.getName(potionData.potion(), s.getBottleItem().getDescriptionId()+".effect."));
 		}
 
 		@Override
@@ -204,4 +214,39 @@ public class PotionFluid extends Fluid
 			return PotionBucketItem.forPotion(getType(stack));
 		}
 	}
+
+	public enum PotionBottleType implements StringRepresentable
+	{
+		REGULAR(Items.POTION), SPLASH(Items.SPLASH_POTION), LINGERING(Items.LINGERING_POTION);
+
+		private final Item bottleItem;
+
+		public static final DualCodec<ByteBuf, PotionBottleType> CODEC = IEDualCodecs.forEnum(values());
+
+		PotionBottleType(Item bottleItem)
+		{
+			this.bottleItem = bottleItem;
+		}
+
+		@Override
+		public @NotNull String getSerializedName()
+		{
+			return name().toLowerCase(Locale.ROOT);
+		}
+
+		public static PotionBottleType fromItem(Holder<Item> item)
+		{
+			if(item.value()==Items.LINGERING_POTION)
+				return LINGERING;
+			if(item.value()==Items.SPLASH_POTION)
+				return SPLASH;
+			return REGULAR;
+		}
+
+		public Item getBottleItem()
+		{
+			return bottleItem;
+		}
+	}
+
 }

@@ -15,14 +15,12 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:clay"
       }
     },
     {
       "chance": 0.4,
       "output": {
-        "count": 1,
         "id": "minecraft:sand"
       }
     }
@@ -31,21 +29,18 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.1,
       "output": {
-        "count": 1,
         "id": "minecraft:coarse_dirt"
       }
     }

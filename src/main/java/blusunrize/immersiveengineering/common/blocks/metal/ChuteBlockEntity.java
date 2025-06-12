@@ -151,7 +151,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 				CompoundTag entityData = entity.getPersistentData();
 				entityData.putLong(NBT_POS, nbt_pos);
 				entityData.putLong(NBT_TIME, time);
-				if(entity instanceof Player player && !world.isClientSide())
+				if(entity instanceof Player player&&!world.isClientSide())
 				{
 					int bonkCount = entityData.getInt(NBT_COUNT)+1;
 					if(timeSince > 200)
@@ -241,7 +241,9 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 			this.diagonal = te.diagonal;
 			this.sidesToAdd = EnumSet.noneOf(Direction.class);
 			for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
-				if(!te.isInwardConveyor(dir)&&(!diagonal||dir!=te.getFacing()))
+				if(diagonal && dir!=te.getFacing())
+					this.sidesToAdd.add(dir);
+				else if(!diagonal && !te.isInwardConveyor(dir))
 					this.sidesToAdd.add(dir);
 		}
 

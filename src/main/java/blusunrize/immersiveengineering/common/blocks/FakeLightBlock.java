@@ -66,6 +66,7 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements ISpawnInterdiction
 	{
 		public BlockPos floodlightCoords = null;
+		public boolean firstTick = true;
 
 		public FakeLightBlockEntity(BlockPos pos, BlockState state)
 		{
@@ -96,9 +97,10 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		public void onLoad()
 		{
 			super.onLoad();
-			if(floodlightCoords==null||!(Utils.getExistingTileEntity(level, floodlightCoords) instanceof FloodlightBlockEntity floodlight)||!floodlight.getIsActive())
+			if(!firstTick&&(floodlightCoords==null||!(Utils.getExistingTileEntity(level, floodlightCoords) instanceof FloodlightBlockEntity floodlight)||!floodlight.getIsActive()))
 				level.removeBlock(getBlockPos(), false);
-			SpawnInterdictionHandler.addInterdictionTile(this);
+			else
+				SpawnInterdictionHandler.addInterdictionTile(this);
 		}
 
 		@Override
@@ -115,6 +117,12 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		{
 			if(floodlightCoords!=null)
 				nbt.put("floodlightCoords", NbtUtils.writeBlockPos(floodlightCoords));
+		}
+
+		public void setFloodlightCoords(BlockPos pos)
+		{
+			floodlightCoords = pos;
+			firstTick = false;
 		}
 	}
 }

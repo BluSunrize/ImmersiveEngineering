@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_concrete": {
+    "has_concrete_brick": {
       "conditions": {
         "items": [
           {
-            "items": "immersiveengineering:concrete"
+            "items": "immersiveengineering:concrete_brick"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_concrete"
+      "has_concrete_brick"
     ]
   ],
   "rewards": {

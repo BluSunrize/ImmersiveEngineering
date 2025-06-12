@@ -13,8 +13,12 @@
           }
         ],
         "killing_blow": {
-          "direct_entity": {
-            "type": "immersiveengineering:chemthrower_shot"
+          "source_entity": {
+            "equipment": {
+              "mainhand": {
+                "items": "immersiveengineering:chemthrower"
+              }
+            }
           }
         }
       },
@@ -61,9 +65,19 @@
           }
         ],
         "killing_blow": {
-          "direct_entity": {
-            "type": "immersiveengineering:revolver_shot"
-          }
+          "source_entity": {
+            "equipment": {
+              "mainhand": {
+                "items": "immersiveengineering:revolver"
+              }
+            }
+          },
+          "tags": [
+            {
+              "expected": true,
+              "id": "minecraft:is_projectile"
+            }
+          ]
         }
       },
       "trigger": "minecraft:player_killed_entity"

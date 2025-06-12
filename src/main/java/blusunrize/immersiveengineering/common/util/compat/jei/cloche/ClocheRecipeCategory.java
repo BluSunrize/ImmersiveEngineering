@@ -9,13 +9,17 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.cloche;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -23,9 +27,10 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -39,6 +44,7 @@ import java.util.Collections;
 public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 {
 	private final IDrawableStatic tankOverlay;
+	private final IDrawableStatic chanceSlot;
 	private final IDrawableAnimated arrow;
 
 	public ClocheRecipeCategory(IGuiHelper helper)
@@ -48,6 +54,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 		setBackground(helper.createDrawable(background, 0, 0, 176, 77));
 		setIcon(new ItemStack(IEBlocks.MetalDevices.CLOCHE));
 		tankOverlay = helper.createDrawable(background, 176, 30, 20, 51);
+		chanceSlot = helper.drawableBuilder(JEIHelper.JEI_GUI, 0, 59, 18, 18).setTextureSize(128, 128).build();
 		arrow = helper.drawableBuilder(background, 181, 1, 13, 13).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
 	}
 
@@ -60,10 +67,18 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 62, 54)
 				.addItemStacks(Arrays.asList(recipe.soil.getItems()));
 
-		NonNullList<ItemStack> outputs = recipe.outputs.get();
-		for(int i = 0; i < outputs.size(); i++)
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 116+i%2*18, 34+i/2*18)
-					.addItemStack(outputs.get(i));
+		for(int i = 0; i < recipe.outputs.size(); i++)
+		{
+			final StackWithChance out = recipe.outputs.get(i);
+			IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.OUTPUT, 116+i%2*18, 34+i/2*18)
+					.addItemStack(out.stack().get());
+			if(out.chance() < 1)
+				slot.setBackground(chanceSlot, -1, -1).addRichTooltipCallback((view, tooltip) -> tooltip.add(Component
+						.translatable(Lib.DESC_INFO+"chance")
+						.append(" "+Utils.formatDouble(out.chance()*100, "0.##")+"%")
+						.withStyle(ChatFormatting.GOLD))
+				);
+		}
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 6, 6)
 				.setFluidRenderer(4000, false, 20, 51)

@@ -295,7 +295,7 @@ public class FluidUtils
 	{
 		String ret = "";
 		// if amount is bigger than bucket, consider those as full numbers
-		if(amount > FluidType.BUCKET_VOLUME)
+		if(amount >= FluidType.BUCKET_VOLUME)
 		{
 			ret += amount/FluidType.BUCKET_VOLUME;
 			amount = amount%FluidType.BUCKET_VOLUME;

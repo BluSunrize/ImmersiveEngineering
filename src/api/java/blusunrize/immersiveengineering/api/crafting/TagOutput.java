@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import malte0811.dualcodecs.DualCodec;
@@ -25,7 +26,7 @@ public class TagOutput
 {
 	public static final TagOutput EMPTY = new TagOutput(new IngredientWithSize(Ingredient.EMPTY));
 	public static final DualCodec<RegistryFriendlyByteBuf, TagOutput> CODECS = new DualCodec<>(
-			Codec.either(IngredientWithSize.CODEC, ItemStack.CODEC).xmap(TagOutput::new, out -> out.rawData),
+			Codec.either(IngredientWithSize.CODEC, IECodecs.ITEM_STACK_COUNT_OPTIONAL).xmap(TagOutput::new, out -> out.rawData),
 			ItemStack.OPTIONAL_STREAM_CODEC.map(TagOutput::new, TagOutput::get)
 	);
 
@@ -44,7 +45,7 @@ public class TagOutput
 
 	public TagOutput(ItemLike type, int count)
 	{
-		this(new IngredientWithSize(Ingredient.of(type), count));
+		this(new ItemStack(type, count));
 	}
 
 	public TagOutput(IngredientWithSize type)

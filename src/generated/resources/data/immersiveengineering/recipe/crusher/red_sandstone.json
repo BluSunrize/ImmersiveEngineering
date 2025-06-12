@@ -5,10 +5,8 @@
     "tag": "c:sandstone/red_blocks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:red_sand"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:red_sand"
   },
   "secondaries": [
     {

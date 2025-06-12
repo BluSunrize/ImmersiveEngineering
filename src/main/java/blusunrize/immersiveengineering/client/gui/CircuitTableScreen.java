@@ -28,7 +28,9 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +38,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,6 +53,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
 
 	// Buttons
+	private EditBox name;
 	private GuiSelectingList operatorList;
 	private final List<GuiButtonLogicCircuitRegister> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
 	private GuiButtonLogicCircuitRegister outputButton;
@@ -84,7 +89,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+217, topPos+16, menu.energyStorage),
+				new EnergyInfoArea(leftPos+217, topPos+26, menu.energyStorage),
 				new TooltipArea(copyArea, l -> {
 					if(this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 						l.add(TextUtils.applyFormat(
@@ -106,8 +111,19 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 
 		this.outputButton = this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
 				leftPos+121, topPos+56,
-				Component.literal("Output"), btn -> this.minecraft.tell(this::updateInstruction))
+				Component.translatable(Lib.DESC_INFO+"circuit_table.btn.output"),
+				btn -> this.minecraft.tell(this::updateInstruction))
 		);
+
+		this.name = new EditBox(this.font, leftPos+172, topPos+10, 54, 12, Component.translatable(Lib.DESC_INFO+"circuit_table.field.name"));
+		this.name.setCanLoseFocus(true);
+		this.name.setTextColor(-1);
+		this.name.setTextColorUneditable(-1);
+		this.name.setBordered(false);
+		this.name.setMaxLength(50);
+		this.name.setResponder(s -> updateInstruction());
+		this.addRenderableWidget(this.name);
+
 		this.updateButtons();
 	}
 
@@ -130,7 +146,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 		this.instruction.reset();
 		this.instruction.get().ifPresentOrElse(instr -> {
 					this.menu.instruction = instr;
-					sendUpdateToServer(instr.serialize());
+					CompoundTag nbt = instr.serialize();
+					String itemName = this.name.getValue();
+					if(!itemName.isEmpty())
+						nbt.putString("itemName", itemName);
+					sendUpdateToServer(nbt);
 				},
 				() -> {
 					this.menu.instruction = null;
@@ -149,10 +169,16 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 
 		super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
 
-		if(editCircuit)
+		if(!editCircuit)
+			return;
+		// Update buttons and copy circuit name
+		ItemStack circuitStack = this.menu.slots.get(CircuitTableBlockEntity.getEditSlot()).getItem();
+		if(!circuitStack.isEmpty())
 		{
 			this.minecraft.tell(this::updateButtons);
 			this.minecraft.tell(this::updateInstruction);
+			if(pSlot.getItem().has(DataComponents.CUSTOM_NAME))
+				this.name.setValue(pSlot.getItem().get(DataComponents.CUSTOM_NAME).getString());
 		}
 	}
 
@@ -168,7 +194,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			for(int i = 0; i < inputCount; i++)
 				this.inputButtons.add(this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
 						leftPos+inputStart+20*i, topPos+18,
-						Component.literal("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
+						Component.translatable(Lib.DESC_INFO+"circuit_table.btn.input_num", (i+1)),
+						btn -> this.minecraft.tell(this::updateInstruction))
 				));
 		}
 		LogicCircuitInstruction editInstr = getEditInstruction();
@@ -203,9 +230,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	@Override
 	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
-		graphics.drawCenteredString(this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getTextColor());
-		graphics.drawCenteredString(this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getTextColor());
-		graphics.drawCenteredString(this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, Component.translatable(Lib.GUI_CONFIG+"circuit_table.operator"), 76, 4, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, Component.translatable(Lib.GUI_CONFIG+"circuit_table.inputs"), 130, 8, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, Component.translatable(Lib.GUI_CONFIG+"circuit_table.outputs"), 130, 42, DyeColor.LIGHT_GRAY.getTextColor());
 
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
@@ -221,6 +248,15 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			}
 			graphics.drawString(this.font, "x "+amount, 30, 18+20*i, col.getTextColor());
 		}
+	}
+
+	@Override
+	public boolean keyPressed(int key, int scancode, int modifiers)
+	{
+		if(this.name.isFocused()&&key!=GLFW.GLFW_KEY_ESCAPE)
+			if(this.name.keyPressed(key, scancode, modifiers)||this.name.canConsumeInput())
+				return true;
+		return super.keyPressed(key, scancode, modifiers);
 	}
 
 	@Override

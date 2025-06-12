@@ -100,6 +100,7 @@ public class IETags
 	public static final TagKey<Item> coalCokeDust = createItemWrapper(getDust("coal_coke"));
 	public static final TagKey<Item> hopGraphiteDust = createItemWrapper(getDust("hop_graphite"));
 	public static final TagKey<Item> hopGraphiteIngot = createItemWrapper(getIngot("hop_graphite"));
+	public static final TagKey<Item> hopGraphitePlate = createItemWrapper(getPlate("hop_graphite"));
 	public static final TagKey<Item> copperWire = createItemWrapper(getWire("copper"));
 	public static final TagKey<Item> electrumWire = createItemWrapper(getWire("electrum"));
 	public static final TagKey<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
@@ -123,7 +124,8 @@ public class IETags
 	public static final TagKey<Item> toolboxTools = createItemWrapper(ieLoc("toolbox/tools"));
 	public static final TagKey<Item> toolboxFood = createItemWrapper(ieLoc("toolbox/food"));
 	public static final TagKey<Item> toolboxWiring = createItemWrapper(ieLoc("toolbox/wiring"));
-	public static final TagKey<Item> connectorInsulator = createItemWrapper(ieLoc("connector_insulator"));
+	public static final TagKey<Item> connectorInsulator = createItemWrapper(ieLoc("connector_insulator"));;
+	public static final TagKey<Item> repairsAutomaton = createItemWrapper(ieLoc("repairs_automaton"));
 	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(ieLoc("mineable/hammer"));
 	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(ieLoc("mineable/wirecutter"));
 	public static final TagKey<Block> drillHarvestable = createBlockWrapper(ieLoc("mineable/drill"));

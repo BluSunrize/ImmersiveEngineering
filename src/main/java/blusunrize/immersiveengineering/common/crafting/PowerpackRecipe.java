@@ -74,7 +74,7 @@ public class PowerpackRecipe implements CraftingRecipe
 					armor = stackInSlot;
 		}
 
-		if(!powerpack.isEmpty()&&armor.has(IEDataComponents.CONTAINED_POWERPACK))
+		if(!powerpack.isEmpty()&&!armor.has(IEDataComponents.CONTAINED_POWERPACK))
 		{
 			ItemStack output = armor.copy();
 			output.set(IEDataComponents.CONTAINED_POWERPACK, new AttachedItem(powerpack.copyWithCount(1)));

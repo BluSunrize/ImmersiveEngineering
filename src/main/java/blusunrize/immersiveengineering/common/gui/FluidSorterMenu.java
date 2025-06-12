@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterBlockEnti
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +21,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -83,12 +83,11 @@ public class FluidSorterMenu extends IEContainerMenu
 		}
 		if(message.contains("filter_side", Tag.TAG_INT))
 		{
+			var currentServer = ServerLifecycleHooks.getCurrentServer();
+			if(null == currentServer) return;
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");
-			FluidStack newFilter = FluidStack.parseOptional(
-					Minecraft.getInstance().level.registryAccess(),
-					message.getCompound("filter")
-			);
+			FluidStack newFilter = FluidStack.parseOptional(currentServer.registryAccess(), message.getCompound("filter"));
 			if(!newFilter.isEmpty())
 				newFilter.setAmount(1); // Not strictly necessary, but also doesn't hurt
 			this.filters.get(side).get(slot).set(newFilter);

@@ -11,9 +11,12 @@ package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.jei.DoubleIcon;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -36,8 +39,11 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 		super(helper, JEIRecipeTypes.BLAST_FUEL, "gui.immersiveengineering.blastFurnace.fuel");
 		ResourceLocation furnaceBackgroundLocation = ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
 		setBackground(helper.drawableBuilder(furnaceBackgroundLocation, 55, 36, 18, 36).addPadding(0, 0, 0, 68).build());
-		setIcon(helper.createDrawable(IEApi.ieLoc("textures/gui/blast_furnace.png"), 176, 0, 14, 14));
-
+		setIcon(new DoubleIcon(
+				helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEMultiblockLogic.BLAST_FURNACE.iconStack()),
+				helper.createDrawable(IEApi.ieLoc("textures/gui/blast_furnace.png"), 176, 0, 14, 14),
+				0.75f
+		));
 		IDrawableStatic flameStatic = helper.createDrawable(furnaceBackgroundLocation, 176, 0, 14, 14);
 		this.flame = helper.createAnimatedDrawable(flameStatic, 20*4, IDrawableAnimated.StartDirection.TOP, true);
 	}

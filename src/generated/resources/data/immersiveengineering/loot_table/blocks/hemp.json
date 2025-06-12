@@ -59,7 +59,7 @@
           "block": "immersiveengineering:hemp",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "top": "true"
+            "half": "upper"
           }
         }
       ],

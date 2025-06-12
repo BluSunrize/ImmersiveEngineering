@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.data.dynregistry.WorldGenerationProvider;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.loot.LootModifierProvider;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
+import blusunrize.immersiveengineering.data.recipes.CompostMapProvider;
 import blusunrize.immersiveengineering.data.recipes.RootRecipeProvider;
 import blusunrize.immersiveengineering.data.tags.IEBlockTags;
 import blusunrize.immersiveengineering.data.tags.IEItemTags;
@@ -54,6 +55,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new RootRecipeProvider(output, lookup));
 			gen.addProvider(true, new AllLoot(output, lookup));
 			gen.addProvider(true, new BlockStates(output, exHelper));
+			gen.addProvider(true, new CompostMapProvider(output, lookup));
 			MultiblockStates multiblocks = new MultiblockStates(output, exHelper);
 			gen.addProvider(true, multiblocks);
 			gen.addProvider(true, new ConnectorBlockStates(output, exHelper));

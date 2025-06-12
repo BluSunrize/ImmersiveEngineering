@@ -45,7 +45,7 @@ public class IEArmorMaterials
 			0
 	));
 	public static final Holder<ArmorMaterial> STEEL = REGISTER.register("steel", () -> new ArmorMaterial(
-			Map.of(BOOTS, 273, LEGGINGS, 315, CHESTPLATE, 336, HELMET, 231),
+			Map.of(BOOTS, 2, HELMET, 2, LEGGINGS, 6, CHESTPLATE, 7),
 			10,
 			SoundEvents.ARMOR_EQUIP_IRON,
 			() -> Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot),

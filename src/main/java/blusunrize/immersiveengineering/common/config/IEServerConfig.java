@@ -86,7 +86,7 @@ public class IEServerConfig
 			wireConfigs.putAll(energyWireConfigs);
 			//Server
 			enableWireDamage = builder.comment("If this is enabled, wires connected to power sources will cause damage to entities touching them",
-					"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already.")
+							"This shouldn't cause significant lag but possibly will. If it does, please report it at https://github.com/BluSunrize/ImmersiveEngineering/issues unless there is a report of it already.")
 					.define("enableWireDamage", true);
 			blocksBreakWires = builder.comment("If this is enabled, placing a block in a wire will break it (drop the wire coil)")
 					.define("blocksBreakWires", true);
@@ -293,6 +293,9 @@ public class IEServerConfig
 				builder.pop();
 			}
 			radio_tower_consumption = addPositive(builder, "radio_tower_consumption", 128, "The Flux the Radio Tower will consume per tick to remain active");
+			resonanz_observer_consumption = addPositive(builder, "resonanz_observer_consumption", 128, "The Flux the Resonanz Observer will consume per tick to remain active");
+			resonanz_observer_paper_duration = addPositive(builder, "resonanz_observer_paper_duration", 60, "The duration in seconds that a single piece of paper will fuel the Resonanz Observer for");
+			resonanz_observer_radius = addPositive(builder, "resonanz_observer_radius", 32, "The radius in blocks the Resonanz Observer will cover. The actual loaded chunks may extend beyond this radius.");
 			builder.pop();
 		}
 
@@ -430,6 +433,9 @@ public class IEServerConfig
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
 		public final IntValue radio_tower_consumption;
+		public final IntValue resonanz_observer_consumption;
+		public final IntValue resonanz_observer_paper_duration;
+		public final IntValue resonanz_observer_radius;
 	}
 
 	public static class Ores

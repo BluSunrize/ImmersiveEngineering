@@ -239,7 +239,7 @@ public class FermenterLogic
 					8, 0, 8, ctx.getMarkDirtyRunnable(), FermenterRecipe.RECIPES::getById
 			);
 			this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
-					new IOConstraintGroup(IOConstraint.ANY_INPUT, NUM_INPUT_SLOTS),
+					new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1),
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
@@ -327,7 +327,7 @@ public class FermenterLogic
 		@Override
 		public IItemHandlerModifiable getInventory()
 		{
-			return inventory.getRawHandler();
+			return inventory;
 		}
 
 		public FluidTank getTank()

@@ -286,7 +286,7 @@ public class BlockLoot implements LootTableSubProvider
 		ret.withPool(
 				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.FORTUNE, 5/8f, 3).when(
 						LootItemBlockStatePropertyCondition.hasBlockStateProperties(IEBlocks.Misc.HEMP_PLANT.get())
-								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.TOP, true))
+								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.HALF, DoubleBlockHalf.UPPER))
 				)
 		);
 		register(IEBlocks.Misc.HEMP_PLANT, ret);

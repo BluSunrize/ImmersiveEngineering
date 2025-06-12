@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ManualElementMixer extends ManualElementIECrafting
@@ -48,9 +49,9 @@ public class ManualElementMixer extends ManualElementIECrafting
 					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.itemInputs.size()+2];
 
 					// Fluid input
-					List<ItemStack> inputBucket = recipe.fluidInput.getMatchingFluidStacks().stream()
+					List<ItemStack> inputBucket = Arrays.stream(recipe.fluidInput.getFluids())
 							.map(fluidStack -> fluidStack.getFluid().getBucket().getDefaultInstance()).toList();
-					String inputFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
+					String inputFraction = FluidUtils.getBucketFraction(recipe.fluidInput.amount());
 					pIngredients[0] = new PositionedItemStack(inputBucket, 8, middle-9, inputFraction);
 
 					// Item inputs

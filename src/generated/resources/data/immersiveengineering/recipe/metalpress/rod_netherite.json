@@ -6,9 +6,7 @@
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
-    "basePredicate": {
-      "item": "immersiveengineering:stick_netherite"
-    },
-    "count": 2
+    "count": 2,
+    "id": "immersiveengineering:stick_netherite"
   }
 }

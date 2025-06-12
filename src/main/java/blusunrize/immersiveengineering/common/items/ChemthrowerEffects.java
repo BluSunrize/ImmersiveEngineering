@@ -21,7 +21,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,32 +51,38 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 			{
 				if(fluid.has(DataComponents.POTION_CONTENTS))
 				{
 					PotionContents potionContents = fluid.get(DataComponents.POTION_CONTENTS);
 					for(MobEffectInstance e : potionContents.getAllEffects())
 					{
-						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
-						target.addEffect(newEffect);
+						MobEffect effect = e.getEffect().value();
+						if(effect.isInstantenous())
+							effect.applyInstantenousEffect(projectile, shooter, target, e.getAmplifier(), 1);
+						else
+						{
+							MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
+							target.addEffect(newEffect);
+						}
 					}
 				}
 			}
 
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 			{
 
 			}
 
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 			}
 		});
@@ -82,18 +90,18 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 			{
 				hit(target.level(), target.blockPosition(), Direction.UP);
 			}
 
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 			{
 				if(!(mop instanceof BlockHitResult))
 					return;
@@ -112,7 +120,7 @@ public class ChemthrowerEffects
 			}
 
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 			}
 
@@ -131,12 +139,12 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidHerbicide, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
 				if(!(mop instanceof BlockHitResult))
 					return;
@@ -146,7 +154,7 @@ public class ChemthrowerEffects
 				if(hit.is(BlockTags.LEAVES))
 					world.removeBlock(brtr.getBlockPos(), false);
 					// turn grass & farmland to dirt
-				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmBlock)
+				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock()==Blocks.FARMLAND)
 				{
 					world.setBlockAndUpdate(brtr.getBlockPos(), Blocks.DIRT.defaultBlockState());
 					BlockPos above = brtr.getBlockPos().above();
@@ -166,15 +174,17 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE, 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
+		ChemthrowerHandler.registerEffect(fluidHighPowerBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE, 140, 1));
+		ChemthrowerHandler.registerFlammable(fluidHighPowerBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
 		ChemthrowerHandler.registerFlammable(fluidAcetaldehyde);
 		ChemthrowerHandler.registerEffect(fluidResin, new ChemthrowerEffect_Potion(null, 0, IEPotions.STICKY, 140, 1));
 		ChemthrowerHandler.registerEffect(fluidRedstoneAcid, new ChemthrowerEffect_Potion(null, 0, IEPotions.CONDUCTIVE, 140, 1)
 		{
 			@Override
-			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 			{
-				if(!(mop instanceof BlockHitResult blockHit) || !(world instanceof ServerLevel serverLevel))
+				if(!(mop instanceof BlockHitResult blockHit)||!(world instanceof ServerLevel serverLevel))
 					return;
 				BlockState hit = world.getBlockState(blockHit.getBlockPos());
 				if(hit.getBlock() instanceof WeatheringCopper copperBlock)

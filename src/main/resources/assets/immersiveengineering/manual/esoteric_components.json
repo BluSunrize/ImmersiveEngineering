@@ -1,0 +1,7 @@
+{
+  "require_advancement": "immersiveengineering:manual/resonanz",
+  "resonanz_engineering": {
+    "type": "crafting",
+    "recipe": "crafting/resonanz_engineering"
+  }
+}

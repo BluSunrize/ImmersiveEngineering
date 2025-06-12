@@ -1,4 +1,4 @@
-// 1.21.1	2024-09-15T11:18:23.04206635	Registries
+// 1.21.1	2025-03-11T16:30:29.9798552	Registries
 b85c392fc452bb43508d28047a5ed33ebe7f706d data/immersiveengineering/banner_pattern/bevels.json
 6e85879bd63694c6a3152fd139fafa12e5ed6d9d data/immersiveengineering/banner_pattern/hammer.json
 955760b7cbc7865e085c4222a06a50851894bdfa data/immersiveengineering/banner_pattern/hammer_grip.json
@@ -62,6 +62,7 @@ fcb67e9b227c33d237a780944d0e627040ed8e07 data/immersiveengineering/neoforge/biom
 792859fd6884891bd31168e6bb95906857d7f423 data/immersiveengineering/neoforge/biome_modifier/nickel.json
 6cecb0388ca33980e7be9db8e9e71c30b1785e93 data/immersiveengineering/neoforge/biome_modifier/silver.json
 e26b76fcbe86b24ac53ce55a790f7dbdc8cbdda2 data/immersiveengineering/neoforge/biome_modifier/uranium.json
+bc5c4b940f3288c6b0f62ea5646dc454a60aa69a data/immersiveengineering/wolf_variant/robot.json
 45867e428c89f2080440c0e49db8b6643f9d9b58 data/immersiveengineering/worldgen/configured_feature/bauxite.json
 1a45c0c2123076d84935f31046d433a73c3c46d7 data/immersiveengineering/worldgen/configured_feature/deep_nickel.json
 5133e28a98a52e2b9370620f71f08d43fa0b436b data/immersiveengineering/worldgen/configured_feature/lead.json

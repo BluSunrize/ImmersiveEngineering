@@ -9,23 +9,22 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
-import blusunrize.immersiveengineering.api.utils.codec.IECodecs;
 import blusunrize.immersiveengineering.api.utils.codec.IEStreamCodecs;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
+import blusunrize.immersiveengineering.common.gui.ChunkLoaderMenu.NearbyBlockEntity;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
 import blusunrize.immersiveengineering.common.gui.RadioTowerMenu.NearbyComponents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.UnaryOperator;
 
@@ -38,6 +37,9 @@ public class GenericDataSerializers
 	);
 	public static final DataSerializer<Boolean> BOOLEAN = register(ByteBufCodecs.BOOL);
 	public static final DataSerializer<Float> FLOAT = register(ByteBufCodecs.FLOAT);
+	public static final DataSerializer<Optional<ResourceLocation>> OPTIONAL_RESOURCE_LOCATION = register(
+			ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC)
+	);
 	public static final DataSerializer<List<ProcessSlot>> ARC_PROCESS_SLOTS = register(
 			ProcessSlot.STREAM_CODEC.apply(ByteBufCodecs.list())
 	);
@@ -73,6 +75,10 @@ public class GenericDataSerializers
 	);
 	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(NearbyComponents.STREAM_CODEC);
 	public static final DataSerializer<FilterConfig> FILTER_CONFIG = register(FilterConfig.CODEC.streamCodec());
+	public static final DataSerializer<List<NearbyBlockEntity>> NEARBY_BLOCK_ENTITIES = register(
+			NearbyBlockEntity.STREAM_CODEC.apply(ByteBufCodecs.list())
+	);
+	public static final DataSerializer<BlockPos> BLOCK_POS = register(BlockPos.STREAM_CODEC);
 
 	private static <T> DataSerializer<T> register(StreamCodec<? super RegistryFriendlyByteBuf, T> codec)
 	{

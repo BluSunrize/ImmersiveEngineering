@@ -34,6 +34,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -73,11 +74,11 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
-		if(transformType==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transformType==ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
+		Vector3f baseTransformScale = model.getBaseTransforms(transformType).scale;
+		if(baseTransformScale.x()*baseTransformScale.y()*baseTransformScale.z() < 0)
 		{
-			// todo: do we still need this? Currently it's just resulting in model rendering inside-out
-			// MultiBufferSource oldBufferIn = bufferIn;
-			// bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
+			 MultiBufferSource oldBufferIn = bufferIn;
+			 bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
 		}
 		for(List<String> groups : callback.getSpecialGroups(stack, transformType, entity))
 		{

@@ -29,7 +29,7 @@ public class CommandShaders
 		main.requires(source -> source.hasPermission(4));
 		main.executes(source -> clearShaders(source, source.getSource().getPlayerOrException()));
 		main.then(Commands.argument("player", EntityArgument.player()).executes(
-				context -> clearShaders(context, context.getArgument("player", ServerPlayer.class))));
+				context -> clearShaders(context,  EntityArgument.getPlayer(context, "player"))));
 		return main;
 	}
 

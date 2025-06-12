@@ -5,10 +5,8 @@
     "item": "minecraft:spruce_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:spruce_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:spruce_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

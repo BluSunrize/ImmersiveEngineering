@@ -70,9 +70,10 @@ public class GeneralLoot implements LootTableSubProvider
 				.add(createEntry(Metals.NUGGETS.get(EnumMetals.LEAD), 9, 1, 4))
 				.add(createEntry(Metals.NUGGETS.get(EnumMetals.SILVER), 7, 1, 2))
 				.add(createEntry(Metals.NUGGETS.get(EnumMetals.NICKEL), 7, 1, 2))
+				.add(createBlueprint("components", 4))
 				.add(createBlueprint("bullet", 4))
 				.add(createBlueprint("specialBullet", 4))
-				.add(createBlueprint("electrode", 4));
+				.add(createBlueprint("molds", 4));
 		LootTable.Builder builder = LootTable.lootTable();
 		builder.withPool(mainPool);
 		out.accept(key("chests/engineers_house"), builder);

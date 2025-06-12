@@ -2,6 +2,7 @@ Crafting Components
 Integral Pieces
 Many machines and tools are constructed from various sub-components. Some of these you will have to use on a regular basis, detailed on the following pages.<br>
 Simple components can be crafted in the regular §2Crafting Table§r, but advanced components will need the help of a <link;engineers_workbench;specialized workbench>.<np>
+<&basic_engineering>The §2Basic Engineering Block§r serves as the main construction material for a large variety of machinery. It makes up a core frame for most single-block machinery, especially in matters of transportation and power storage.
 <&mech_components>The §2Iron§r and §2Steel Mechanical Components§r are integral to the majority of machinery large and small.<br>
 As you will find yourself creating these components more frequently, it may be advisable to draft a <link;blueprints;Blueprint> for them.<np>
 <&component_blueprint>

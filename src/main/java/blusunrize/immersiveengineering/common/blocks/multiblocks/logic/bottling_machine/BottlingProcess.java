@@ -10,7 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling
 
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
@@ -29,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +47,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 			IEApi.ieLoc("bottling_dummy"),
 			new BottlingMachineRecipe(
 					new TagOutputList(TagOutput.EMPTY), IngredientWithSize.of(ItemStack.EMPTY),
-					new FluidTagInput(FluidTags.WATER, 0)
+					SizedFluidIngredient.of(FluidTags.WATER, 1)
 			)
 	);
 	private static final float TRANSFORMATION_POINT = 0.45f;
@@ -122,7 +126,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 				}
 				// normal recipes just consume the fluid at this point
 				else
-					tank.drain(getRecipe(rawLevel).fluidInput.getAmount(), FluidAction.EXECUTE);
+					tank.drain(getRecipe(rawLevel).fluidInput.amount(), FluidAction.EXECUTE);
 			}
 		}
 	}

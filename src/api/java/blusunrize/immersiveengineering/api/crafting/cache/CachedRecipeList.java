@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -103,10 +104,14 @@ public class CachedRecipeList<R extends Recipe<?>>
 				.filter(iRecipe -> iRecipe.value().getType()==type.get())
 				.flatMap(r -> {
 					if(r.value() instanceof IListRecipe listRecipe)
+					{
+						int total = listRecipe.getSubRecipes().size();
+						String fmt = total >= 10000?"%05d": total >= 1000?"%04d": total >= 100?"%03d": total >= 10?"%02d": "%01d";
 						return Streams.mapWithIndex(
 								listRecipe.getSubRecipes().stream(),
-								(subRecipe, i) -> new RecipeHolder<>(r.id().withSuffix(Long.toString(i)), subRecipe)
+								(subRecipe, i) -> new RecipeHolder<>(r.id().withSuffix(String.format(fmt, i)), subRecipe)
 						);
+					}
 					else
 						return Stream.of(r);
 				})

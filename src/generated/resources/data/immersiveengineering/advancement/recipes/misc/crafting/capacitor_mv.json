@@ -11,39 +11,17 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_steel_ingot": {
-      "conditions": {
-        "items": [
-          {
-            "items": "#c:ingots/steel"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "immersiveengineering:crafting/capacitor_mv"
       },
       "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_treated_planks": {
-      "conditions": {
-        "items": [
-          {
-            "items": "#immersiveengineering:treated_wood"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_nickel_ingot",
-      "has_steel_ingot",
-      "has_treated_planks"
+      "has_nickel_ingot"
     ]
   ],
   "rewards": {

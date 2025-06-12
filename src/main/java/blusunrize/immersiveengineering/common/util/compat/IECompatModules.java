@@ -33,6 +33,7 @@ public final class IECompatModules
 	{
 		EARLY_MODULE_CLASSES.put(ComputerCraftAPI.MOD_ID, ComputerCraftCompatModule.class);
 		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
+		STANDARD_MODULE_CLASSES.put("create", CreateCompatModule.class);
 	}
 
 	public static void onModConstruction(IEventBus modBus)

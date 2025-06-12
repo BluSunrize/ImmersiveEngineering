@@ -44,13 +44,13 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		if(recipe.input0!=null)
 			builder.addSlot(RecipeIngredientRole.INPUT, 7, 10)
 					.setFluidRenderer(FluidType.BUCKET_VOLUME/20, false, 16, 47)
-					.addIngredients(NeoForgeTypes.FLUID_STACK, recipe.input0.getMatchingFluidStacks())
+					.addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.asList(recipe.input0.getFluids()))
 					.setOverlay(tankOverlay, 0, 0);
 		if(recipe.input1!=null)
 			builder.addSlot(RecipeIngredientRole.INPUT, 34, 10)
 					.setFluidRenderer(FluidType.BUCKET_VOLUME/20, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
-					.addIngredients(NeoForgeTypes.FLUID_STACK, recipe.input1.getMatchingFluidStacks());
+					.addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.asList(recipe.input1.getFluids()));
 		if(!recipe.catalyst.isEmpty())
 		{
 			builder.addSlot(RecipeIngredientRole.INPUT, 67, 16)

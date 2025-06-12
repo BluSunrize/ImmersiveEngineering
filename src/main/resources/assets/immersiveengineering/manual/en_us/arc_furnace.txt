@@ -9,7 +9,7 @@ Energy is input through the three connectors at the back, and supplying the cont
  Outputs are retrieved from the basin at the front of the structure, slag through the port at the center back. The Arc Furnace will automatically push outputs and slag to connected receptacles.<br>
 Right-clicking the panel, cauldron, or vat will open the interface.<np>
 §lInterface:§r
-The three slots at the top are for the <link;coke_and_graphite;Graphite Electrodes;electrode>.<br>
+The three slots at the top are for the <link;coke_and_graphite;Graphite Electrodes;shaping>.<br>
 The twelve slots on the left are the input slots for metals and ores. Each slot has a temperature bar next to it, representing the progress of smelting.<br>
 The button in the top left of the screen changes whether items are spread across the arc furnace or concentrated in one point in the vat.<br>
 The four slots on the right are for "additives", different materials added to the molten metal during the crafting process. An example of these would be adding Coke Dust to melting Iron in order to create Steel.<br>

@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.RailgunCallbacks.Key;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
@@ -47,6 +48,13 @@ public class RailgunCallbacks implements ItemCallback<Key>
 	@Override
 	public void handlePerspective(Key key, LivingEntity holder, ItemDisplayContext cameraTransformType, PoseStack mat)
 	{
+		if(ZoomHandler.isZooming && (cameraTransformType==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraTransformType==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND))
+		{
+			// hide the item in first person when zooming
+			mat.scale(0f,0f,0f);
+			return;
+		}
+
 		if(holder instanceof Fusilier fusilier&&(cameraTransformType==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||cameraTransformType==ItemDisplayContext.THIRD_PERSON_LEFT_HAND))
 		{
 			switch(fusilier.getArmPose())

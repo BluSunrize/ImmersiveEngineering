@@ -91,7 +91,7 @@ public class SetRestrictedField<T> implements Supplier<T>
 		private final List<Pair<Exception, SetRestrictedField<?>>> fields = new ArrayList<>();
 		private TrackerState state = TrackerState.OPEN;
 
-		<T> SetRestrictedField<T> make()
+		synchronized <T> SetRestrictedField<T> make()
 		{
 			Preconditions.checkState(state!=TrackerState.LOCKED);
 			SetRestrictedField<T> result = new SetRestrictedField<>(this);

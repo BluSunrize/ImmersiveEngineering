@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "tag": "c:rods/wooden"
+    },
+    "w": {
+      "tag": "immersiveengineering:treated_wood"
+    }
+  },
+  "pattern": [
+    "www",
+    "www",
+    " s "
+  ],
+  "result": {
+    "count": 3,
+    "id": "immersiveengineering:treated_wood_sign"
+  }
+}

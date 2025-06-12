@@ -467,6 +467,8 @@ public class SawmillLogic
 
 		private float getSawbladeComparatorValue()
 		{
+			if(sawblade.isEmpty())
+				return 0;
 			return 1-(sawblade.getDamageValue()/(float)sawblade.getMaxDamage());
 		}
 	}

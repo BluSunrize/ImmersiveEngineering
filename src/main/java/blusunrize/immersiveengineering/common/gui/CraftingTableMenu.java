@@ -82,7 +82,14 @@ public class CraftingTableMenu extends IEContainerMenu
 
 		int iSlot = 0;
 		for(int i = 0; i < 18; i++)
-			this.addSlot(new SlotItemHandler(storageInventory, iSlot++, 8+(i%9)*18, 79+(i/9)*18));
+			this.addSlot(new SlotItemHandler(storageInventory, iSlot++, 8+(i%9)*18, 79+(i/9)*18){
+				// we gotta override this for JEI!
+				@Override
+				public boolean allowModification(Player player)
+				{
+					return true;
+				}
+			});
 
 		this.ownSlotCount = storageInventory.getSlots()+craftingItems.size();
 

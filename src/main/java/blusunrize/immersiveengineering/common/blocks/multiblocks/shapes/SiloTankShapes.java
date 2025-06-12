@@ -14,7 +14,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.function.Function;
 
-public record SiloTankShapes(int height) implements Function<BlockPos, VoxelShape>
+public record SiloTankShapes(int height, boolean offsetLegs) implements Function<BlockPos, VoxelShape>
 {
 	@Override
 	public VoxelShape apply(BlockPos posInMultiblock)
@@ -23,10 +23,17 @@ public record SiloTankShapes(int height) implements Function<BlockPos, VoxelShap
 		if(!isCenter&&posInMultiblock.getY()==0)
 		{
 			// Wooden supports
-			float xMin = posInMultiblock.getX()==2?.75f: 0;
-			float xMax = posInMultiblock.getX()==0?.25f: 1;
-			float zMin = posInMultiblock.getZ()==2?.75f: 0;
-			float zMax = posInMultiblock.getZ()==0?.25f: 1;
+			float xMin = .375f;
+			float xMax = .625f;
+			float zMin = .375f;
+			float zMax = .625f;
+			if(offsetLegs)
+			{
+				xMin = posInMultiblock.getX()==2?.75f: 0;
+				xMax = posInMultiblock.getX()==0?.25f: 1;
+				zMin = posInMultiblock.getZ()==2?.75f: 0;
+				zMax = posInMultiblock.getZ()==0?.25f: 1;
+			}
 			return Shapes.box(xMin, 0, zMin, xMax, 1, zMax);
 		}
 		else if(!isCenter&&posInMultiblock.getY()==height)

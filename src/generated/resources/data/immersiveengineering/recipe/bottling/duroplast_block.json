@@ -9,13 +9,11 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "item": "immersiveengineering:duroplast"
-      },
-      "count": 4
+      "count": 4,
+      "id": "immersiveengineering:duroplast"
     },
     {
-      "item": "immersiveengineering:mold_packing_4"
+      "id": "immersiveengineering:mold_packing_4"
     }
   ]
 }

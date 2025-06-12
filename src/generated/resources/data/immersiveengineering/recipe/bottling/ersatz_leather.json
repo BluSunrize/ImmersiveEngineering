@@ -14,10 +14,10 @@
   ],
   "results": [
     {
-      "item": "immersiveengineering:ersatz_leather"
+      "id": "immersiveengineering:ersatz_leather"
     },
     {
-      "item": "immersiveengineering:mold_plate"
+      "id": "immersiveengineering:mold_plate"
     }
   ]
 }

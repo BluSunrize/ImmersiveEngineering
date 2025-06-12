@@ -67,6 +67,8 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.sounds.SoundManager;
@@ -140,6 +142,7 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("structural_connector"), StructuralConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("workbench"), WorkbenchCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("chunk_loader"), ChunkLoaderCallbacks.INSTANCE);
 
 		IEOBJCallbacks.register(rl("submodel"), DynamicSubmodelCallbacks.INSTANCE);
 
@@ -436,6 +439,7 @@ public class ClientProxy extends CommonProxy
 		ev.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
 		ev.register(IEMenuTypes.MIXER.getType(), MixerScreen::new);
 		ev.register(IEMenuTypes.RADIO_TOWER.getType(), RadioTowerScreen::new);
+		ev.register(IEMenuTypes.CHUNK_LOADER.getType(), ChunkLoaderScreen::new);
 		ev.register(IEMenuTypes.GUN_TURRET.getType(), GunTurretScreen::new);
 		ev.register(IEMenuTypes.CHEM_TURRET.getType(), ChemTurretScreen::new);
 		ev.register(IEMenuTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
@@ -495,6 +499,9 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
 		event.registerBlockEntityRenderer(IEBlockEntities.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		//SIGNS
+		event.registerBlockEntityRenderer(IEBlockEntities.SIGN.get(), SignRenderer::new);
+		event.registerBlockEntityRenderer(IEBlockEntities.HANGING_SIGN.get(), HangingSignRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>

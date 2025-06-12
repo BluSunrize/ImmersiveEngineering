@@ -3,7 +3,7 @@ The Pressure is On
 <&pump_recipe>Fluid Pumps are used to move and pressurize fluids, both within and without pipe systems.<br>
 Fluids will only be pumped from <link;storage_barrels;fluid barrels> or <link;storage_minecarts;minecarts;fluid_storage> if the tank and pump have connections on that side.<br>
 Using the Engineer's Hammer on the faces of the lower half of the pump will change the connection between input, output, and blocked.<br>
-When given a redstone signal, the fluid pump will extract at low power, moving fluid into the output for distribution.<br>
-Providing a fluid pump with flux will engage the high pressure pump and will output the fluid at a significant boost in transfer rate.<br>
+When given a redstone signal, the fluid pump will extract at low power. Right-clicking it with an Engineer's Screwdriver will invert this behavior.<br>
+Providing a fluid pump with flux will engage the high pressure pump and significantly increase the transfer rate.<br>
 When placed against pools of fluid in the world, pumps will suck up the fluid into their internal tank from their inputs. Water can be pumped in the same way it can be picked up with a bucket.<br>
 Fluids that are picked up will be replaced with cobblestone to the amount of flowing fluids in the world. This behavior can be toggled off and on by using an Engineer's Hammer on the pump's top while sneaking.

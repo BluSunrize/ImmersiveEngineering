@@ -1,0 +1,27 @@
+{
+  "recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/treated_wood_sign"
+        },
+        {
+          "recipe": "crafting/treated_wood_hanging_sign"
+        },
+        {
+          "recipe": "crafting/steel_sign"
+        },
+        {
+          "recipe": "crafting/steel_hanging_sign"
+        },
+        {
+          "recipe": "crafting/aluminum_sign"
+        },
+        {
+          "recipe": "crafting/aluminum_hanging_sign"
+        }
+      ]
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:pitcher_pod"
+  },
+  "render": {
+    "type": "immersiveengineering:doublecrop",
+    "block": "minecraft:pitcher_crop",
+    "doublingAge": 3
+  },
+  "results": [
+    {
+      "id": "minecraft:pitcher_plant"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200
+}

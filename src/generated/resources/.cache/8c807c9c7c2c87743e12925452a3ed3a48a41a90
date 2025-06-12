@@ -1,4 +1,5 @@
-// 1.21.1	2024-08-09T19:03:20.553602058	Global Loot Modifiers : immersiveengineering
-031d68fc99859f323c5c7932c2744e9b6801732c data/immersiveengineering/loot_modifiers/hemp_from_grass.json
-919ec056c0a704fe919ce120e849d5e305c071f4 data/immersiveengineering/loot_modifiers/hemp_from_tall_grass.json
-1b5b2e67e05249924c6a6727b081bbea8a4a60ef data/neoforge/loot_modifiers/global_loot_modifiers.json
+// 1.21.1	2025-04-26T10:27:52.6758922	Global Loot Modifiers : immersiveengineering
+ddbe74e35934b4ba7850727146a1927386ec3d77 data/immersiveengineering/loot_modifiers/hemp_from_grass.json
+d37dd074f178a8990dd3f5eef8c698bf28d0bb86 data/immersiveengineering/loot_modifiers/hemp_from_tall_grass.json
+eb6b38596927335f56fdd2b499bee4d9c062c877 data/immersiveengineering/loot_modifiers/trial_vault_blueprint.json
+3d5a6c019dad11bb34d157fbcbcde8cabc5d46c5 data/neoforge/loot_modifiers/global_loot_modifiers.json

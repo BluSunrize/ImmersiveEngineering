@@ -5,9 +5,7 @@
     "item": "minecraft:bone"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:bone_meal"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:bone_meal"
   }
 }

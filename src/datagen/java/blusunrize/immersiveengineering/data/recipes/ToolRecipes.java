@@ -370,8 +370,7 @@ public class ToolRecipes extends IERecipeProvider
 				.unlockedBy("has_firework", has(Items.FIREWORK_ROCKET))
 				.save(
 						new WrappingRecipeOutput<ShapedRecipe>(
-								//Since this isn't relative positioning, we have to account for the top 6 slots >_>
-								out, r -> new TurnAndCopyRecipe(r, List.of(0, 1, 2, 3, 4, 5, 6))
+								out, r -> new TurnAndCopyRecipe(r, List.of(0))
 						),
 						toRL(toPath(BulletHandler.getBulletItem(IEBullets.FIREWORK)))
 				);

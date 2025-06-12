@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_circuit_board": {
+    "has_electron_tube": {
       "conditions": {
         "items": [
           {
-            "items": "immersiveengineering:circuit_board"
+            "items": "immersiveengineering:electron_tube"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_circuit_board"
+      "has_electron_tube"
     ]
   ],
   "rewards": {

@@ -1,0 +1,4 @@
+Signs
+Striking De-Signs!
+<&recipes>Treated wood, aluminium and steel can all be used to craft signs and hanging signs.<br>
+They behave exactly like any wooden sign does, including colouring their text with §2dye§r or making it glow by applying a §2glow ink sack§r.

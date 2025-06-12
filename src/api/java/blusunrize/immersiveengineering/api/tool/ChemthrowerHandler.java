@@ -21,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -87,19 +88,19 @@ public class ChemthrowerHandler
 
 	public abstract static class ChemthrowerEffect
 	{
-		public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+		public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 		{
-			applyToEntity(target, shooter, thrower, fluid.getFluid());
+			applyToEntity(target, shooter, projectile, thrower, fluid.getFluid());
 		}
 
-		public abstract void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid);
 
-		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
+		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, FluidStack fluid)
 		{
-			applyToBlock(world, mop, shooter, thrower, fluid.getFluid());
+			applyToBlock(world, mop, shooter, projectile, thrower, fluid.getFluid());
 		}
 
-		public abstract void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid);
+		public abstract void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid);
 	}
 
 	public static class ChemthrowerEffect_Damage extends ChemthrowerEffect
@@ -114,7 +115,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
 			if(this.source!=null)
 			{
@@ -128,7 +129,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
 		}
 	}
@@ -159,16 +160,22 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
-			super.applyToEntity(target, shooter, thrower, fluid);
+			super.applyToEntity(target, shooter, projectile, thrower, fluid);
 			if(this.potionEffects!=null&&this.potionEffects.length > 0)
 				for(int iEffect = 0; iEffect < this.potionEffects.length; iEffect++)
 					if(target.getRandom().nextFloat() < this.effectChances[iEffect])
 					{
 						MobEffectInstance e = this.potionEffects[iEffect];
-						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), e.getDuration(), e.getAmplifier());
-						target.addEffect(newEffect);
+						MobEffect effect = e.getEffect().value();
+						if(effect.isInstantenous())
+							effect.applyInstantenousEffect(projectile, shooter, target, e.getAmplifier(), 1);
+						else
+						{
+							MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), e.getDuration(), e.getAmplifier());
+							target.addEffect(newEffect);
+						}
 					}
 		}
 	}
@@ -184,7 +191,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
 			if(target.isOnFire())
 				target.clearFire();
@@ -195,7 +202,7 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
 			if(!(mop instanceof BlockHitResult))
 				return;
@@ -223,9 +230,9 @@ public class ChemthrowerHandler
 		}
 
 		@Override
-		public void applyToEntity(LivingEntity target, Player shooter, ItemStack thrower, Fluid fluid)
+		public void applyToEntity(LivingEntity target, Player shooter, @Nullable Entity projectile, ItemStack thrower, Fluid fluid)
 		{
-			super.applyToEntity(target, shooter, thrower, fluid);
+			super.applyToEntity(target, shooter, projectile, thrower, fluid);
 			if(ApiUtils.RANDOM.nextFloat() < chance)
 			{
 				double x = target.getX()-8+ApiUtils.RANDOM.nextInt(17);

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -96,6 +98,11 @@ public class IEBlockInterfaces
 		int getStrongRSOutput(Direction side);
 
 		boolean canConnectRedstone(Direction side);
+
+		@Nullable
+		default Pair<DyeColor, Byte>[] overrideVoltmeterRead() {
+			return null;
+		}
 	}
 
 	public interface IColouredBlock

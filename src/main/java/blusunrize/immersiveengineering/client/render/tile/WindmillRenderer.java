@@ -70,7 +70,7 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 
 		transform.translate(-.5, -.5, -.5);
 		getBufferHolder(tile.sails)
-				.render(RenderType.cutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
+				.render(RenderType.cutout(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
 		transform.popPose();
 	}
 

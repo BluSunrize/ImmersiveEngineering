@@ -36,7 +36,7 @@ public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 {
 	static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_firework")};
 	private static final CodecsAndDefault<Fireworks> CODEC = new CodecsAndDefault<>(
-			new DualCodec<>(Fireworks.CODEC, Fireworks.STREAM_CODEC), new Fireworks(1, List.of())
+			new DualCodec<>(Fireworks.CODEC, Fireworks.STREAM_CODEC), new Fireworks(1, List.of()), DataComponents.FIREWORKS
 	);
 
 	public FireworkBullet()
@@ -86,9 +86,8 @@ public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 	@Override
 	public void addTooltip(Fireworks data, TooltipContext world, List<Component> list, TooltipFlag flag)
 	{
-		ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
-		fireworkStack.set(DataComponents.FIREWORKS, data);
-		Items.FIREWORK_ROCKET.appendHoverText(fireworkStack, world, list, flag);
+		if(data!=null)
+			data.addToTooltip(world, list::add, flag);
 	}
 
 	@Override

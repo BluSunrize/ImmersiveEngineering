@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeMapCodecs;
 import malte0811.dualcodecs.DualMapCodec;
-import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
@@ -28,6 +28,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,
 			IngredientWithSize.CODECS.fieldOf("input"), r -> r.input,
 			IngredientWithSize.CODECS.listOf().fieldOf("additives"), r -> r.additives,
+			DualCodecs.STRING.optionalFieldOf("specialRecipeType", ""), r -> r.specialRecipeType,
 			ArcFurnaceRecipe::new
 	);
 

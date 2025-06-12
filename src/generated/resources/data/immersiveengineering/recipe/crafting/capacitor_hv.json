@@ -6,24 +6,23 @@
       "tag": "c:plates/aluminum"
     },
     "c": {
-      "tag": "c:ingots/hop_graphite"
+      "tag": "c:plates/hop_graphite"
     },
     "e": {
+      "tag": "c:ingots/aluminum"
+    },
+    "r": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
       "tag": "c:redstone_acid"
     },
-    "f": {
-      "tag": "c:ingots/steel"
-    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "waw",
-    "fef",
-    "wcw"
+    "ere",
+    "awc"
   ],
   "result": {
     "count": 1,

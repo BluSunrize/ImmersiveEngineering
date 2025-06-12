@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "minecraft:echo_shard"
+    },
+    "g": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "i": {
+      "tag": "c:sheetmetals/lead"
+    }
+  },
+  "pattern": [
+    "igi",
+    "geg",
+    "igi"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:resonanz_engineering"
+  }
+}

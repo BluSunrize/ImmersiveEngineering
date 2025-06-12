@@ -49,7 +49,7 @@
   "desc.immersiveengineering.info.attachedToDim": "Verlinkung von %1$s, %2$s und %3$s in der Dimension %4$s",
   "desc.immersiveengineering.info.energyStored": "Gespeicherte Energie: %1$s Flux",
   "desc.immersiveengineering.info.energyStoredEU": "Gespeicherte Energie: %1$s EU",
-  "desc.immersiveengineering.info.redstoneLevel": ": %1$s",
+  "desc.immersiveengineering.info.redstone_level": ": %1$s",
   "desc.immersiveengineering.info.fluidStored": "%1$s %2$s MB",
   "desc.immersiveengineering.info.gasStored": "Gas gespeichert: %1$s",
   "desc.immersiveengineering.info.colour": "Farbe: ",

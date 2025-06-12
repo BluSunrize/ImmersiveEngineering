@@ -62,6 +62,7 @@ public class IESounds
 	public static final Holder<SoundEvent> siren = registerSound("siren");
 	public static final Holder<SoundEvent> klaxon = registerSound("klaxon");
 	public static final Holder<SoundEvent> buzzer = registerSound("buzzer");
+  public static final Holder<SoundEvent> note_block_resonanz = registerSound("note_block_resonanz");
 	public static final Holder<SoundEvent> drill_idle = registerSound("drill_idle");
 	public static final Holder<SoundEvent> drill_busy = registerSound("drill_busy");
 	public static final Holder<SoundEvent> drill_fade = registerSound("drill_fade");

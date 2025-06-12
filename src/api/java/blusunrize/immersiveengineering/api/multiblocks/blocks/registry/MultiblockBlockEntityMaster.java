@@ -102,6 +102,7 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	public void setRemoved()
 	{
 		super.setRemoved();
+		helper.onRemoved();
 		helper.invalidateAllCaps();
 	}
 

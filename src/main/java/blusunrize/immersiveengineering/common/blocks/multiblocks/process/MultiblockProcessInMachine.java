@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
@@ -25,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
@@ -93,7 +93,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 		return recipe==null?List.of(): recipe.getItemInputs();
 	}
 
-	protected List<FluidTagInput> getRecipeFluidInputs(ProcessContextInMachine<R> context, Level level)
+	protected List<SizedFluidIngredient> getRecipeFluidInputs(ProcessContextInMachine<R> context, Level level)
 	{
 		R recipe = getLevelData(level).recipe();
 		return recipe==null?List.of(): recipe.getFluidInputs();
@@ -215,14 +215,14 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 				}
 		}
 		IFluidTank[] tanks = context.getInternalTanks();
-		List<FluidTagInput> fluidInputList = this.getRecipeFluidInputs(context, level.getRawLevel());
+		List<SizedFluidIngredient> fluidInputList = this.getRecipeFluidInputs(context, level.getRawLevel());
 		if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 		{
-			for(FluidTagInput ingr : new ArrayList<>(fluidInputList))
+			for(SizedFluidIngredient ingr : new ArrayList<>(fluidInputList))
 			{
-				int ingrSize = ingr.getAmount();
+				int ingrSize = ingr.amount();
 				for(int tank : this.inputTanks)
-					if(tanks[tank]!=null&&ingr.testIgnoringAmount(tanks[tank].getFluid()))
+					if(tanks[tank]!=null&&ingr.ingredient().test(tanks[tank].getFluid()))
 					{
 						int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
 						tanks[tank].drain(taken, FluidAction.EXECUTE);

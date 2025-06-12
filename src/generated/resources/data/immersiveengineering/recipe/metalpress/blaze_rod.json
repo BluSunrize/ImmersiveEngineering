@@ -9,6 +9,6 @@
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
-    "item": "minecraft:blaze_rod"
+    "id": "minecraft:blaze_rod"
   }
 }

@@ -5,7 +5,7 @@
     "item": "minecraft:bamboo_door"
   },
   "result": {
-    "item": "minecraft:bamboo_planks"
+    "id": "minecraft:bamboo_planks"
   },
   "secondaryOutputs": [
     {

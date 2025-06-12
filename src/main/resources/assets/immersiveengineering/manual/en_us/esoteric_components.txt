@@ -1,0 +1,7 @@
+Esoteric Components
+Her Dark Materials
+In your travels of this world, you have heard rumors - even found proof - of certain materials beyond common understanding, and with properties outside the realms of common technology.<br>
+Integrating these materials into engineering opens entirely new horizons!<np>
+<&resonanz_engineering>
+The §2echo shard§r is such a component, vibrating on frequencies that penetrate the fabric of reality. You dub this phenomenon: §nResonanz§r.
+Encased in a protective lead shell along advanced circuitry, they shall be used in confounding constructions!

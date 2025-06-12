@@ -1,0 +1,10 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 2400,
+  "input": {
+    "tag": "c:plates/hop_graphite"
+  },
+  "result": {
+    "tag": "c:dusts/hop_graphite"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "immersiveengineering:add_drop",
+  "conditions": [
+    {
+      "chance": 0.062,
+      "condition": "minecraft:random_chance"
+    },
+    {
+      "block": "minecraft:vault",
+      "condition": "immersiveengineering:blockstate"
+    }
+  ],
+  "item": {
+    "components": {
+      "immersiveengineering:blueprint": "automatons"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
+  }
+}

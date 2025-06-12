@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.inventory;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -184,7 +184,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	}
 
 	@Nonnull
-	public FluidStack drain(FluidTagInput fluidTag, FluidAction action)
+	public FluidStack drain(FluidIngredient fluidIngredient, int toDrain, FluidAction action)
 	{
 		if(this.fluids.isEmpty())
 			return FluidStack.EMPTY;
@@ -192,9 +192,9 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		while(it.hasNext())
 		{
 			FluidStack fs = it.next();
-			if(fluidTag.testIgnoringAmount(fs))
+			if(fluidIngredient.test(fs))
 			{
-				int amount = Math.min(fluidTag.getAmount(), fs.getAmount());
+				int amount = Math.min(toDrain, fs.getAmount());
 				FluidStack ret = fs.copyWithAmount(amount);
 				if(action.execute())
 				{

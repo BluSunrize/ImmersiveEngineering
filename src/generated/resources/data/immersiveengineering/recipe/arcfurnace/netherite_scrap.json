@@ -7,10 +7,8 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "item": "minecraft:netherite_scrap"
-      },
-      "count": 2
+      "count": 2,
+      "id": "minecraft:netherite_scrap"
     }
   ],
   "slag": {

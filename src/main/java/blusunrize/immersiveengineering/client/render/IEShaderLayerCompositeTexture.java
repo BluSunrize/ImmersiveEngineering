@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.IntFunction;
 
-import static net.minecraft.util.FastColor.ARGB32.*;
-
 public class IEShaderLayerCompositeTexture extends AbstractTexture
 {
 	/**
@@ -41,6 +39,9 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 	@Override
 	public void load(@Nonnull ResourceManager resourceManager)
 	{
+		// Everything in this method uses ABGR, because Mojang I guess
+		// Even methods that have "RGBA" in the name actually expect ABGR as a format
+
 		this.releaseId();
 		Resource iresource = resourceManager.getResource(this.canvasTexture).orElseThrow();
 		try(
@@ -72,10 +73,10 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 				)
 				{
 
-					// this uses ABGR instead of ARGB, because Mojang I guess
-					float[] mod = new float[]{colour.b(), colour.g(), colour.a(), colour.a()};
-					if(mod[3] < 0.2)
-						mod[3] *= 2.5f;
+					float[] layerABGR = new float[]{colour.a(), colour.b(), colour.g(), colour.r()};
+					// increase low alpha values
+					if(layerABGR[0] < 0.2)
+						layerABGR[0] *= 2.5f;
 
 					IntFunction<Integer> uInterpolate = uIn -> uIn;
 					IntFunction<Integer> vInterpolate = vIn -> vIn;
@@ -110,39 +111,21 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 								int interU = uInterpolate.apply(u)%bufImg2Size;
 								int interV = vInterpolate.apply(v)%bufImg2Size;
 
-								int iRGB = texureImage.getPixelRGBA(interU, interV);
-
-								float[] rgb = {(iRGB&255)/255f, (iRGB >> 8&255)/255f, (iRGB >> 16&255)/255f, (iRGB >> 24&255)/255f};
-								if((iRGB&0xff000000)!=0)
+								ColorABGR baseABGR = new ColorABGR(texureImage.getPixelRGBA(interU, interV));
+								if(!baseABGR.isTransparent())
 								{
 									int iNoise = originalImage.getPixelRGBA(u, v);
-									float[] noise = {(iNoise&255)/255f, (iNoise >> 8&255)/255f, (iNoise >> 16&255)/255f, (iNoise >> 24&255)/255f};
+									float[] noiseABGR = {(iNoise&255)/255f, (iNoise>>8&255)/255f, (iNoise>>16&255)/255f, (iNoise>>24&255)/255f};
 
-									for(int m = 0; m < 4; m++)
-										rgb[m] = rgb[m]*mod[m]*noise[m];
-									int[] irgb = {(int)(rgb[0]*255), (int)(rgb[1]*255), (int)(rgb[2]*255), (int)(rgb[3]*255)};
+									// Multiply texture value with layer & noise colour
+									baseABGR.modify(layerABGR);
+									baseABGR.modify(noiseABGR);
 
-									int i2 = (irgb[0])+(irgb[1]<<8)+(irgb[2]<<16)+(irgb[3]<<24);
-
-									// the final product may end up with low alpha, so we check for that
-									int pre = finalTexture.getPixelRGBA(u, v) >> 24&255;
-
-									// if we just set it, we also set alpha values, we gotta blend it
-									blendPixel(finalTexture, u, v, i2);
-
-									// if the image was blank, or the resulting alpha is lower than how it started,
-									// we fix it.
-									int post = finalTexture.getPixelRGBA(u, v);
-									if(pre==0)
-									{
-										int color = (irgb[3]<<24)|(post&0x00ffffff);
-										finalTexture.setPixelRGBA(u, v, color);
-									}
-									else if((post >> 24&255) < pre)
-									{
-										int color = (pre<<24)|(post&0x00ffffff);
-										finalTexture.setPixelRGBA(u, v, color);
-									}
+									// Apply to final texture
+									finalTexture.blendPixel(u, v, ColorABGR.blend(
+											baseABGR,
+											new ColorABGR(finalTexture.getPixelRGBA(u, v))
+									).toInt());
 								}
 							}
 					} catch(Exception e)
@@ -162,46 +145,58 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 		}
 	}
 
-	private void blendPixel(NativeImage image, int xIn, int yIn, int colIn)
+	private static final class ColorABGR
 	{
-		int existing = image.getPixelRGBA(xIn, yIn);
-		float alphaIn = (float)alpha(colIn)/255.0F;
-		float blueIn = (float)blue(colIn)/255.0F;
-		float greenIn = (float)green(colIn)/255.0F;
-		float redIn = (float)red(colIn)/255.0F;
-		float alphaOld = (float)alpha(existing)/255.0F;
-		float blueOld = (float)blue(existing)/255.0F;
-		float greenOld = (float)green(existing)/255.0F;
-		float redOld = (float)red(existing)/255.0F;
-		float oldMixFactor = 1.0F-alphaIn;
-		float alphaOut = alphaIn*alphaIn+alphaOld*oldMixFactor;
-		float blueOut = blueIn*alphaIn+blueOld*oldMixFactor;
-		float greenOut = greenIn*alphaIn+greenOld*oldMixFactor;
-		float redOut = redIn*alphaIn+redOld*oldMixFactor;
-		if(alphaOut > 1.0F)
+		private float a;
+		private float b;
+		private float g;
+		private float r;
+
+		private ColorABGR(float a, float b, float g, float r)
 		{
-			alphaOut = 1.0F;
+			this.a = Math.clamp(a, 0, 1);
+			this.b = Math.clamp(b, 0, 1);
+			this.g = Math.clamp(g, 0, 1);
+			this.r = Math.clamp(r, 0, 1);
 		}
 
-		if(blueOut > 1.0F)
+		public ColorABGR(int abgr)
 		{
-			blueOut = 1.0F;
+			this((abgr>>24&255)/255f, (abgr>>16&255)/255f, (abgr>>8&255)/255f, (abgr&255)/255f);
 		}
 
-		if(greenOut > 1.0F)
+		public static ColorABGR blend(ColorABGR input, ColorABGR existing)
 		{
-			greenOut = 1.0F;
+			float mixFactor = 1.0F-input.a;
+			float newAlpha = input.a*input.a+existing.a*mixFactor;
+			if(existing.a==0)
+				newAlpha = input.a;
+			else if(newAlpha < existing.a)
+				newAlpha = existing.a;
+			return new ColorABGR(
+					newAlpha,
+					input.b*input.a+existing.b*mixFactor,
+					input.g*input.a+existing.g*mixFactor,
+					input.r*input.a+existing.r*mixFactor
+			);
 		}
 
-		if(redOut > 1.0F)
+		public boolean isTransparent()
 		{
-			redOut = 1.0F;
+			return a==0||(r==0&&g==0&&b==0);
 		}
 
-		int redOutInt = (int)(alphaOut*255.0F);
-		int blueOutInt = (int)(blueOut*255.0F);
-		int greenOutInt = (int)(greenOut*255.0F);
-		int alphaOutInt = (int)(redOut*255.0F);
-		image.setPixelRGBA(xIn, yIn, color(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
+		public void modify(float[] rgba)
+		{
+			this.a *= rgba[0];
+			this.b *= rgba[1];
+			this.g *= rgba[2];
+			this.r *= rgba[3];
+		}
+
+		public int toInt()
+		{
+			return (int)(a*255)<<24|(int)(b*255)<<16|(int)(g*255)<<8|(int)(r*255);
+		}
 	}
 }

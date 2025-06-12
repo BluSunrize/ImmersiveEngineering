@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/cherry/houses",
+  "fallback": "repurposed_structures:villages/cherry/terminators",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "location": "immersiveengineering:villages/houses/cherry_engineer",
+        "processors": "repurposed_structures:villages/cherry/mossify",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}

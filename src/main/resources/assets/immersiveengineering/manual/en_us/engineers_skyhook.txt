@@ -4,6 +4,7 @@ The Engineer's Skyhook is a motorized grabber system designed to hook onto wires
 With it, engineers can quickly traverse the length of a powerline to move between substations or other sites.<np>
 Simply hold the right mouse button while close to a wire and you will be attached to it.<br>
 The button can be released while riding the wire, but letting go of the skyhook or sneaking will cause you to dismount.<br>
+The sudden deceleration from falling great heights and grabbing onto a wire §owill§r cause damage to the user.<np>
 Gravity will be sufficient to move along decending wires at a decent speed, the standard movement keys can be used to move along ascending wires.<br>
 When the skyhook reaches an intersection it will continue in as close to the direction the player is looking as possible.<np>
 <&skyhook_slope>By installing a §2High Toque Motor§r, the Skyhook has a much easier time climbing up ascending wires, reducing the impact the slope has on its speed.<np>

@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
+import com.mojang.datafixers.util.Pair;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import malte0811.dualcodecs.DualCodec;
@@ -36,9 +37,12 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -48,11 +52,13 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
-//TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>, IBlockEntityDrop
 {
 	public static final int FILTER_SLOTS_PER_SIDE = 8;
@@ -88,11 +94,12 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		if(!level.isClientSide&&canRoute())
 		{
 			boolean first = startRouting();
-			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
-			stack = doInsert(stack, validOutputs[0], simulate);
-			// Only if no filtered outputs were found, use unfiltered
-			if(validOutputs[0].length==0||!stack.isEmpty())
-				stack = doInsert(stack, validOutputs[1], simulate);
+			TransferPaths paths = getValidOutputs(inputSide, stack);
+			if(!paths.filteredSides.isEmpty())
+				stack = doInsert(stack, paths.filteredSides.toArray(Direction[]::new), simulate);
+			else
+				// Only if no filtered outputs were found, use unfiltered
+				stack = doInsert(stack, paths.unfilteredSides.toArray(Direction[]::new), simulate);
 			if(first)
 				routed = null;
 		}
@@ -144,26 +151,22 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		return IEMenuTypes.SORTER;
 	}
 
-	public Direction[][] getValidOutputs(Direction inputSide, ItemStack stack)
+	public TransferPaths getValidOutputs(Direction inputSide, ItemStack stack)
 	{
 		if(stack.isEmpty())
-			return new Direction[][]{{}, {}, {}, {}};
-		List<Direction> validFiltered = new ArrayList<>(6);
-		List<Direction> validUnfiltered = new ArrayList<>(6);
+			return TransferPaths.EMPTY;
+		TransferPaths paths = new TransferPaths();
 		for(Direction side : Direction.values())
 			if(side!=inputSide)
 			{
 				EnumFilterResult result = checkStackAgainstFilter(stack, side);
 				if(result==EnumFilterResult.VALID_FILTERED)
-					validFiltered.add(side);
+					paths.filteredSides.add(side);
 				else if(result==EnumFilterResult.VALID_UNFILTERED)
-					validUnfiltered.add(side);
+					paths.unfilteredSides.add(side);
 			}
 
-		return new Direction[][]{
-				validFiltered.toArray(new Direction[0]),
-				validUnfiltered.toArray(new Direction[0])
-		};
+		return paths;
 	}
 
 	public ItemStack pullItem(Direction outputSide, int amount, boolean simulate)
@@ -185,7 +188,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 							if(!extractItem.isEmpty())
 							{
 								if(concatFilter==null)//Init the filter here, to save on resources
-									concatFilter = this.concatFilters(outputSide, side);
+									concatFilter = this.concatFilters(side, outputSide);
 								if(concatFilter.test(extractItem))
 								{
 									if(first)
@@ -217,11 +220,11 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	private EnumFilterResult checkStackAgainstFilter(ItemStack stack, Direction side)
 	{
 		boolean unmapped = true;
-		for(ItemStack filterStack : filter.getFilterStacksOnSide(side))
-			if(!filterStack.isEmpty())
+		for(Pair<ItemStack, TagKey<Item>> filterStack : filter.getFilterStacksOnSide(side))
+			if(!filterStack.getFirst().isEmpty())
 			{
 				unmapped = false;
-				if(sideFilter.get(side).compareStackToFilterstack(stack, filterStack))
+				if(sideFilter.get(side).compareStackToFilterstack(stack, filterStack.getFirst(), filterStack.getSecond()))
 					return EnumFilterResult.VALID_FILTERED;
 			}
 		if(unmapped)
@@ -233,43 +236,47 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	 * @return A Predicate representing the concatinated filters of two sides.<br>
 	 * If one filter is empty, uses the full filter of the other side, else the matching items make up the filter
 	 */
-	private Predicate<ItemStack> concatFilters(Direction side0, Direction side1)
+	private Predicate<ItemStack> concatFilters(Direction sideFrom, Direction sideTo)
 	{
-		final List<ItemStack> concat = new ArrayList<>();
-		for(ItemStack filterStack : filter.getFilterStacksOnSide(side0))
-			if(!filterStack.isEmpty())
-				concat.add(filterStack);
+		final var filterFrom = sideFilter.get(sideFrom);
+		final var filterTo = sideFilter.get(sideTo);
 
-		Predicate<ItemStack> matchFilter = concat.isEmpty()?(stack) -> true: new Predicate<>()
-		{
-			final Set<ItemStack> filter = new HashSet<>(concat);
-			final FilterConfig config = sideFilter.get(side0);
+		// Build lists without emtpies
+		final List<Pair<ItemStack, TagKey<Item>>> stacksFrom = new ArrayList<>();
+		for(Pair<ItemStack, TagKey<Item>> filterStack : filter.getFilterStacksOnSide(sideFrom))
+			if(!filterStack.getFirst().isEmpty())
+				stacksFrom.add(filterStack);
+		final List<Pair<ItemStack, TagKey<Item>>> stacksTo = new ArrayList<>();
+		for(Pair<ItemStack, TagKey<Item>> filterStack : filter.getFilterStacksOnSide(sideTo))
+			if(!filterStack.getFirst().isEmpty())
+				stacksTo.add(filterStack);
 
-			@Override
-			public boolean test(ItemStack stack)
-			{
-				for(ItemStack filterStack : filter)
-					if(config.compareStackToFilterstack(stack, filterStack))
-						return true;
-				return false;
-			}
-		};
+		// If there is nothing configured, simply return true
+		if(stacksFrom.isEmpty()&&stacksTo.isEmpty())
+			return stack -> true;
+		// If only sideFrom is filtered
+		if(stacksTo.isEmpty())
+			return stack -> stacksFrom.stream().anyMatch(pair -> filterFrom.compareStackToFilterstack(stack, pair.getFirst(), pair.getSecond()));
+		// If only sideTo is filtered
+		if(stacksFrom.isEmpty())
+			return stack -> stacksTo.stream().anyMatch(pair -> filterTo.compareStackToFilterstack(stack, pair.getFirst(), pair.getSecond()));
 
-		for(ItemStack filterStack : filter.getFilterStacksOnSide(side1))
-			if(!filterStack.isEmpty()&&matchFilter.test(filterStack))
-				concat.add(filterStack);
+		// If both are filled, then we build combined predicates
+		List<Predicate<ItemStack>> combinedPredicates = stacksFrom.stream().flatMap(pairFrom -> {
+			Builder<Predicate<ItemStack>> builder = Stream.builder();
+			stacksTo.forEach(pairTo -> {
+				if(filterFrom.compareStackToFilterstack(pairTo.getFirst(), pairFrom.getFirst(), pairFrom.getSecond()))
+					builder.accept(itemStack ->
+							filterFrom.compareStackToFilterstack(itemStack, pairFrom.getFirst(), pairFrom.getSecond())
+									&&filterTo.compareStackToFilterstack(itemStack, pairTo.getFirst(), pairTo.getSecond())
+					);
+			});
+			return builder.build();
+		}).toList();
 
-		// TODO this looks dodgy
-		final var filterFrom = sideFilter.get(side0);
-		final var filterTo = sideFilter.get(side1);
-		final boolean concatFuzzy = filterFrom.ignoreDamage||filterTo.ignoreDamage;
-		final boolean concatOredict = filterFrom.allowTags||filterTo.allowTags;
-		final boolean concatNBT = filterFrom.considerComponents||filterTo.considerComponents;
-		final var combinedFilter = new FilterConfig(concatOredict, concatNBT, concatFuzzy);
-
-		return concat.isEmpty()?stack -> true: stack -> {
-			for(ItemStack filterStack : concat)
-				if(combinedFilter.compareStackToFilterstack(stack, filterStack))
+		return combinedPredicates.isEmpty()?stack -> false: stack -> {
+			for(Predicate<ItemStack> p : combinedPredicates)
+				if(p.test(stack))
 					return true;
 			return false;
 		};
@@ -310,7 +317,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		CompoundTag data = new CompoundTag();
 		writeCustomNBT(data, false, context.getLevel().registryAccess());
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(data));
+		BlockItem.setBlockEntityData(stack, this.getType(), data);
 		drop.accept(stack);
 	}
 
@@ -395,9 +402,11 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 
 	public static class SorterInventory extends ItemStackHandler
 	{
+		private final TagKey<Item>[] selectedTags = new TagKey[TOTAL_SLOTS];
+
 		public SorterInventory()
 		{
-			super(NonNullList.withSize(6*FILTER_SLOTS_PER_SIDE, ItemStack.EMPTY));
+			super(NonNullList.withSize(TOTAL_SLOTS, ItemStack.EMPTY));
 		}
 
 		public ItemStack getStackBySideAndSlot(Direction side, int slotOnSide)
@@ -416,23 +425,54 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			return 1;
 		}
 
-		public Iterable<ItemStack> getFilterStacksOnSide(Direction side)
+		public Iterable<Pair<ItemStack, TagKey<Item>>> getFilterStacksOnSide(Direction side)
 		{
 			return () -> Iterators.transform(
-					IntIterators.fromTo(0, FILTER_SLOTS_PER_SIDE), i -> getStackBySideAndSlot(side, i)
+					IntIterators.fromTo(0, FILTER_SLOTS_PER_SIDE), i -> Pair.of(
+							getStackBySideAndSlot(side, i),
+							this.selectedTags[getSlotId(side, i)]
+					)
 			);
+		}
+
+		@Override
+		public void setStackInSlot(int slot, ItemStack stack)
+		{
+			ItemStack prev = getStackInSlot(slot);
+			super.setStackInSlot(slot, stack);
+			// reset selected tag
+			if(!ItemStack.isSameItem(prev, stack))
+				selectedTags[slot] = null;
+		}
+
+		public void setSelectedTag(int slot, @Nullable final ResourceLocation location)
+		{
+			if(location==null)
+				this.selectedTags[slot] = null;
+			this.selectedTags[slot] = this.getStackInSlot(slot).getTags()
+					.filter(t -> t.location().equals(location))
+					.findFirst().orElse(null);
+		}
+
+		@Nullable
+		public ResourceLocation getSelectedTag(int slot)
+		{
+			TagKey<Item> tag = this.selectedTags[slot];
+			return tag==null?null: tag.location();
 		}
 
 		public void writeToNBT(Provider provider, ListTag list)
 		{
 			for(int i = 0; i < getSlots(); ++i)
 			{
-				ItemStack slot = getStackInSlot(i);
-				if(!slot.isEmpty())
+				ItemStack stackInSlot = getStackInSlot(i);
+				if(!stackInSlot.isEmpty())
 				{
-					CompoundTag itemTag = new CompoundTag();
-					itemTag.putByte("Slot", (byte)i);
-					list.add(slot.save(provider, itemTag));
+					CompoundTag slotTag = new CompoundTag();
+					slotTag.putByte("Slot", (byte)i);
+					if(this.selectedTags[i]!=null)
+						slotTag.putString("selectedTag", this.selectedTags[i].location().toString());
+					list.add(stackInSlot.save(provider, slotTag));
 				}
 			}
 		}
@@ -441,10 +481,18 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				CompoundTag itemTag = list.getCompound(i);
-				int slot = itemTag.getByte("Slot")&255;
+				CompoundTag slotTag = list.getCompound(i);
+				int slot = slotTag.getByte("Slot")&255;
 				if(slot < getSlots())
-					setStackInSlot(slot, ItemStack.parseOptional(provider, itemTag));
+				{
+					ItemStack stack = ItemStack.parseOptional(provider, slotTag);
+					setStackInSlot(slot, stack);
+					if(slotTag.contains("selectedTag"))
+					{
+						ResourceLocation rl = ResourceLocation.parse(slotTag.getString("selectedTag"));
+						stack.getTags().filter(t -> t.location().equals(rl)).forEach(t -> this.selectedTags[slot] = t);
+					}
+				}
 			}
 		}
 	}
@@ -466,12 +514,12 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 				FilterConfig::new
 		);
 
-		public boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack)
+		public boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, @Nullable TagKey<Item> tag)
 		{
 			// "Item level" tests
-			if(allowTags)
+			if(allowTags&&tag!=null)
 			{
-				if(stack.getItem().builtInRegistryHolder().tags().noneMatch(filterStack::is))
+				if(!stack.is(tag))
 					return false;
 			}
 			else if(!ItemStack.isSameItem(filterStack, stack))
@@ -492,6 +540,16 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 					return false;
 			}
 			return true;
+		}
+	}
+
+	public record TransferPaths(List<Direction> filteredSides, List<Direction> unfilteredSides)
+	{
+		public static final TransferPaths EMPTY = new TransferPaths(List.of(), List.of());
+
+		public TransferPaths()
+		{
+			this(new ArrayList<>(6), new ArrayList<>(6));
 		}
 	}
 }

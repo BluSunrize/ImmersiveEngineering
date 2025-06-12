@@ -11,18 +11,17 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.TagOutputList;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import malte0811.dualcodecs.DualCodecs;
 import malte0811.dualcodecs.DualCompositeMapCodecs;
 import malte0811.dualcodecs.DualMapCodec;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 {
 	public static final DualMapCodec<RegistryFriendlyByteBuf, ClocheRecipe> CODEC = DualCompositeMapCodecs.composite(
-			TagOutputList.CODEC.fieldOf("results"), r -> r.outputs,
+			CHANCE_LIST_CODECS.fieldOf("results"), r -> r.outputs,
 			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.seed,
 			DualCodecs.INGREDIENT.fieldOf("soil"), r -> r.soil,
 			DualCodecs.INT.fieldOf("time"), r -> r.time,

@@ -5,9 +5,7 @@
     "item": "minecraft:prismarine"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:prismarine_shard"
-    },
-    "count": 4
+    "count": 4,
+    "id": "minecraft:prismarine_shard"
   }
 }

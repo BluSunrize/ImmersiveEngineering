@@ -5,6 +5,6 @@
     "item": "minecraft:stone"
   },
   "result": {
-    "item": "minecraft:cobblestone"
+    "id": "minecraft:cobblestone"
   }
 }

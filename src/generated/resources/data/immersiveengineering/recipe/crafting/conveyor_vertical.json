@@ -5,9 +5,14 @@
     "c": {
       "item": "immersiveengineering:conveyor_basic"
     },
-    "i": {
-      "tag": "c:ingots/iron"
-    }
+    "i": [
+      {
+        "tag": "c:rods/iron"
+      },
+      {
+        "tag": "c:rods/steel"
+      }
+    ]
   },
   "pattern": [
     "ci",

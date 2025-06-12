@@ -5,10 +5,8 @@
     "item": "minecraft:warped_stem"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:warped_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:warped_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_warped_stem"
+    "id": "minecraft:stripped_warped_stem"
   },
   "strippingSecondaries": [
     {

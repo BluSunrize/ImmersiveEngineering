@@ -103,12 +103,6 @@ public class MultiblockRecipes extends IERecipeProvider
 
 		ItemStack electrode = new ItemStack(Misc.GRAPHITE_ELECTRODE);
 		electrode.setDamageValue(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getDefault()/2);
-		MetalPressRecipeBuilder.builder()
-				.input(IETags.hopGraphiteIngot, 4)
-				.mold(Molds.MOLD_ROD)
-				.output(electrode)
-				.setEnergy(4800)
-				.build(out, toRL("metalpress/electrode"));
 
 		MetalPressRecipeBuilder.builder()
 				.input(Tags.Items.INGOTS_NETHERITE)
@@ -221,7 +215,20 @@ public class MultiblockRecipes extends IERecipeProvider
 				.input(IETags.fiberHemp, 8)
 				.fluidInput(IETags.fluidResin, half_bucket)
 				.build(out, toRL("bottling/"+toPath(Tools.GRINDINGDISK)));
-
+		BottlingMachineRecipeBuilder.builder()
+				.output(Ingredients.PLATE_HOP_GRAPHITE)
+				.output(Molds.MOLD_PLATE)
+				.input(Molds.MOLD_PLATE)
+				.input(IETags.hopGraphiteDust)
+				.fluidInput(IETags.fluidCreosote, quarter_bucket)
+				.build(out, toRL("bottling/"+toPath(Ingredients.PLATE_HOP_GRAPHITE)));
+		BottlingMachineRecipeBuilder.builder()
+				.output(Misc.GRAPHITE_ELECTRODE)
+				.output(Molds.MOLD_ROD)
+				.input(Molds.MOLD_ROD)
+				.input(IETags.hopGraphiteDust, 4)
+				.fluidInput(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)
+				.build(out, toRL("bottling/"+toPath(Misc.GRAPHITE_ELECTRODE)));
 
 		// I can't believe this map didn't exist already...
 		Map<Block, Block> vanillaConcrete = new HashMap<>();
@@ -305,6 +312,11 @@ public class MultiblockRecipes extends IERecipeProvider
 				.setEnergy(1600)
 				.build(out, toRL("crusher/clay"));
 		CrusherRecipeBuilder.builder()
+				.output(Items.DIRT)
+				.input(Items.COARSE_DIRT)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/coarse_dirt"));
+		CrusherRecipeBuilder.builder()
 				.output(Items.AMETHYST_SHARD, 4)
 				.input(Items.AMETHYST_BLOCK)
 				.setEnergy(3200)
@@ -355,6 +367,16 @@ public class MultiblockRecipes extends IERecipeProvider
 				.input(IETags.getItemTag(IETags.coalCokeBlock))
 				.setEnergy(4800)
 				.build(out, toRL("crusher/coke_block"));
+		CrusherRecipeBuilder.builder()
+				.output(IETags.hopGraphiteDust, 1)
+				.input(IETags.hopGraphiteIngot)
+				.setEnergy(2400)
+				.build(out, toRL("crusher/graphite_ingot"));
+		CrusherRecipeBuilder.builder()
+				.output(IETags.hopGraphiteDust, 1)
+				.input(IETags.hopGraphitePlate)
+				.setEnergy(2400)
+				.build(out, toRL("crusher/graphite_plate"));
 
 		TagKey<Item> coal_dust = createItemWrapper(IETags.getDust("coal"));
 		CrusherRecipeBuilder.builder()
@@ -614,7 +636,7 @@ public class MultiblockRecipes extends IERecipeProvider
 		RefineryRecipeBuilder.builder()
 				.output(IEFluids.HIGH_POWER_BIODIESEL.getStill(), 100)
 				.input(IETags.fluidBiodiesel, 95)
-				.input(PotionHelper.getFluidTagForType(Potions.STRENGTH, 5))
+				.input(PotionHelper.getFluidIngredientForType(Potions.STRENGTH, 5, null))
 				.setEnergy(80)
 				.build(out, toRL("refinery/high_power_biodiesel"));
 		RefineryRecipeBuilder.builder()
@@ -707,7 +729,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("cokeoven/coke_block"));
 		CokeOvenRecipeBuilder.builder()
 				.output(Items.CHARCOAL)
-				.input(ItemTags.LOGS)
+				.input(ItemTags.LOGS_THAT_BURN)
 				.creosoteAmount(FluidType.BUCKET_VOLUME/4)
 				.setTime(900)
 				.build(out, toRL("cokeoven/charcoal"));

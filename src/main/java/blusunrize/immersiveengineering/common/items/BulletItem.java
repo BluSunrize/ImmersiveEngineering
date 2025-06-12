@@ -68,6 +68,7 @@ public class BulletItem<T> extends IEBaseItem implements IColouredItem
 				type, data
 		);
 		bullet.bulletElectro = electro;
+		bullet.setOwner(shooter);
 		return type.getProjectile(shooter, data, bullet, false);
 	}
 }

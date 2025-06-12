@@ -23,10 +23,10 @@
   ],
   "results": [
     {
-      "item": "immersiveengineering:grindingdisk"
+      "id": "immersiveengineering:grindingdisk"
     },
     {
-      "item": "immersiveengineering:mold_gear"
+      "id": "immersiveengineering:mold_gear"
     }
   ]
 }

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -99,12 +101,15 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 //					scatter -= .025f;
 //				}
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
+
+				FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer(level);
 				for(int i = 0; i < split; i++)
 				{
 					Vec3 vecDir = v.add(ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter);
 					Vec3 throwerPos = getGunPosition();
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(level, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, fs);
+					chem.setOwner(fakePlayer);
 					chem.setDeltaMovement(vecDir.scale(range));
 					if(ignite)
 						chem.igniteForSeconds(10);

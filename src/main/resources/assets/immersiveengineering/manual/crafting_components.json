@@ -1,4 +1,9 @@
 {
+  "basic_engineering": {
+    "type": "crafting",
+    "recipe": "crafting/basic_engineering"
+
+  },
   "mech_components": {
         "type": "crafting",
         "recipes": [

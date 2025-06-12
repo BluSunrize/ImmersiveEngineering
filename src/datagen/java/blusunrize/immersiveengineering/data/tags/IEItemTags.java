@@ -104,6 +104,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.hopGraphiteDust).add(Ingredients.DUST_HOP_GRAPHITE.get());
 		tag(IETags.hopGraphiteIngot).add(Ingredients.INGOT_HOP_GRAPHITE.get());
 		tag(Tags.Items.INGOTS).addTag(IETags.hopGraphiteIngot);
+		tag(IETags.hopGraphitePlate).add(Ingredients.PLATE_HOP_GRAPHITE.get());
+		tag(IETags.plates).addTag(IETags.hopGraphitePlate);
 		tag(IETags.copperWire).add(Ingredients.WIRE_COPPER.get());
 		tag(IETags.electrumWire).add(Ingredients.WIRE_ELECTRUM.get());
 		tag(IETags.aluminumWire).add(Ingredients.WIRE_ALUMINUM.get());
@@ -133,6 +135,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.connectorInsulator)
 				.addTag(ItemTags.TERRACOTTA)
 				.add(IEBlocks.StoneDecoration.DUROPLAST.asItem());
+		tag(IETags.repairsAutomaton).addTag(IETags.plates);
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		generateTagsForToolbox();

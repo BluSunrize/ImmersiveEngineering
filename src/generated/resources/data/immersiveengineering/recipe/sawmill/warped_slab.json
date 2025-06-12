@@ -5,10 +5,8 @@
     "item": "minecraft:warped_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:warped_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:warped_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

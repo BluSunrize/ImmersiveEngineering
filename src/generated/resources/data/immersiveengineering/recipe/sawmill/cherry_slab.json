@@ -5,10 +5,8 @@
     "item": "minecraft:cherry_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:cherry_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:cherry_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

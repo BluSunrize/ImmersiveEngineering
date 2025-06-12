@@ -51,7 +51,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 				var perks = s.get(IEDataComponents.REVOLVER_PERKS);
 				if(perks!=null)
 					for(var entry : perks.perks().entrySet())
-						mergedPerks.merge(entry.getKey(), entry.getValue(), Double::sum);
+						mergedPerks.merge(entry.getKey(), entry.getValue(), entry.getKey()::concat);
 			}
 			out.set(IEDataComponents.REVOLVER_PERKS, new Perks(mergedPerks));
 			return out;

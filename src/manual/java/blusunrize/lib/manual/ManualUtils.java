@@ -48,6 +48,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static blusunrize.lib.manual.utils.ManualLogger.LOGGER;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
@@ -381,4 +382,28 @@ public class ManualUtils
 	{
 		return ItemStack.OPTIONAL_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
 	}
+
+	public static <S extends AutoCloseable, R> R loadFromStream(StreamSupplier<S> streamProvider, StreamHandler<S, R> streamHandler, Supplier<String> exceptionMessage)
+	{
+		try(S stream = streamProvider.get())
+		{
+			return streamHandler.apply(stream);
+		} catch(Exception e)
+		{
+			throw new RuntimeException(exceptionMessage.get(), e);
+		}
+	}
+
+	@FunctionalInterface
+	public interface StreamSupplier<S extends AutoCloseable>
+	{
+		S get() throws Exception;
+	}
+
+	@FunctionalInterface
+	public interface StreamHandler<S extends AutoCloseable, R>
+	{
+		R apply(S stream) throws Exception;
+	}
+
 }

@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -24,6 +26,7 @@ import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -250,6 +253,13 @@ public class MixerLogic
 		return MixerShapes.SHAPE_GETTER;
 	}
 
+	public static ComparatorManager<State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(
+				SimpleComparatorValue.inventory(State::getInventory, 0, NUM_SLOTS), REDSTONE_POS
+		);
+	}
+
 	public static class State implements IMultiblockState, ProcessContextInMachine<MixerRecipe>
 	{
 		public final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
@@ -273,7 +283,7 @@ public class MixerLogic
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
-					List.of(new IOConstraintGroup(IOConstraint.ANY_INPUT, NUM_SLOTS)), ctx.getMarkDirtyRunnable()
+					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, NUM_SLOTS)), ctx.getMarkDirtyRunnable()
 			);
 			this.processor = new InMachineProcessor<>(
 					8, 0, 8, ctx.getMarkDirtyRunnable(), MixerRecipe.RECIPES::getById

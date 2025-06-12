@@ -23,7 +23,6 @@ public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStati
 	{
 		if(te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 		{
-			te.particles.getValue().render(matrixStack, bufferIn, partialTicks);
 			matrixStack.pushPose();
 			matrixStack.translate(.5, .3125, .5);
 			matrixStack.scale(.75f, .75f, .75f);

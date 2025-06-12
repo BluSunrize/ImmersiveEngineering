@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlueprintShelfBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
@@ -49,6 +50,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.model.generators.*;
@@ -190,12 +192,14 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			cubeAll(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 		cubeAll(WoodenDecoration.FIBERBOARD, rl("block/wooden_decoration/fiberboard"));
+		cubeAll(WoodenDecoration.BASIC_ENGINEERING, rl("block/wooden_decoration/basic_engineering"));
 		cubeSideVertical(MetalDecoration.LV_COIL, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"));
 		cubeSideVertical(MetalDecoration.MV_COIL, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"));
 		cubeSideVertical(MetalDecoration.HV_COIL, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"));
 		cubeAll(MetalDecoration.ENGINEERING_RS, rl("block/metal_decoration/redstone_engineering"));
 		cubeAll(MetalDecoration.ENGINEERING_HEAVY, rl("block/metal_decoration/heavy_engineering"));
 		cubeAll(MetalDecoration.ENGINEERING_LIGHT, rl("block/metal_decoration/light_engineering"));
+		cubeAll(MetalDecoration.ENGINEERING_RESONANZ, rl("block/metal_decoration/resonanz_engineering"));
 		cubeAll(MetalDecoration.GENERATOR, rl("block/metal_decoration/generator"));
 		cubeAll(MetalDecoration.RADIATOR, rl("block/metal_decoration/radiator"));
 
@@ -253,6 +257,30 @@ public class BlockStates extends ExtendedBlockstateProvider
 				rl("block/stone_decoration/clinker_brick/clinker_brick"),
 				rl("block/stone_decoration/clinker_brick/clinker_brick_wall"),
 				rl("block/stone_decoration/clinker_brick/clinker_brick_top"));
+		wallForMultiEight(StoneDecoration.HEMPCRETE,
+				rl("block/stone_decoration/hempcrete/hempcrete"),
+				rl("block/stone_decoration/hempcrete/hempcrete"),
+				rl("block/stone_decoration/hempcrete/hempcrete"));
+		wallForMultiEight(StoneDecoration.HEMPCRETE_BRICK,
+				rl("block/stone_decoration/hempcrete_brick/hempcrete_brick"),
+				rl("block/stone_decoration/hempcrete_brick/hempcrete_brick"),
+				rl("block/stone_decoration/hempcrete_brick/hempcrete_brick"));
+		wallForMultiEight(StoneDecoration.CONCRETE,
+				rl("block/stone_decoration/concrete/concrete"),
+				rl("block/stone_decoration/concrete/concrete"),
+				rl("block/stone_decoration/concrete/concrete"));
+		wallForMultiEight(StoneDecoration.CONCRETE_BRICK,
+				rl("block/stone_decoration/concrete_brick/concrete_brick"),
+				rl("block/stone_decoration/concrete_brick/concrete_brick"),
+				rl("block/stone_decoration/concrete_brick/concrete_brick"));
+		wallForMultiEight(StoneDecoration.CONCRETE_TILE,
+				rl("block/stone_decoration/concrete_tile/concrete_tile"),
+				rl("block/stone_decoration/concrete_tile/concrete_tile"),
+				rl("block/stone_decoration/concrete_tile/concrete_tile"));
+		wallForSingle(StoneDecoration.CONCRETE_LEADED,
+				rl("block/stone_decoration/concrete_leaded"),
+				rl("block/stone_decoration/concrete_leaded"),
+				rl("block/stone_decoration/concrete_leaded_wall_top"));
 
 		postBlock(WoodenDecoration.TREATED_POST, rl("block/wooden_decoration/post"));
 		postBlock(MetalDecoration.STEEL_POST, rl("block/metal_decoration/steel_post"));
@@ -433,6 +461,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createTrapdoor(WoodenDecoration.TRAPDOOR, "block/wooden_decoration/treated_trapdoor");
 		createTrapdoor(WoodenDecoration.TRAPDOOR_FRAMED, "block/wooden_decoration/treated_trapdoor_framed");
 		createTrapdoor(MetalDecoration.STEEL_TRAPDOOR, "block/metal_decoration/steel_trapdoor");
+
+		createSigns(WoodenDecoration.SIGN, "block/wooden_decoration/treated_wood_horizontal");
+		createSigns(MetalDecoration.STEEL_SIGN, "block/metal/storage_steel");
+		createSigns(MetalDecoration.ALU_SIGN, "block/metal/storage_aluminum");
 
 		for(Entry<WarningSignIcon, BlockEntry<IEBaseBlock>> warningSign : MetalDecoration.WARNING_SIGNS.entrySet())
 		{
@@ -896,6 +928,12 @@ public class BlockStates extends ExtendedBlockstateProvider
 		itemModel(block, models().getExistingFile(rl(BuiltInRegistries.BLOCK.getKey(block.get()).getPath()+"_bottom")));
 	}
 
+	private void createSigns(IEBlocks.SignHolder holder, String particle)
+	{
+		signBlock(holder.sign().get(), holder.wall().get(), rl(particle));
+		hangingSignBlock(holder.hanging().get(), holder.wallHanging().get(), rl(particle));
+	}
+
 	private void createHemp()
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.HEMP_PLANT.get());
@@ -904,7 +942,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.withExistingParent("block/hemp/top", ResourceLocation.withDefaultNamespace("block/crop"))
 				.texture("crop", ieLoc("block/hemp/top0"))
 				.renderType(ModelProviderUtils.getName(cutout()));
-		builder.partialState().with(HempBlock.TOP, true).setModels(new ConfiguredModel(model));
+		builder.partialState().with(HempBlock.HALF, DoubleBlockHalf.UPPER).setModels(new ConfiguredModel(model));
 
 		// Bottoms
 		for(int i = 0; i <= 4; i++)
@@ -913,7 +951,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.withExistingParent("block/hemp/bottom"+i, ResourceLocation.withDefaultNamespace("block/crop"))
 					.texture("crop", ieLoc("block/hemp/bottom"+i))
 					.renderType(ModelProviderUtils.getName(cutout()));
-			builder.partialState().with(HempBlock.TOP, false).with(HempBlock.AGE, i).setModels(new ConfiguredModel(model));
+			builder.partialState().with(HempBlock.HALF, DoubleBlockHalf.LOWER).with(HempBlock.AGE, i).setModels(new ConfiguredModel(model));
 		}
 	}
 

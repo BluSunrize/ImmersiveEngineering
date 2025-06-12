@@ -148,11 +148,11 @@ public class WirecutterItem extends IEBaseItem
 				AtomicBoolean cut = new AtomicBoolean(false);
 				net.removeAllConnectionsAt(nodeHere, conn -> {
 					ItemStack coil = conn.type.getWireCoil(conn);
-					if (world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
-					    world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), coil, 0, 0, 0));
+					if(world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
+						world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), coil, 0, 0, 0));
 					cut.set(true);
 				});
-				if(cut.get())
+				if(cut.get()&&!player.hasInfiniteMaterials())
 					ItemUtils.damageDirect(stack, 1);
 			}
 		}
@@ -175,7 +175,8 @@ public class WirecutterItem extends IEBaseItem
 			if(target!=null)
 			{
 				GlobalWireNetwork.getNetwork(world).removeInsertAndDropConnection(target, player, world);
-				ItemUtils.damageDirect(stack, 1);
+				if(!player.hasInfiniteMaterials())
+					ItemUtils.damageDirect(stack, 1);
 			}
 		}
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

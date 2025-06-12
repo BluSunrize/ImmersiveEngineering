@@ -5,10 +5,8 @@
     "item": "minecraft:stripped_bamboo_block"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:bamboo_planks"
-    },
-    "count": 3
+    "count": 3,
+    "id": "minecraft:bamboo_planks"
   },
   "secondaryOutputs": [
     {

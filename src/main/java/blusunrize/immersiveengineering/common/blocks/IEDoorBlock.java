@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.Lib.BlockSetTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -25,10 +26,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.state.properties.BlockSetType.PressurePlateSensitivity;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -36,24 +35,6 @@ import javax.annotation.Nullable;
 
 public class IEDoorBlock extends DoorBlock
 {
-	public static BlockSetType TREATED_WOOD = new BlockSetType("treated_wood");
-	public static BlockSetType STEEL = new BlockSetType(
-			"steel",
-			true,
-			false,
-			false,
-			PressurePlateSensitivity.MOBS,
-			SoundType.METAL,
-			SoundEvents.IRON_DOOR_CLOSE,
-			SoundEvents.IRON_DOOR_OPEN,
-			SoundEvents.IRON_TRAPDOOR_CLOSE,
-			SoundEvents.IRON_TRAPDOOR_OPEN,
-			SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF,
-			SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
-			SoundEvents.STONE_BUTTON_CLICK_OFF,
-			SoundEvents.STONE_BUTTON_CLICK_ON
-	);
-
 	private boolean lockedByRedstone = false;
 
 	public IEDoorBlock(BlockSetType blockSetType, Properties properties)
@@ -114,7 +95,7 @@ public class IEDoorBlock extends DoorBlock
 					.stream()
 					.filter(WrappedGoal::isRunning);
 			if(runningGoals.anyMatch(wrappedGoal -> wrappedGoal.getGoal() instanceof BreakDoorGoal))
-				return this.type()!=STEEL;
+				return this.type()!=BlockSetTypes.STEEL;
 		}
 		return super.canEntityDestroy(state, level, pos, entity);
 	}

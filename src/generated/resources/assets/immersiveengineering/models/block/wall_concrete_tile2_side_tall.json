@@ -1,0 +1,8 @@
+{
+  "parent": "immersiveengineering:block/wall_side_tall_topped",
+  "textures": {
+    "wall_bottom": "immersiveengineering:block/stone_decoration/concrete_tile/concrete_tile2",
+    "wall_side": "immersiveengineering:block/stone_decoration/concrete_tile/concrete_tile2",
+    "wall_top": "immersiveengineering:block/stone_decoration/concrete_tile/concrete_tile2"
+  }
+}

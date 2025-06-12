@@ -1,0 +1,35 @@
+{
+  "parent": "immersiveengineering:manual/manual_root",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:blueprint",
+            "predicates": {
+              "immersiveengineering:blueprint": {
+                "blueprint": "automatons"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": "",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:manual"
+    },
+    "title": ""
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

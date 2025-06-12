@@ -66,8 +66,9 @@
       "posts_and_wallmounts",
       "scaffolding_and_ladders",
       "catwalks",
-      "warning_signs",
       "doors_and_trapdoors",
+      "signs",
+      "warning_signs",
       "metal_constructions",
       "windows",
       "engineered_lighting",
@@ -159,6 +160,14 @@
       "automated_engineers_workbench",
       "arc_furnace",
       "excavator"
+    ]
+  },
+  "weird_science": {
+    "category_weight": 100,
+    "entry_list": [
+      "esoteric_components",
+      "resonanz_observer",
+      "automaton_wolves"
     ]
   }
 }

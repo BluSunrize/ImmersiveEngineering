@@ -5,7 +5,7 @@
     "item": "minecraft:acacia_stairs"
   },
   "result": {
-    "item": "minecraft:acacia_planks"
+    "id": "minecraft:acacia_planks"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

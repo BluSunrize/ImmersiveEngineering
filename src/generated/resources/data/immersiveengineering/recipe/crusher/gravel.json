@@ -5,7 +5,7 @@
     "tag": "c:gravels"
   },
   "result": {
-    "item": "minecraft:sand"
+    "id": "minecraft:sand"
   },
   "secondaries": [
     {

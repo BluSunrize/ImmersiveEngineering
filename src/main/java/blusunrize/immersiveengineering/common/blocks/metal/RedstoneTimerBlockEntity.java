@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -189,6 +190,19 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 		return false;
 	}
 
+	@Override
+	public boolean canConnectRedstone(@Nonnull Direction side)
+	{
+		return false;
+	}
+
+	private static final Pair<DyeColor, Byte>[] NO_OVERRIDE = new Pair[0];
+	@Override
+	public Pair<DyeColor, Byte>[] overrideVoltmeterRead()
+	{
+		return NO_OVERRIDE;
+	}
+
 	private static final Map<Direction, VoxelShape> SHAPES = Util.make(
 			new EnumMap<>(Direction.class), map -> {
 				final double wMin = .25;
@@ -216,10 +230,7 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 			return null;
 		return new Component[]{
 				getTimeFormatted(this.timerSetting),
-				Component.empty()
-						.append(Component.translatable(Lib.GUI_CONFIG+"redstone_color_output"))
-						.append(Component.literal(" "))
-						.append(Component.translatable("color.minecraft."+redstoneChannelControl.getName())),
+				getChannelComponent("_output", redstoneChannel),
 		};
 	}
 

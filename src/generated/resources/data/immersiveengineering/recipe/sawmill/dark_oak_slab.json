@@ -5,10 +5,8 @@
     "item": "minecraft:dark_oak_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:dark_oak_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:dark_oak_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

@@ -5,7 +5,7 @@
     "item": "minecraft:acacia_door"
   },
   "result": {
-    "item": "minecraft:acacia_planks"
+    "id": "minecraft:acacia_planks"
   },
   "secondaryOutputs": [
     {

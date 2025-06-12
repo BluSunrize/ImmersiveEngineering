@@ -12,20 +12,28 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public class ItemUtils
 {
@@ -51,6 +59,29 @@ public class ItemUtils
 			handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
 		return handside;
 	}
+
+	public record EquippedItem(EquipmentSlot slot, ItemStack stack){}
+
+	public static Optional<Pair<EquippedItem, EquippedItem>> isHoldingBoth(Player player, TagKey<Item> tag1, TagKey<Item> tag2)
+	{
+		return isHoldingBoth(player, s -> s.is(tag1), s -> s.is(tag2));
+	}
+
+	public static Optional<Pair<EquippedItem, EquippedItem>> isHoldingBoth(Player player, Predicate<ItemStack> check1, Predicate<ItemStack> check2)
+	{
+		if(check1.test(player.getMainHandItem())&&check2.test(player.getOffhandItem()))
+			return Optional.of(Pair.of(
+					new EquippedItem(EquipmentSlot.MAINHAND,player.getMainHandItem()),
+					new EquippedItem(EquipmentSlot.OFFHAND,player.getOffhandItem())
+			));
+		if(check1.test(player.getOffhandItem())&&check2.test(player.getMainHandItem()))
+			return Optional.of(Pair.of(
+					new EquippedItem(EquipmentSlot.OFFHAND,player.getOffhandItem()),
+					new EquippedItem(EquipmentSlot.MAINHAND,player.getMainHandItem())
+			));
+		return Optional.empty();
+	}
+
 
 	public static void tryInsertEntity(Level level, BlockPos pos, Direction side, ItemEntity toInsert)
 	{

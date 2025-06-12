@@ -8,14 +8,17 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.FilterBit;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,10 +32,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import java.util.function.Consumer;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 {
-	private final List<ButtonSorter> sorterButtons = new ArrayList<>(6);
+	private final List<GuiButtonBoolean> sorterButtons = new ArrayList<>(6);
 
 	public FluidSorterScreen(FluidSorterMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -72,16 +73,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			{
 				if(getSlotArea(side, i).contains((int)mouseX, (int)mouseY))
 				{
-					ItemStack stack = menu.getCarried();
-					if(stack.isEmpty())
-						setFluidInSlot(side, i, FluidStack.EMPTY, registries);
-					else
-					{
-						int finalSide = side;
-						int finalI = i;
-						FluidUtil.getFluidContained(stack)
-								.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs, registries));
-					}
+					setFluidInSlot(side, i, Utils.deriveFluidStack(menu.getCarried()), registries);
 					return true;
 				}
 			}
@@ -134,14 +126,23 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			int y = topPos+3+(side%2)*76;
 			final int sideFinal = side;
 			final BooleanSupplier value = () -> menu.sortWithNBT.get()[sideFinal]!=0;
-			ButtonSorter b = new ButtonSorter(
-					x, y, FilterBit.NBT, () -> new FilterConfig(false, value.getAsBoolean(), false),
+			GuiButtonBoolean b = new GuiButtonBoolean(
+					x, y, 18, 18, Component.empty(), value::getAsBoolean,
+					SorterScreen.BUTTON_TEXTURE_FALSE.get(FilterBit.COMPONENTS), SorterScreen.BUTTON_TEXTURE_TRUE.get(FilterBit.COMPONENTS),
 					btn -> {
 						CompoundTag tag = new CompoundTag();
 						tag.putInt("useNBT", value.getAsBoolean()?0: 1);
 						tag.putInt("side", sideFinal);
 						sendUpdateToServer(tag);
 						fullInit();
+					},
+					(components, aBoolean) -> {
+						String[] split = I18n.get(Lib.DESC_INFO+"filter.fluid_components").split("<br>");
+						for(int i = 0; i < split.length; i++)
+							if(i==0)
+								components.add(Component.literal(split[i]));
+							else
+								components.add(TextUtils.applyFormat(Component.literal(split[i]), ChatFormatting.GRAY));
 					}
 			);
 			this.sorterButtons.add(b);
@@ -155,7 +156,10 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
-			tag.put("filter", fluid.save(provider));
+			if(fluid.isEmpty())
+				tag.remove("filter");
+			else
+				tag.put("filter", fluid.save(provider));
 		sendUpdateToServer(tag);
 	}
 

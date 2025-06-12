@@ -1,3 +1,173 @@
+##### Version 1.21.1-12.3.2-pre
+- Add support for chance-based output to the cloche (BluSunrize) 
+- Simplify a lot of recipe JSONs (BluSunrize)
+    - The wrapping in "basePredicate" is now not needed for normal items anymore, and "count" on item stacks is optional too
+- Fix old electrode blueprints crashing in the workbench (BluSunrize)
+- Fix rendering of blueprints in item frames (BluSunrize)
+- Fix missing particles on noteblocks over resonanz engineering blocks (BluSunrize)
+- Fix resonanz observer not forming when the sculk sensor is active (BluSunrize)
+- Fix tanks and silos always dropping iron sheetmetal for the first block broken (BluSunrize)
+
+##### Version 1.21.1-12.3.1-189
+- Add the Basic Engineering Block (BluSunrize)
+    - It's crafted from treated wood and iron
+    - Used in various recipes that previously used treated wood - these recipes got cheaper!
+- Add an item model for the resonanz observer (BluSunrize)
+- Re-add Jade compatibility (BluSunrize)
+- Overhaul item routers! (BluSunrize)
+    - They no longer allow items out an unfiltered side *if* a filtered side for that item exists
+    - Tag filtering now allows selecting a specific tag with the scroll-wheel.
+    - Replace text references to "NBT Data" with "Data Components" instead
+- Overhaul graphite! (BluSunrize)
+    - HV Accumulators now use graphite plates instead of ingots
+    - Those ingots are fully deprecated, they can be crushed to dust but have no other uses
+    - Graphite electrodes for the Arc Furnace no longer require a blueprint!
+    - Instead, both electrodes and plates are now made in the bottling machine, using dust + creosote oil!
+- Change recipes for dropping and vertical conveyors to be a bit cheaper (BluSunrize)
+- Fix desync of item router buttons on multiplayer servers (BluSunrize)
+- Fix resonanz observer not rendering the completed structure in the manual (BluSunrize)
+
+##### Version 1.21.1-12.3.0-188
+- Add the Resonanz Observer multiblock (BluSunrize)
+    - It's a chunkloader! IE has chunkloading now! You can keep your excavator running far away!!
+    - Its construction require a trip to the ancient cities, to acquire an echo shard...
+    - Also, this machine eats paper by the minute!
+- Overhaul targeting for homing bullets (BluSunrize)
+    - They won't shoot your wolves (or other animals tamed by the shooter anymore)
+    - They won't target teammates or animals tamed by teammates
+    - This does *not* apply to bullets fired by turrets 
+- Change Wolfpack Cartridges to apply a buff to nearby tamed wolves when used! (BluSunrize)
+    - Your wolves (and your allies' wolves) gain speed and strength
+    - Your wolves will focus on the hit target, if they don't already have a mob they are targeting
+- Change Sheetmetal Tanks & Silos to be formed from *any* Sheetmetal! (BluSunrize)
+    - This allows making them with whatever metal you have on hand
+    - They memorize their structure and will return those blocks again
+    - Their colour can not be adjusted with this, because that would require a massive rework of their models
+- Change turrets to use fake players, allowing them to drop blaze rods and other player-only items (BluSunrize)
+- Re-add offset for subtitles when rendering displays for held items (BluSunrize)
+- Update manual entry for gunpowder barrels, to better explain their intended use (voidsong-dragonfly)
+- Fix error for mods like JustEnoughResources querying IE's villager trades (BluSunrize)
+- Fix errors when saving IE's projectile entities (BluSunrize)
+- Fix wooden supports on sheetmetal tanks having the wrong bounding box (BluSunrize)
+- Fix revolver perks not combining correctly on crafting (BluSunrize)
+- Fix JEI recipe transfer not working in the Engineer's Crafting Table (BluSunrize)
+- Fix inverted rendering for the buzzsaw, drill and chemthrower (BluSunrize)
+- Fix overlay for buzzsaw, drill and chemthrower not displaying on the left hand side (BluSunrize)
+- Fix shaders not being removed from tools properly (BluSunrize)
+- Fix gunpowder barrels not having sound and particles (BluSunrize)
+- Fix gunpowder barrels not being triggered by other explosions (BluSunrize)
+- Fix multimeter overlay boxes being possibly too small on non-ascii languages (BluSunrize)
+- Fix zoom and ammo swapping on the railgun occurring at the same time (BluSunrize)
+- Fix conveyor covers getting consumed in creative mode (BluSunrize)
+- Fix herbicide destroying Farmer's Delight farmland (BluSunrize)
+- Translations Added/Updated: zh_cn (JustAlkaid)
+
+##### Version 1.21.1-12.2.0-187
+- Adjust the Automaton Wolves (BluSunrize)
+    - They can no longer be healed with meat, this also prevents breeding them.
+    - Instead, they can be repaired with metal plates and a hammer
+- Add a manual entry for the Automaton Wolves (BluSunrize)
+    - This entry is only unlocked when picking up their blueprint!
+- Add wall blocks for hempcrete, concrete and their variations!
+- Add splash & lingering potion recipes to the mixer & bottling machine (BluSunrize)
+- Change Fluid Pumps to allow inverting their redstone control with a screwdriver (BluSunrize)
+- Change IE to use NeoForge's native fluid ingredients in recipes (BluSunrize)
+    - This is a breaking change for any addons, but there isn't any released so we should be safe
+    - This also finally allows Create potions to be used in the Mixer & Bottling Machine
+- Allow vanilla wall blocks to connect to windows (BluSunrize)
+- Fix circuit table closing when inventory key is pressed (BluSunrize)
+- Fix assembler not saving its stored patterns with the world (BluSunrize)
+- Fix JEI pattern button crashing when used in the assembler (BluSunrize)
+- Fix fluid pipes causing forced chunkloads when building their network (BluSunrize)
+- Fix signs losing their content when moved by Create contraptions (BluSunrize)
+- Fix broken link in the manual (BluSunrize)
+
+##### Version 1.21.1-12.1.1-186
+- Add Automaton Wolves! (BluSunrize)
+    - They are spawned with a new item, which requires a blueprint that can only drop from Trial Chamber Vaults
+    - They spawn with extra health and increased damage but are otherwise just subtype of wolves and behave the same
+- Remove mixer recipes for mundane and thick potions again (BluSunrize)
+    - They conflict with redstone acid and are never used anyway
+- Add support to configure the Fluid Router with Potion Bottles (Léa Gris)
+- Add name field for circuits in the workbench (BluSunrize)
+- Add colouration to the circuit tooltips (BluSunrize)
+- Add breeze rods as railgun ammo, they can hit breezes! (BluSunrize)
+- Change JEI recipes for filling buckets to not use fluid tags (BluSunrize)
+- Change the skyhook to actually use the same logic as the mace (BluSunrize)
+    - Previously it was approximating it, due to missing methods in vanilla
+- Overhaul multimeter interaction with redstone blocks (BluSunrize)
+    - Fix multimeter not showing text when hovering over redstone blocks
+    - Fix multimeter not working when used on redstone connectors
+    - Show the stored value and output channel when checking state cells with the multimeter
+    - Show the in and output signals when checking probe connectors with the multimeter
+- Fix waterwheels not updating blocked in many cases (voidsong-dragonfly)
+- Fix fluid router GUI crashing (Léa Gris)
+- Fix "Superior Weaponry" achievement not triggering, caused by various factors: (BluSunrize)
+    - Fix bullets not assigning their owner, thus all damage being considered turret damage
+    - Fix bullets and railgun shots not counting as projectiles
+    - Fix chemthrower not correctly attributing kills to the player
+- Fix magnetic glove for the shield not working (BluSunrize)
+- Fix display of items on wooden crates in inventory (BluSunrize)
+- Fix rockcutter not properly silk-touching blocks (BluSunrize)
+- Fix blueprint shelf showing "invalid_blueprint" on empty slots (BluSunrize)
+- Fix auto-clickers breaking when middle clicking on multiblocks (BluSunrize)
+- Fix "obstructed connection" overlay being in the wrong place (BluSunrize)
+- Fix accumulator backpack not being attachable to armor (BluSunrize)
+- Fix invalid blueprints causing a render crash in the workbench (BluSunrize)
+- Fix squeezer, fermenter and mixer not allowing users to take items out again (BluSunrize)
+- Fix switchboards not transmitting signals when only connected to other switchboards (BluSunrize)
+- Fix Diesel Generator burning fuel for too short of time (Diesel Thomas)
+- Fix crash when saving configured Item or Fluid routers in inventories (BluSunrize)
+- Fix accumulators having broken side configs after being broken and replaced (BluSunrize)
+- Fix wirecutters taking damage in creative mode (BluSunrize)
+- Fix recipe for cagelamps not working (BluSunrize)
+- Fix broken lighting on the charging station (BluSunrize)
+
+##### Version 1.21.1-12.1.0-185
+- All changes from 1.20.4-11.7.0
+- Add HOP graphite ingots to general ingots tag (Malte)
+- Add builtin compat with Repurposed Structrues (TelepathicGrunt)
+- Add backup options for tag-based villager trades, so that broken tags don't cause broken trades (BluSunrize)
+- Add support for Pitcher Plants in the cloche (BluSunrize)
+    - This comes with a new render function for datapacks to handle double-high crops, which is also used by hemp
+- Add treated wood, steel and aluminium signs (BluSunrize)
+    - They work like vanilla signs, not much else to say
+- Add the ability to make warning signs glow with glow ink sacks (BluSunrize)
+- Add recipe for crushing coarse dirt into dirt (voidsong-dragonfly)
+- Remove CustomParticleManager (IMS)
+- Change High Explosive cartridges to return shells on use (voidsong-dragonfly)
+- Change hemp plants to use the same "half" property as vanilla double flowers (BluSunrize)
+    - This results in existing hemp looking weird, just break and replace it!
+- Change mouse sensitivity based on current zoom level with railgun or revolver (BluSunrize)
+    - Also hide revolver's & railgun's first-person render while zoomed
+- Change coke oven to only burn the same logs as a vanilla furnace can (voidsong-dragonfly)
+- Improve readability of fluid name in the chemthrower HUD (BluSunrize)
+- Fix crash with dual codecs (Malte)
+- Fix crash when placing toolbox (Malte)
+- Fix sealed crates deleting items (Malte)
+- Fix incorrect sprite for coke oven flame (Malte)
+- Fix crash with assembler (Malte)
+- Fix crash due to invalid blueprints (Malte)
+- Fix condition recipe encoding/decoding (Malte)
+- Fix chemthrower not "noticing" its main fluid (Malte)
+- Fix hempseeds not being compostable (voidsong-dragonfly)
+- Fix broken armor values on steel armor (BluSunrize)
+- Fix angled chutes not having proper collision boxes (BluSunrize)
+- Fix shader banners in villages not rendering (BluSunrize)
+    - Unfortunately only affects newly generated structures 
+- Fix bugged colors on shader banners, resulting from mixups of ARGB and ABGR in composited textures (BluSunrize)
+- Fix missing item model for the radio tower (BluSunrize)
+- Fix firework cartridges crashing when crafted (BluSunrize)
+- Fix firework cartridges not accessing vanilla components (BluSunrize)
+- Fix arc recycling recipes not having their own JEI tab (BluSunrize)
+- Fix arc recycling recipes not showing adjusted outputs in JEI (BluSunrize)
+- Fix floodlights deleting their own fake lightsources immediately (voidsong-dragonfly)
+- Fix the scope for railgun and revolver just not rendering at all (BluSunrize)
+- Fix zooming not working when the weapon is in offhand (BluSunrize)
+- Fix multiblock inventories stacking to 99 (voidsong-dragonfly)
+- Fix charging station not charging the accumulator backpack (BluSunrize)
+- Translations Added/Updated: zh_cn (Cactusstudent, SlimeSB, mc-kaishixiaxue, JustAlkaid), tr_tr (RuyaSavascisi)
+
 ##### Version 1.21.1-12.0.0-182
 - First release for 1.21.1
 - **All** of the porting work and bugfixing were done by Malte
@@ -6,7 +176,6 @@
 - Fix pipe valves causing a crash when used in a loop of pipes (BluSunrize)
 
 ##### Version 1.20.4-11.6.0-180
-
 - "The Redstone Update!"
     - Add the radio tower, a way to wirelessly send signals! (BluSunrize)
     - Add the redstone state cell for storing signals (BluSunrize)
@@ -37,7 +206,6 @@
 - Translations Added/Updated: de_de (AriaElidove)
 
 ##### Version 1.20.4-11.5.0-179
-
 - Add warning signs (BluSunrize)
     - Textures kindly provided by AriaElidove, thank you!
     - You can also make a banner pattern with the signs and put (some) of the warnings on banners and shields!
@@ -65,14 +233,12 @@
 - Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
-
 - Change scaffolding blocks to have more descriptive names (AriaElidove)
 - Change translations for fluid blocks so Jade shows them properly (AriaElidove)
 - Fix arc recycling preventing joining multiplayer servers (BluSunrize)
 - Fix wooden crates closing their GUI when using your inventory key in their name (BluSunrize)
 
 ##### Version 1.20.4-11.4.2-177
-
 - Add treated wood & steel doors (BluSunrize)
     - Steel doors can only be opened by hand and will be locked by an applied redstone signal
     - There's also matching trapdoors
@@ -102,13 +268,11 @@
 - Fix post transformers being placeable on top of posts (voidsong-dragonfly)
 
 ##### Version 1.20.4-11.4.1-176
-
 - Add a netherite nugget (BluSunrize)
     - This is to allow recycling outputs of nuggets
 - Fix incorrect output on high-cetane diesel recipe (BluSunrize)
 
 ##### Version 1.20.4-11.4.0-175
-
 - Add upgrades for the Engineering's Skyhook (BluSunrize)
     - High Torque Motor makes it faster to go up slopes
     - Insulated Grip allows riding live wires without getting zapped
@@ -133,14 +297,12 @@
 - Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
 - Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)
-- Change wire loss to be exponential rather than linear, allowing HV lines to run much further and still be viable! (
-  voidsong-dragonfly)
+- Change wire loss to be exponential rather than linear, allowing HV lines to run much further and still be viable! (voidsong-dragonfly)
 - Change storage crates in their behavior (BluSunrize)
     - They will only keep their items if they are sealed before being broken
     - To seal a crate you'll need to use an engineer's hammer on it for an extended duration
     - This way, they're not longer as good as Shulker Boxes
-    - To make up for it, the name of a crate can now be edited in its GUI and will display when hovering the cursor over
-      the block
+    - To make up for it, the name of a crate can now be edited in its GUI and will display when hovering the cursor over the block
 - Change waterwheels in their behavior (voidsong-dragonfly)
     - Water source blocks directly in wheel paddles now have higher 'resistance' and penalize wheels
     - Fluid blocks of lower height now provide less torque to waterwheels - higher flow is better
@@ -158,7 +320,6 @@
 - Fix inconsistent breaking sounds with stone multiblocks (BluSunrize)
 
 ##### Version 1.20.4-11.3.0-174
-
 - Re-add CC-Tweaked integration (Malte)
 - Add missing redstone acid recipe to the manual (BluSunrize)
 - Add the windows from Engineer's Decor (BluSunrize)
@@ -172,7 +333,6 @@
 - Fix Toolbox being movable while opened (BluSunrize)
 
 ##### Version 1.20.4-11.2.0-173
-
 - Overhaul the Engineering's Manual (voidsong-dragonfly)
     - Splitting various long entries into multiple smaller ones (fluid transport, logic circuits, ...)
     - Adding new pages for undocumented features (gunpower barrel, minecarts, ...)

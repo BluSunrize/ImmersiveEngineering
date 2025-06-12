@@ -23,6 +23,6 @@ public class IEIngredients
 
 	public static final Holder<IngredientType<?>> FLUID_STACK = REGISTER.register(
 			"fluid_stack",
-			() -> new IngredientType<>(IngredientFluidStack.CODEC.mapCodec(), IngredientFluidStack.CODEC.streamCodec())
+			() -> new IngredientType<>(IngredientFluidStack.MAP_CODEC, IngredientFluidStack.STREAM_CODEC)
 	);
 }

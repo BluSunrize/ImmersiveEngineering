@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.AbstractArrowAccess;
@@ -60,9 +61,16 @@ public class SawbladeEntity extends IEProjectileEntity
 
 	@Nonnull
 	@Override
-	protected ItemStack getDefaultPickupItem()
+	protected ItemStack getPickupItem()
 	{
 		return ammo;
+	}
+
+	@Nonnull
+	@Override
+	protected ItemStack getDefaultPickupItem()
+	{
+		return Tools.SAWBLADE.asItem().getDefaultInstance();
 	}
 
 	public void setAmmoSynced()
@@ -131,11 +139,10 @@ public class SawbladeEntity extends IEProjectileEntity
 	protected void handlePiecing(Entity target)
 	{
 		super.handlePiecing(target);
-		if(this.piercedEntities.size() >= 3&&getShooterUUID()!=null)
+		Entity owner = getOwner();
+		if(this.piercedEntities.size() >= 3&&owner instanceof Player shooter)
 		{
-			Player shooter = level().getPlayerByUUID(this.getShooterUUID());
-			if(shooter!=null)
-				Utils.unlockIEAdvancement(shooter, "tools/secret_ravenholm");
+			Utils.unlockIEAdvancement(shooter, "tools/secret_ravenholm");
 		}
 	}
 

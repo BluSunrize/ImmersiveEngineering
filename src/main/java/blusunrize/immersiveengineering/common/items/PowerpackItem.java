@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.Connection;
@@ -58,6 +59,7 @@ import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -325,6 +327,15 @@ public class PowerpackItem extends UpgradeableToolItem
 			}
 	}
 
+	private static void setCapacitorStatic(ItemStack container, ItemStack capacitor)
+	{
+		if(!capacitorConfigMap.get().containsKey(capacitor.getItem()))
+			return;
+		IItemHandler cap = container.getCapability(ItemHandler.ITEM);
+		if(cap instanceof IItemHandlerModifiable modifiable)
+			modifiable.setStackInSlot(0, capacitor);
+	}
+
 	public static ItemStack getCapacitorStatic(ItemStack container)
 	{
 		IItemHandler cap = container.getCapability(ItemHandler.ITEM);
@@ -365,7 +376,13 @@ public class PowerpackItem extends UpgradeableToolItem
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
 		registerCapabilitiesISI(registrar);
-		registrar.register(EnergyStorage.ITEM, stack -> getCapacitorStatic(stack).getCapability(EnergyStorage.ITEM));
+		registrar.register(EnergyStorage.ITEM, stack -> {
+			final ItemStack capacitor = getCapacitorStatic(stack);
+			final IEnergyStorage capacitorStorage = capacitor.getCapability(EnergyStorage.ITEM);
+			if(capacitorStorage==null)
+				return null;
+			return new WrappingEnergyStorage(capacitorStorage, true, true, () -> setCapacitorStatic(stack, capacitor));
+		});
 	}
 
 	@Override

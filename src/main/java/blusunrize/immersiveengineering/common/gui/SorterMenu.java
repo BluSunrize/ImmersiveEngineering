@@ -17,6 +17,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -27,8 +28,11 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class SorterMenu extends IEContainerMenu
 {
@@ -39,7 +43,11 @@ public class SorterMenu extends IEContainerMenu
 		final Map<Direction, GetterAndSetter<FilterConfig>> filters = Arrays.stream(Direction.values())
 				.map(d -> Pair.of(d, new GetterAndSetter<>(() -> be.sideFilter.get(d), f -> be.sideFilter.put(d, f))))
 				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
-		return new SorterMenu(blockCtx(type, id, be), invPlayer, be.filter, filters);
+		List<GetterAndSetter<Optional<ResourceLocation>>> selectedTag = IntStream.range(0, SorterBlockEntity.TOTAL_SLOTS).mapToObj(slot -> new GetterAndSetter<>(
+				() -> Optional.ofNullable(be.filter.getSelectedTag(slot)),
+				resourceLocation -> be.filter.setSelectedTag(slot, resourceLocation.orElse(null))
+		)).toList();
+		return new SorterMenu(blockCtx(type, id, be), invPlayer, be.filter, filters, selectedTag);
 	}
 
 	public static SorterMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
@@ -47,19 +55,23 @@ public class SorterMenu extends IEContainerMenu
 		final Map<Direction, GetterAndSetter<FilterConfig>> filters = Arrays.stream(Direction.values())
 				.map(d -> Pair.of(d, GetterAndSetter.standalone(FilterConfig.DEFAULT)))
 				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
-		return new SorterMenu(
-				clientCtx(type, id), invPlayer, new ItemStackHandler(SorterBlockEntity.TOTAL_SLOTS), filters
-		);
+		List<GetterAndSetter<Optional<ResourceLocation>>> selectedTag = IntStream.range(0, SorterBlockEntity.TOTAL_SLOTS)
+				.mapToObj(slot -> GetterAndSetter.standalone(Optional.ofNullable((ResourceLocation)null)))
+				.toList();
+		return new SorterMenu(clientCtx(type, id), invPlayer, new ItemStackHandler(SorterBlockEntity.TOTAL_SLOTS), filters, selectedTag);
 	}
 
 	public final Map<Direction, GetterAndSetter<FilterConfig>> filterMasks;
+	public final List<GetterAndSetter<Optional<ResourceLocation>>> selectedTags;
 
 	private SorterMenu(
-			MenuContext ctx, Inventory inventoryPlayer, IItemHandler filter, Map<Direction, GetterAndSetter<FilterConfig>> filterMasks
+			MenuContext ctx, Inventory inventoryPlayer, IItemHandler filter, Map<Direction, GetterAndSetter<FilterConfig>> filterMasks,
+			List<GetterAndSetter<Optional<ResourceLocation>>> selectedTags
 	)
 	{
 		super(ctx);
 		this.filterMasks = filterMasks;
+		this.selectedTags = selectedTags;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < SorterBlockEntity.FILTER_SLOTS_PER_SIDE; i++)
 			{
@@ -74,8 +86,10 @@ public class SorterMenu extends IEContainerMenu
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 221));
-		for(final GetterAndSetter<FilterConfig> mask : filterMasks.values())
-			addGenericData(new GenericContainerData<>(GenericDataSerializers.FILTER_CONFIG, mask));
+		for(Direction d : Direction.values())
+			addGenericData(new GenericContainerData<>(GenericDataSerializers.FILTER_CONFIG, filterMasks.get(d)));
+		for(GetterAndSetter<Optional<ResourceLocation>> selTag : selectedTags)
+			addGenericData(new GenericContainerData<>(GenericDataSerializers.OPTIONAL_RESOURCE_LOCATION, selTag));
 	}
 
 	@Nonnull
@@ -88,9 +102,15 @@ public class SorterMenu extends IEContainerMenu
 	@Override
 	public void receiveMessageFromScreen(CompoundTag message)
 	{
-		if(!message.contains("sideConfigId", Tag.TAG_INT))
-			return;
-		var filter = FilterConfig.CODEC.fromNBT(message.get("sideConfigVal"));
-		filterMasks.get(Direction.values()[message.getInt("sideConfigId")]).set(filter);
+		if(message.contains("sideConfigId", Tag.TAG_INT))
+		{
+			var filter = FilterConfig.CODEC.fromNBT(message.get("sideConfigVal"));
+			filterMasks.get(Direction.values()[message.getInt("sideConfigId")]).set(filter);
+		}
+		else if(message.contains("tagSlot", Tag.TAG_INT))
+		{
+			var selected = ResourceLocation.parse(message.getString("selectedTag"));
+			selectedTags.get(message.getInt("tagSlot")).set(Optional.of(selected));
+		}
 	}
 }

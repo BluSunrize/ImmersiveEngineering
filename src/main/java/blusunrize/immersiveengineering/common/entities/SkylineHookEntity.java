@@ -256,7 +256,6 @@ public class SkylineHookEntity extends Entity
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
 			discard();
-			System.out.println("Launch me?");
 			return;
 		}
 		this.setPos(pos.x, pos.y, pos.z);

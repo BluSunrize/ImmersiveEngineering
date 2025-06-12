@@ -8,16 +8,16 @@
 
 package blusunrize.immersiveengineering.api.tool.assembler;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 public class FluidTagRecipeQuery extends RecipeQuery
 {
-	private final FluidTagInput tag;
+	private final SizedFluidIngredient tag;
 
-	public FluidTagRecipeQuery(FluidTagInput stack)
+	public FluidTagRecipeQuery(SizedFluidIngredient stack)
 	{
 		this.tag = stack;
 	}
@@ -26,7 +26,7 @@ public class FluidTagRecipeQuery extends RecipeQuery
 	public boolean matchesIgnoringSize(ItemStack stack)
 	{
 		return FluidUtil.getFluidContained(stack)
-				.map(tag::testIgnoringAmount)
+				.map(s -> tag.ingredient().test(s))
 				.orElse(false);
 	}
 
@@ -39,7 +39,7 @@ public class FluidTagRecipeQuery extends RecipeQuery
 	@Override
 	public int getFluidSize()
 	{
-		return tag.getAmount();
+		return tag.amount();
 	}
 
 	@Override

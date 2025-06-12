@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBMemorizeStructure;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
@@ -185,6 +186,16 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public BlockState getOriginalBlock(Level level)
 	{
+		IMultiblockLogic<State> logic = getMultiblock().logic();
+		State state = getState();
+		if(state==null && this.masterHelperDuringDisassembly!=null)
+			state = this.masterHelperDuringDisassembly.getState();
+		if(logic instanceof MBMemorizeStructure<State> memo && state!=null)
+		{
+			BlockState memorized = memo.getMemorizedBlockState(state, getPositionInMB());
+			if(memorized!=null)
+				return memorized;
+		}
 		for(StructureBlockInfo block : multiblock.getStructure().apply(level))
 			if(block.pos().equals(getPositionInMB()))
 				return block.state();

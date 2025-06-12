@@ -5,10 +5,8 @@
     "item": "minecraft:mangrove_wood"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:mangrove_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:mangrove_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_mangrove_wood"
+    "id": "minecraft:stripped_mangrove_wood"
   },
   "strippingSecondaries": [
     {

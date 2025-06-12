@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import blusunrize.immersiveengineering.client.utils.SpacerComponent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -27,19 +28,21 @@ import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpda
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -57,14 +60,36 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+import static blusunrize.immersiveengineering.api.Lib.getRedstoneColorComponent;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.MOD)
 public class ItemOverlayUtils
 {
+	private static final List<SubtitleOffset> SUBTITLE_OFFSETS = List.of(
+			new SubtitleOffset(s -> s.getItem() instanceof ChemthrowerItem, 60f),
+			new SubtitleOffset(s -> s.getItem() instanceof DrillItem||s.getItem() instanceof BuzzsawItem, 70f),
+			new SubtitleOffset(s -> s.getItem() instanceof RevolverItem||s.getItem() instanceof SpeedloaderItem
+					||(s.getItem() instanceof IEShieldItem shield&&!shield.getUpgrades(s).entries().isEmpty()), 80f),
+			new SubtitleOffset(s -> s.getItem() instanceof RailgunItem, 90f)
+	);
+
+	public static void handleTooltipOffset(GuiGraphics guiGraphics, boolean pre)
+	{
+		Player player = ClientUtils.mc().player;
+		if(player==null)
+			return;
+		ItemStack rightHandItem = HumanoidArm.RIGHT==player.getMainArm()?player.getMainHandItem(): player.getOffhandItem();
+		SUBTITLE_OFFSETS.forEach(c -> {
+			if(c.cond.test(rightHandItem))
+				guiGraphics.pose().translate(pre?-c.offset: c.offset, 0, 0);
+		});
+	}
+
 	@SubscribeEvent
 	public static void register(RegisterGuiLayersEvent ev)
 	{
@@ -152,9 +177,8 @@ public class ItemOverlayUtils
 		if(bullets!=null)
 		{
 			int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-			HumanoidArm side = ItemUtils.getLivingHand(player, hand);
-			boolean right = side==HumanoidArm.RIGHT;
-			float dx = right?scaledWidth-32-48: 48;
+			boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
+			float dx = boundLeft?48: scaledWidth-32-48;
 			float dy = scaledHeight-64;
 			PoseStack transform = graphics.pose();
 			transform.pushPose();
@@ -173,7 +197,7 @@ public class ItemOverlayUtils
 		int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 		float scale = 1.5f;
 
-		boolean boundLeft = (player.getMainArm()==HumanoidArm.RIGHT)==(hand==InteractionHand.OFF_HAND);
+		boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
 		int dx = boundLeft?24: (scaledWidth-24-64);
 		int dy = scaledHeight-16;
 		var transform = graphics.pose();
@@ -194,12 +218,12 @@ public class ItemOverlayUtils
 		transform.popPose();
 	}
 
-	public static void renderFluidTankOverlay(GuiGraphics graphics, int scaledWidth, int scaledHeight,
+	public static void renderFluidTankOverlay(GuiGraphics graphics, int xStart, int scaledHeight,
 											  Player player, InteractionHand hand, ItemStack equipped, boolean renderFluidUse,
 											  BiConsumer<GuiGraphics, IFluidHandlerItem> additionalRender)
 	{
 		var transform = graphics.pose();
-		float dx = scaledWidth-16;
+		float dx = xStart;
 		float dy = scaledHeight;
 		transform.pushPose();
 		transform.translate(dx, dy, 0);
@@ -239,7 +263,9 @@ public class ItemOverlayUtils
 	public static void renderDrillOverlay(GuiGraphics graphics, int scaledWidth, int scaledHeight,
 										  Player player, InteractionHand hand, ItemStack equipped)
 	{
-		renderFluidTankOverlay(graphics, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
+		boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
+		int xStart = boundLeft?60: scaledWidth-16;
+		renderFluidTankOverlay(graphics, xStart, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			builder.blitSprite(ieLoc("hud/gauge_with_item"), -54, -73, 66, 72);
 			ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 			if(!head.isEmpty())
@@ -250,7 +276,9 @@ public class ItemOverlayUtils
 	public static void renderBuzzsawOverlay(GuiGraphics graphics, int scaledWidth, int scaledHeight,
 											Player player, InteractionHand hand, ItemStack equipped)
 	{
-		renderFluidTankOverlay(graphics, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
+		boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
+		int xStart = boundLeft?60: scaledWidth-16;
+		renderFluidTankOverlay(graphics, xStart, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			builder.blitSprite(ieLoc("hud/gauge_with_item"), -54, -73, 66, 72);
 			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getHead(equipped);
 			if(!blade.isEmpty())
@@ -261,17 +289,19 @@ public class ItemOverlayUtils
 	public static void renderChemthrowerOverlay(GuiGraphics graphics, int scaledWidth, int scaledHeight,
 												Player player, InteractionHand hand, ItemStack equipped)
 	{
-		renderFluidTankOverlay(graphics, scaledWidth, scaledHeight, player, hand, equipped, true, (builder, handler) -> {
+		boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
+		int xStart = boundLeft?54: scaledWidth-16;
+		renderFluidTankOverlay(graphics, xStart, scaledHeight, player, hand, equipped, true, (builder, handler) -> {
 			builder.blitSprite(ieLoc("hud/gauge_no_item"), -41, -73, 53, 72);
 			boolean ignite = ChemthrowerItem.isIgniteEnable(equipped);
 			builder.blitSprite(ieLoc(ignite?"hud/with_flame": "hud/no_flame"), -32, -43, 12, 12);
-
-			builder.blitSprite(ieLoc("hud/text_label"), -100, -20, 64, 16);
+			builder.blitSprite(ieLoc("hud/text_label"), -52, -93, 64, 16);
 			FluidStack fuel = handler.getFluidInTank(0);
 			if(!fuel.isEmpty())
 			{
 				String name = ClientUtils.font().substrByWidth(fuel.getHoverName(), 50).getString().trim();
-				graphics.drawCenteredString(ClientUtils.font(), name, -68, -15, 0);
+				int width = ClientUtils.font().width(name);
+				graphics.drawString(ClientUtils.font(), name, -20-width/2, -88, 0x333333, false);
 			}
 		});
 	}
@@ -282,9 +312,9 @@ public class ItemOverlayUtils
 		var upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
 		if(upgrades.entries().isEmpty())
 			return;
-		boolean boundLeft = (player.getMainArm()==HumanoidArm.RIGHT)==(hand==InteractionHand.OFF_HAND);
+		boolean boundLeft = ItemUtils.getLivingHand(player, hand)==HumanoidArm.LEFT;
 		float dx = boundLeft?16: (scaledWidth-16-64);
-		float dy = scaledHeight;
+		float dy = scaledHeight-16;
 		var transform = graphics.pose();
 		transform.pushPose();
 		transform.translate(dx, dy, 0);
@@ -329,7 +359,7 @@ public class ItemOverlayUtils
 		if(pos==null)
 			return;
 
-		ArrayList<String> text = new ArrayList<>();
+		ArrayList<Component> text = new ArrayList<>();
 
 		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
 		long sinceLast = player.level().getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
@@ -342,39 +372,38 @@ public class ItemOverlayUtils
 			int storage = VoltmeterItem.lastEnergyUpdate.stored();
 			String storageText = Utils.toScientificNotation(storage, "0##", 100000);
 			String capacityText = Utils.toScientificNotation(maxStorage, "0##", 100000);
-			text.addAll(Arrays.asList(I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+storageText+" / "+capacityText)
-					.split("<br>")));
+			text.add(Component.translatable(Lib.DESC_INFO+"energyStored", storageText+" / "+capacityText));
 		}
 
 		if(rrt instanceof BlockHitResult mop)
 		{
-			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(mop);
+			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(mop.getBlockPos());
 			sinceLast = player.level().getGameTime()-VoltmeterItem.lastRedstoneUpdate.measuredInTick();
 			if(!matches||sinceLast > 20)
 				PacketDistributor.sendToServer(new MessageRequestRedstoneUpdate(mop.getBlockPos()));
 
 			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
-			{
-				text.addAll(Arrays.asList(I18n.get(Lib.DESC_INFO+"redstoneLevel", "<br>"+VoltmeterItem.lastRedstoneUpdate.rsLevel())
-						.split("<br>")));
-			}
+				VoltmeterItem.lastRedstoneUpdate.rsLevels().consume(
+						aByte -> text.add(Component.translatable(Lib.DESC_INFO+"redstone_level", String.valueOf(aByte))),
+						pairs -> {
+							if(pairs.length > 0)
+							{
+								text.add(Component.translatable(Lib.DESC_INFO+"redstone_level", ""));
+								for(Pair<DyeColor, Byte> p : pairs)
+								{
+									Component c = Component.translatable(Lib.DESC_INFO+"redstone_level_on_channel",
+											p.getSecond(),
+											getRedstoneColorComponent(p.getFirst())
+									);
+									// if the value is less than 10, we want a space before it which has the same width as a digit
+									text.add(p.getSecond() < 10?new SpacerComponent("0").append(c): c);
+								}
+							}
+						}
+				);
 		}
 
-		if(text!=null)
-		{
-			int col = 0xffffff;
-			int i = 0;
-			RenderSystem.enableBlend();
-			for(String s : text)
-				if(s!=null)
-				{
-					s = s.trim();
-					graphics.drawCenteredString(
-							ClientUtils.font(), s, scaledWidth/2, scaledHeight/2+4+(i++)*(ClientUtils.font().lineHeight+2), col
-					);
-				}
-			RenderSystem.disableBlend();
-		}
+		BlockOverlayUtils.drawBlockOverlayText(graphics, text, scaledWidth, scaledHeight);
 	}
 
 	private static int leftHeight()
@@ -385,5 +414,9 @@ public class ItemOverlayUtils
 	private static int rightHeight()
 	{
 		return Minecraft.getInstance().gui.rightHeight;
+	}
+
+	record SubtitleOffset(Predicate<ItemStack> cond, float offset)
+	{
 	}
 }

@@ -1,5 +1,6 @@
 {
   "values": [
+    "immersiveengineering:basic_engineering",
     "immersiveengineering:blueprint_shelf",
     "immersiveengineering:circuit_table",
     "immersiveengineering:craftingtable",
@@ -32,6 +33,10 @@
     "immersiveengineering:windmill",
     "immersiveengineering:wooden_barrel",
     "immersiveengineering:workbench",
+    "immersiveengineering:treated_wood_hanging_sign",
+    "immersiveengineering:treated_wood_sign",
+    "immersiveengineering:treated_wood_wall_hanging_sign",
+    "immersiveengineering:treated_wood_wall_sign",
     "immersiveengineering:treated_wood_horizontal",
     "immersiveengineering:slab_treated_wood_horizontal",
     "immersiveengineering:stairs_treated_wood_horizontal",

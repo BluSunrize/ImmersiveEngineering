@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/jungle/houses",
+  "fallback": "repurposed_structures:villages/jungle/terminators",
+  "elements": [
+    {
+      "weight": 6,
+      "element": {
+        "location": "immersiveengineering:villages/houses/jungle_engineer",
+        "processors": "repurposed_structures:villages/jungle/mossify",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}

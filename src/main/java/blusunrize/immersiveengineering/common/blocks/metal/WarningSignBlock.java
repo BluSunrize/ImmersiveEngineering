@@ -14,22 +14,46 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Unit;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Context;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public class WarningSignBlock extends IEBaseBlock
 {
+	private static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.METAL)
+			.sound(SoundType.METAL)
+			.strength(3, 15)
+			.requiresCorrectToolForDrops()
+			.isViewBlocking((state, blockReader, pos) -> false)
+			.lightLevel(b -> b.getValue(GLOWING)?9: 0);
+
 	private final WarningSignIcon icon;
 
 	public WarningSignBlock(WarningSignIcon icon, Properties properties)
@@ -42,7 +66,13 @@ public class WarningSignBlock extends IEBaseBlock
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
-		builder.add(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
+		builder.add(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED, GLOWING);
+	}
+
+	@Override
+	protected BlockState getInitDefaultState()
+	{
+		return super.getInitDefaultState().setValue(GLOWING, false);
 	}
 
 	@Override
@@ -61,6 +91,23 @@ public class WarningSignBlock extends IEBaseBlock
 		return SHAPES.get(Unit.INSTANCE, state.getValue(IEProperties.FACING_HORIZONTAL));
 	}
 
+	@Override
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		if(stack.is(Items.GLOW_INK_SAC))
+		{
+			if(!level.isClientSide())
+			{
+				player.awardStat(Stats.ITEM_USED.get(stack.getItem()));
+				state = state.setValue(GLOWING, true);
+				level.setBlock(pos, state, 3);
+				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, Context.of(player, state));
+				stack.consume(1, player);
+			}
+			return ItemInteractionResult.SUCCESS;
+		}
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+	}
 
 	public enum WarningSignIcon implements StringRepresentable
 	{

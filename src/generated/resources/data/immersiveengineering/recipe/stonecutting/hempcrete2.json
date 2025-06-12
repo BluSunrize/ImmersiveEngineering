@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "immersiveengineering:hempcrete_chiseled"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:hempcrete"
+  }
+}

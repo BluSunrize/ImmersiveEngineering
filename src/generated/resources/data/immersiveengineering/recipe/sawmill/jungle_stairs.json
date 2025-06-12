@@ -5,7 +5,7 @@
     "item": "minecraft:jungle_stairs"
   },
   "result": {
-    "item": "minecraft:jungle_planks"
+    "id": "minecraft:jungle_planks"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

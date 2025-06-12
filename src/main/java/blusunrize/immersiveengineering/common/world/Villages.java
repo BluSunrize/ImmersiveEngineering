@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.items.upgrades.ToolUpgrade;
@@ -217,11 +218,11 @@ public class Villages
 				/* Structural Engineer
 				 * Sells various construction materials
 				 */
-				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getItemTag(IETags.treatedWood), new PriceInterval(4, 6), 16, 2));
+				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getItemTag(IETags.treatedWood), WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(4, 6), 16, 2));
 				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_SCAFFOLDING, new PriceInterval(5, 8), 16, 1));
 				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, Cloth.BALLOON, new PriceInterval(1, 3), 12, 2));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(4, 8), 16, 10));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, Ingredients.STICK_IRON, new PriceInterval(4, 8), 16, 10));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 
@@ -242,11 +243,11 @@ public class Villages
 				/* Machinist
 				 * Sells tools, metals, blueprints and drillheads
 				 */
-				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.coalCoke, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.coalCoke, Ingredients.COAL_COKE, new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.HAMMER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
 				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("components"), new PriceInterval(6, 16), 3, 5).setMultiplier(0.2f));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.STEEL).ingot, new PriceInterval(3, 6), 12, 10));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.STEEL).ingot, IEItems.Metals.INGOTS.get(EnumMetals.STEEL), new PriceInterval(3, 6), 12, 10));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.COMPONENT_STEEL, new PriceInterval(1, 3), 12, 5));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 8, 10));
 
@@ -261,25 +262,24 @@ public class Villages
 				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, MetalDecoration.ENGINEERING_LIGHT, new PriceInterval(1, 2), 16, 10));
 
 				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE), new PriceInterval(5, 10), 8, 10));
-				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new PriceInterval(12, 24), 3, 30).setMultiplier(0.2f));
 			}
 			else if(ELECTRICIAN.equals(typeName))
 			{
 				/* Electrician
 				 * Sells wires, tools and the faraday suit
 				 */
-				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.copperWire, new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.copperWire, Ingredients.WIRE_COPPER, new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.COPPER), new PriceInterval(2, 4), 16, 1));
 				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.WIRECUTTER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
 				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.SCREWDRIVER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.electrumWire, new PriceInterval(6, 12), 16, 5));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.electrumWire, Ingredients.WIRE_ELECTRUM, new PriceInterval(6, 12), 16, 5));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(1, 4), 16, 5));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.VOLTMETER, new PriceInterval(1, 3), 12, 5).setMultiplier(0.2f));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(ArmorItem.Type.BOOTS), new PriceInterval(5, 7), 3, 15).setMultiplier(0.2f));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(ArmorItem.Type.LEGGINGS), new PriceInterval(9, 11), 3, 15).setMultiplier(0.2f));
 
-				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.aluminumWire, new PriceInterval(4, 8), 16, 10));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.aluminumWire, Ingredients.WIRE_ALUMINUM, new PriceInterval(4, 8), 16, 10));
 				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.STEEL), new PriceInterval(1, 2), 16, 10));
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(ArmorItem.Type.CHESTPLATE), new PriceInterval(11, 15), 3, 20).setMultiplier(0.2f));
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET), new PriceInterval(5, 7), 3, 20).setMultiplier(0.2f));
@@ -310,11 +310,11 @@ public class Villages
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEBannerPatterns.ORNATE.item(), new PriceInterval(4, 20), 3, 20));
 
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_rare, new PriceInterval(8, 16), 16, 15));
-				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.SILVER).dust, new PriceInterval(4, 12), 16, 10));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.SILVER).dust, IEItems.Metals.DUSTS.get(EnumMetals.SILVER), new PriceInterval(4, 12), 16, 10));
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_uncommon, new PriceInterval(4, 12), 8, 5));
 
 				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_epic, new PriceInterval(12, 20), 3, 20));
-				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.GOLD).dust, new PriceInterval(4, 12), 16, 15));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.GOLD).dust, IEItems.Metals.DUSTS.get(EnumMetals.SILVER), new PriceInterval(4, 12), 16, 15));
 				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_rare, new PriceInterval(8, 16), 8, 15));
 
 				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_epic, new PriceInterval(16, 28), 3, 30).setMultiplier(0.2f));
@@ -357,7 +357,6 @@ public class Villages
 			String offerIndexS = String.valueOf(offerIndex);
 			if(randomizedOffers.contains(offerIndexS))
 			{
-				System.out.println("Regenerate offer");
 				GenerateOffer offerFunction = RerollingItemListing.OFFER_FUNCTIONS.get(randomizedOffers.getString(offerIndexS));
 				MerchantOffer offer = offerFunction.generateOffer(villager, ev.getEntity(), villager.getRandom());
 				offer.increaseUses();
@@ -394,9 +393,12 @@ public class Villages
 			this(outline, new ItemStack(item), buyAmounts, maxUses, xp);
 		}
 
-		public TradeListing(@Nonnull TradeOutline outline, @Nonnull TagKey<Item> tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
+		public TradeListing(@Nonnull TradeOutline outline, @Nonnull TagKey<Item> tag, @Nonnull ItemLike backup, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(outline, l -> l!=null?IEApi.getPreferredTagStack(l.registryAccess(), tag): ItemStack.EMPTY, buyAmounts, maxUses, xp);
+			this(outline, l -> {
+				ItemStack fromTag = l!=null?IEApi.getPreferredTagStack(l.registryAccess(), tag): ItemStack.EMPTY;
+				return fromTag.isEmpty()?new ItemStack(backup): fromTag;
+			}, buyAmounts, maxUses, xp);
 		}
 
 		public TradeListing setMultiplier(float priceMultiplier)
@@ -414,7 +416,7 @@ public class Villages
 		}
 	}
 
-	public static record RerollingItemListing(String functionKey) implements ItemListing
+	public record RerollingItemListing(String functionKey) implements ItemListing
 	{
 		private static final String RANDOMIZED_OFFERS_KEY = "immersiveengineering:randomized_offers";
 		private static final Map<String, GenerateOffer> OFFER_FUNCTIONS = new HashMap<>();
@@ -429,7 +431,7 @@ public class Villages
 		public MerchantOffer getOffer(Entity trader, @Nonnull RandomSource random)
 		{
 			Player player = null;
-			if(trader instanceof AbstractVillager villager)
+			if(trader instanceof AbstractVillager villager&&!villager.level().isClientSide())
 			{
 				player = villager.getTradingPlayer();
 

@@ -5,7 +5,7 @@
     "item": "minecraft:cherry_door"
   },
   "result": {
-    "item": "minecraft:cherry_planks"
+    "id": "minecraft:cherry_planks"
   },
   "secondaryOutputs": [
     {

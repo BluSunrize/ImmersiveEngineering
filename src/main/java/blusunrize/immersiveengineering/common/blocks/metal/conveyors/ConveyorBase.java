@@ -277,7 +277,8 @@ public abstract class ConveyorBase implements IConveyorBelt
 						{
 							dropCover(player);
 							this.cover = heldBlock;
-							heldItem.shrink(1);
+							if(!player.hasInfiniteMaterials())
+								heldItem.shrink(1);
 							if(heldItem.getCount() <= 0)
 								player.setItemInHand(hand, heldItem);
 							return true;

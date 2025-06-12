@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:item/material_plate_hop_graphite"
+  }
+}

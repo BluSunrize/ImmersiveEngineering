@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -27,6 +27,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -176,16 +177,24 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 		return SHAPES.get(getFacing().getAxis());
 	}
 
+	@Override
+	public Pair<DyeColor, Byte>[] overrideVoltmeterRead()
+	{
+		return new Pair[]{
+				Pair.of(this.redstoneChannel, (byte)this.output),
+				Pair.of(this.redstoneChannelSending, (byte)this.lastOutput),
+		};
+	}
 
 	@Override
 	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
 	{
-		if(!Utils.isScrewdriver(player.getItemInHand(InteractionHand.MAIN_HAND)))
-			return null;
-		return new Component[]{
-				Component.translatable(Lib.DESC_INFO+"redstoneChannel.rec", I18n.get("item.minecraft.firework_star."+redstoneChannel.getName())),
-				Component.translatable(Lib.DESC_INFO+"redstoneChannel.send", I18n.get("item.minecraft.firework_star."+redstoneChannelSending.getName()))
-		};
+		if(Utils.isScrewdriver(player.getMainHandItem()))
+			return new Component[]{
+					getChannelComponent("_receiving", redstoneChannel),
+					getChannelComponent("_sending", redstoneChannelSending),
+			};
+		return null;
 	}
 
 	@Override

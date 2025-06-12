@@ -1,6 +1,6 @@
 name: Bug Report
 description: If you experienced a bug while playing with Immersive Engineering
-labels: ["bug"]
+labels: ["bug 🐛"]
 body:
   - type: markdown
     attributes:
@@ -16,8 +16,7 @@ body:
 
         *If your version does not show up here, support for it has been ended.*
       options:
-        - '1.20.1'
-        - '1.20.4'
+        - '1.21.1'
     validations:
       required: true
 

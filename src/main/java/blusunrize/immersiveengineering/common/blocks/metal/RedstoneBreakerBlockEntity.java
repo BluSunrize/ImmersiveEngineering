@@ -13,11 +13,13 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -101,5 +103,12 @@ public class RedstoneBreakerBlockEntity extends BreakerSwitchBlockEntity impleme
 	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return false;
+	}
+
+	private static final Pair<DyeColor, Byte>[] NO_OVERRIDE = new Pair[0];
+	@Override
+	public Pair<DyeColor, Byte>[] overrideVoltmeterRead()
+	{
+		return NO_OVERRIDE;
 	}
 }

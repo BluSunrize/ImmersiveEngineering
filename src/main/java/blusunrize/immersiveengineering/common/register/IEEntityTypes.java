@@ -21,7 +21,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
 import java.util.function.Supplier;
 
@@ -40,9 +39,9 @@ public class IEEntityTypes
 			() -> Builder.<FluorescentTubeEntity>of(FluorescentTubeEntity::new, MobCategory.MISC)
 					.sized(FluorescentTubeEntity.TUBE_LENGTH/2, 1+FluorescentTubeEntity.TUBE_LENGTH/2)
 	);
-	public static final DeferredHolder<EntityType<?>, EntityType<IEExplosiveEntity>> EXPLOSIVE = register(
+	public static final DeferredHolder<EntityType<?>, EntityType<GunpowderBarrelEntity>> EXPLOSIVE = register(
 			"explosive",
-			() -> Builder.<IEExplosiveEntity>of(IEExplosiveEntity::new, MobCategory.MISC)
+			() -> Builder.<GunpowderBarrelEntity>of(GunpowderBarrelEntity::new, MobCategory.MISC)
 					.fireImmune()
 					.sized(0.98F, 0.98F)
 	);

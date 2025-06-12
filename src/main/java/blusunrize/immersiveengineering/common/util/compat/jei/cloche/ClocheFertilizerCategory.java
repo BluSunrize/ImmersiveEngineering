@@ -11,10 +11,13 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cloche;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.compat.jei.DoubleIcon;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -30,7 +33,11 @@ public class ClocheFertilizerCategory extends IERecipeCategory<ClocheFertilizer>
 	{
 		super(helper, JEIRecipeTypes.CLOCHE_FERTILIZER, "desc.immersiveengineering.jei.category.fertilizer");
 		setBackground(helper.createBlankDrawable(150, 50));
-		setIcon(new ItemStack(IEBlocks.MetalDevices.CLOCHE));
+		setIcon(new DoubleIcon(
+				helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEBlocks.MetalDevices.CLOCHE.asItem().getDefaultInstance()),
+				helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, Misc.FERTILIZER.get().getDefaultInstance()),
+				0.6f
+		));
 	}
 
 	@Override

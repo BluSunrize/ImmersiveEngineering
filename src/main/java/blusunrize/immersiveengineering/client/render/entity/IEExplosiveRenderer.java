@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
+import blusunrize.immersiveengineering.common.entities.GunpowderBarrelEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -22,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 
-public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
+public class IEExplosiveRenderer extends EntityRenderer<GunpowderBarrelEntity>
 {
 	public IEExplosiveRenderer(Context renderManager)
 	{
@@ -31,7 +30,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 	}
 
 	@Override
-	public void render(IEExplosiveEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
+	public void render(GunpowderBarrelEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
 		if(entity.block==null)
 			return;
@@ -63,7 +62,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(IEExplosiveEntity entity)
+	public ResourceLocation getTextureLocation(GunpowderBarrelEntity entity)
 	{
 		return InventoryMenu.BLOCK_ATLAS;
 	}

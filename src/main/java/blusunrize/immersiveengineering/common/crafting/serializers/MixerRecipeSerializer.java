@@ -21,7 +21,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 {
 	public static final DualMapCodec<RegistryFriendlyByteBuf, MixerRecipe> CODECS = DualCompositeMapCodecs.composite(
 			IEDualCodecs.FLUID_STACK.fieldOf("result"), r -> r.fluidOutput,
-			FluidTagInput.CODECS.fieldOf("fluid"), r -> r.fluidInput,
+			IEDualCodecs.SIZED_FLUID_INGREDIENT.fieldOf("fluid"), r -> r.fluidInput,
 			IngredientWithSize.CODECS.listOf().fieldOf("inputs"), r -> r.itemInputs,
 			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,
 			MixerRecipe::new

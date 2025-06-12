@@ -16,21 +16,27 @@ import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.mixin.accessors.DamageSourcesAccess;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.entity.projectile.windcharge.AbstractWindCharge;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nullable;
@@ -55,7 +61,7 @@ public class RailgunProjectiles
 				new RailgunRenderColors(0xb4b4b4, 0xb4b4b4, 0xb4b4b4, 0x7a7a7a, 0x555555, 0x555555)
 		);
 
-		// Steel
+		// Netherite
 		RailgunHandler.registerStandardProjectile(IETags.netheriteRod, 30, 1.25).setColorMap(
 				new RailgunRenderColors(0x5a575a, 0x484548, 0x484548, 0x3c3232, 0x31292a, 0x31292a)
 		);
@@ -81,6 +87,39 @@ public class RailgunProjectiles
 				return 1;
 			}
 		}.setColorMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
+
+		// Breeze Rod
+		RailgunHandler.registerProjectile(() -> Ingredient.of(Tags.Items.RODS_BREEZE), new RailgunHandler.StandardRailgunProjectile(16, .9)
+		{
+			@Override
+			public double getDamage(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
+			{
+				double d = super.getDamage(world, target, shooter, projectile);
+				if(target instanceof Breeze)
+					d *= 2;
+				return d;
+			}
+
+			@Override
+			public void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile)
+			{
+				if(target.getType()!=Type.MISS)
+					world.explode(projectile, null,
+							AbstractWindCharge.EXPLOSION_DAMAGE_CALCULATOR,
+							target.getLocation().x, target.getLocation().y, target.getLocation().z,
+							3.0F, false,
+							ExplosionInteraction.TRIGGER,
+							ParticleTypes.GUST_EMITTER_SMALL, ParticleTypes.GUST_EMITTER_LARGE,
+							SoundEvents.BREEZE_WIND_CHARGE_BURST
+					);
+			}
+
+			@Override
+			public double getBreakChance(@Nullable UUID shooter, ItemStack ammo)
+			{
+				return 1;
+			}
+		}.setColorMap(new RailgunRenderColors(0xbfafc9, 0xb5a5ca, 0x576c9d, 0x3e5e87, 0x3e5e87, 0x2f527f)));
 
 		// End Rod
 		RailgunHandler.registerProjectile(() -> Ingredient.of(Items.END_ROD), new RailgunHandler.StandardRailgunProjectile(10, 1.05)

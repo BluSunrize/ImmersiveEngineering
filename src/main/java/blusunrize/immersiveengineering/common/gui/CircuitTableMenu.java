@@ -15,7 +15,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEnt
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +35,7 @@ public class CircuitTableMenu extends IEContainerMenu
 	private final ItemStackHandler outputInventory = new ItemStackHandler(1);
 
 	public LogicCircuitInstruction instruction;
+	public String itemName;
 	private final IItemHandler inv;
 	public final EnergyStorage energyStorage;
 
@@ -65,7 +68,7 @@ public class CircuitTableMenu extends IEContainerMenu
 		this.addSlot(new IESlot.Tagged(inv, this.ownSlotCount++, 8, 34, IETags.circuitLogic));
 		this.addSlot(new IESlot.Tagged(inv, this.ownSlotCount++, 8, 54, IETags.circuitSolder));
 
-		this.addSlot(new IESlot.LogicCircuit(inv, this.ownSlotCount++, 175, 11));
+		this.addSlot(new IESlot.LogicCircuit(inv, this.ownSlotCount++, 175, 24));
 
 		this.addSlot(new IESlot.NewOutput(outputInventory, 0, 194, 56)
 		{
@@ -120,6 +123,8 @@ public class CircuitTableMenu extends IEContainerMenu
 			newOutput = LogicCircuitBoardItem.buildCircuitBoard(instruction);
 		else
 			newOutput = ItemStack.EMPTY;
+		if(itemName!=null&&!itemName.isEmpty())
+			newOutput.set(DataComponents.CUSTOM_NAME, Component.literal(itemName));
 		this.outputInventory.setStackInSlot(0, newOutput);
 	}
 
@@ -152,6 +157,7 @@ public class CircuitTableMenu extends IEContainerMenu
 	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
 		this.instruction = nbt.contains("operator")?LogicCircuitInstruction.deserialize(nbt): null;
+		this.itemName = nbt.contains("itemName")?nbt.getString("itemName"): null;
 		updateOutput();
 	}
 }

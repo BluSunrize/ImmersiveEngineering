@@ -43,6 +43,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nonnull;
 import java.util.UUID;
 
 public class RevolvershotEntity extends IEProjectileEntity
@@ -98,7 +99,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 	)
 	{
 		this(eType, world, living, living.getX()+ax, living.getY()+living.getEyeHeight()+ay, living.getZ()+az, ax, ay, az, bullet, bulletData);
-		setShooterSynced();
 		setDeltaMovement(Vec3.ZERO);
 	}
 
@@ -138,7 +138,9 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 		if(this.bullet!=null)
 		{
-			bullet.onHitTarget(level(), mop, this.shooterUUID, this, headshot);
+			Entity owner = getOwner();
+			UUID shooterUUID = owner!=null?owner.getUUID():null;
+			bullet.onHitTarget(level(), mop, shooterUUID, this, headshot);
 			if(mop instanceof EntityHitResult)
 			{
 				Entity hitEntity = ((EntityHitResult)mop).getEntity();
@@ -165,6 +167,8 @@ public class RevolvershotEntity extends IEProjectileEntity
 		if(!(mop instanceof EntityHitResult))
 			return;
 		Entity hitEntity = ((EntityHitResult)mop).getEntity();
+		Entity owner = getOwner();
+		UUID shooterUUID = owner!=null?owner.getUUID():null;
 		if(bulletElectro&&hitEntity instanceof LivingEntity&&shooterUUID!=null)
 		{
 			Player shooter = level().getPlayerByUUID(shooterUUID);
@@ -216,10 +220,11 @@ public class RevolvershotEntity extends IEProjectileEntity
 		return false;
 	}
 
+	@Nonnull
 	@Override
 	protected ItemStack getDefaultPickupItem()
 	{
-		return ItemStack.EMPTY;
+		return BulletHandler.getBulletStack(IEBullets.CASULL);
 	}
 
 	@Override

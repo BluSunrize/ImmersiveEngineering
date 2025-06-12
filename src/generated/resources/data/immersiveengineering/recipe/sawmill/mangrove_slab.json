@@ -5,10 +5,8 @@
     "item": "minecraft:mangrove_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:mangrove_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:mangrove_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

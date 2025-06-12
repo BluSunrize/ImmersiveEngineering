@@ -5,10 +5,8 @@
     "item": "minecraft:oak_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:oak_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:oak_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

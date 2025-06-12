@@ -60,8 +60,16 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				if(playerDistanceSq < 120)
 				{
 					final String category = IEApiDataComponents.getBlueprintType(stack);
-					IVertexBufferHolder vbo = VBO_BY_BLUEPRINT.computeIfAbsent(category, this::buildVBO);
-					vbo.render(BlueprintRenderer.RENDER_TYPE, combinedLightIn, combinedOverlayIn, bufferIn, transform);
+					if(!category.isEmpty() && !IEApiDataComponents.INVALID_BLUEPRINT.equals(category))
+					{
+						final ClientLevel level = ClientUtils.mc().level;
+						List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, category);
+						if(!recipes.isEmpty())
+						{
+							IVertexBufferHolder vbo = VBO_BY_BLUEPRINT.computeIfAbsent(category, this::buildVBO);
+							vbo.render(BlueprintRenderer.RENDER_TYPE, combinedLightIn, combinedOverlayIn, bufferIn, transform);
+						}
+					}
 				}
 			}
 			else

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBMemorizeStructure;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloTankShapes;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -26,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -37,9 +39,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class SiloLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
+public class SiloLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>, MBMemorizeStructure<State>
 {
-	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(6);
+	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(6, true);
 	private static final int MAX_STORAGE = 41472;
 	public static final BlockPos OUTPUT_POS = new BlockPos(1, 0, 1);
 	private static final Set<BlockPos> IO_OFFSETS = Set.of(OUTPUT_POS, new BlockPos(1, 6, 1));
@@ -94,6 +96,18 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		return SHAPE_GETTER;
 	}
 
+	@Override
+	public void setMemorizedBlockState(State state, BlockPos pos, BlockState blockState)
+	{
+		state.structureMemo.put(pos, blockState);
+	}
+
+	@Override
+	public BlockState getMemorizedBlockState(State state, BlockPos pos)
+	{
+		return state.structureMemo.get(pos);
+	}
+
 	public static class State implements IMultiblockState
 	{
 		public ItemStack identStack = ItemStack.EMPTY;
@@ -104,6 +118,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
 		private final List<Supplier<@Nullable IItemHandler>> outputs;
 		private final IItemHandler inputHandler;
+		private final StructureMemo structureMemo = new StructureMemo();
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
@@ -127,6 +142,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		{
 			nbt.put("identStack", identStack.saveOptional(provider));
 			nbt.putInt("count", storageAmount);
+			structureMemo.writeSaveNBT(nbt, provider);
 		}
 
 		@Override
@@ -134,6 +150,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		{
 			identStack = ItemStack.parseOptional(provider, nbt.getCompound("identStack"));
 			storageAmount = nbt.getInt("count");
+			structureMemo.readSaveNBT(nbt, provider);
 		}
 
 		@Override

@@ -38,6 +38,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -197,6 +198,12 @@ public class RedstoneSwitchboardBlockEntity extends ImmersiveConnectableBlockEnt
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return REDSTONE_CATEGORY.equals(cableType.getCategory());
+	}
+
+	@Override
+	public Collection<ResourceLocation> getRequestedHandlers()
+	{
+		return ImmutableList.of(RedstoneNetworkHandler.ID);
 	}
 
 	@Nullable

@@ -10,10 +10,8 @@
     }
   ],
   "result": {
-    "basePredicate": {
-      "item": "minecraft:crimson_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:crimson_planks"
   },
   "secondaryOutputs": [
     {

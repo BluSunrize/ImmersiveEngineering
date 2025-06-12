@@ -5,10 +5,8 @@
     "tag": "c:rods/blaze"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:blaze_powder"
-    },
-    "count": 4
+    "count": 4,
+    "id": "minecraft:blaze_powder"
   },
   "secondaries": [
     {

@@ -90,7 +90,9 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> GUNPART_HAMMER = register("gunpart_hammer", RevolverpartItem::new);
 		public static final ItemRegObject<IEBaseItem> DUST_COKE = simple("dust_coke");
 		public static final ItemRegObject<IEBaseItem> DUST_HOP_GRAPHITE = simple("dust_hop_graphite");
+		@Deprecated(since = "12.3.1")
 		public static final ItemRegObject<IEBaseItem> INGOT_HOP_GRAPHITE = simple("ingot_hop_graphite");
+		public static final ItemRegObject<IEBaseItem> PLATE_HOP_GRAPHITE = simple("plate_hop_graphite");
 		public static final ItemRegObject<IEBaseItem> WIRE_COPPER = simple("wire_copper");
 		public static final ItemRegObject<IEBaseItem> WIRE_ELECTRUM = simple("wire_electrum");
 		public static final ItemRegObject<IEBaseItem> WIRE_ALUMINUM = simple("wire_aluminum");
@@ -303,6 +305,7 @@ public final class IEItems
 
 		public static final ItemRegObject<FakeIconItem> ICON_BIRTHDAY = icon("birthday");
 		public static final ItemRegObject<FakeIconItem> ICON_LUCKY = icon("lucky");
+		public static final ItemRegObject<FakeIconItem> ICON_ACHTUNG = icon("achtung");
 		public static final ItemRegObject<FakeIconItem> ICON_DRILLBREAK = icon("drillbreak");
 		public static final ItemRegObject<FakeIconItem> ICON_RAVENHOLM = icon("ravenholm");
 		public static final ItemRegObject<FakeIconItem> ICON_FRIED = icon("fried");
@@ -353,6 +356,7 @@ public final class IEItems
 		public static final ItemRegObject<SpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
 		public static final ItemRegObject<SpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
 		public static final ItemRegObject<SpawnEggItem> EGG_BULWARK = registerEgg(IEEntityTypes.BULWARK, 0x959b9b, 0xc75538);
+		public static final ItemRegObject<RobotWolfItem> ROBOT_WOLF = register("robot_wolf", RobotWolfItem::new);
 
 		private static void init()
 		{

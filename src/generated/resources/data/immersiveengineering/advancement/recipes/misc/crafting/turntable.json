@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_coil_lv": {
+    "has_component_iron": {
       "conditions": {
         "items": [
           {
-            "items": "immersiveengineering:coil_lv"
+            "items": "immersiveengineering:component_iron"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_coil_lv"
+      "has_component_iron"
     ]
   ],
   "rewards": {

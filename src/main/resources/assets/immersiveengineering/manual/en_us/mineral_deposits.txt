@@ -7,7 +7,7 @@ At the end of this section is an appendix listing all known mineral veins.<np>
 Each sample taken of the same vein allows more accurate identification of its center and contents. Mineral veins may overlap, so surveying can show traces of veins in close proximity. Sample sites that are too close, however, do not provide useful information on vein location.<br>
 Artifical blocks such as sheetmetal, plants such as logs, and fluids such as water do not contain traces of mineral veins, and thus cannot be used with the survey tools.<np>
 <&sample_drill>§2Core Sample Drills§r provide precise identification of the composition and expected yield of a mineral vein. As with mineral surveying, they cannot be done upon the air or water.<br>
-The drill can be started by hand or by redstone signal. When supplied with power, such as from an <link;accumulators;accumulator> for a portable battery, the drill will consume <config;i;machines.coredrill.consumption> Flux/t to produce a §2core sample§r.<br>
+The drill can be started by hand and disabled by redstone signal. When supplied with power, such as from an <link;accumulators;accumulator> for a portable battery, the drill will consume <config;i;machines.coredrill.consumption> Flux/t to produce a §2core sample§r.<br>
 Core samples are delicate and must be extracted manually in a similar way to activating the machine again.<np>
 <&core_sample>Core samples can be easily analyzed visually to determine the relative presence of minerals at the location.<br>
 Unlike simple surveying, in-depth analysis with the core sample drill allows §2Saturation§r to be determined. A higher saturation means a higher chance for an excavator to return an ore.<br>

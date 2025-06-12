@@ -1,0 +1,7 @@
+{
+  "require_advancement": "immersiveengineering:manual/automatons",
+  "start": {
+    "type": "blueprint",
+    "recipe": "blueprint/robot_wolf"
+  }
+}

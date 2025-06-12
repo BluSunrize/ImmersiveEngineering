@@ -17,6 +17,8 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -35,17 +37,22 @@ public class IELootFunctions
 	public static final Holder<LootItemFunctionType<?>> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.CODEC);
 
 	private static final DeferredRegister<LootPoolEntryType> ENTRY_REGISTER = DeferredRegister.create(
-			// TODO why isn't there a REGISTRY field for this one?
-			BuiltInRegistries.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
+			Registries.LOOT_POOL_ENTRY_TYPE, ImmersiveEngineering.MODID
 	);
 	public static final Holder<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.CODEC);
 	public static final Holder<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.CODEC);
 	public static final Holder<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.CODEC);
 
+	private static final DeferredRegister<LootItemConditionType> CONDITION_REGISTER = DeferredRegister.create(
+			Registries.LOOT_CONDITION_TYPE, ImmersiveEngineering.MODID
+	);
+	public static final Holder<LootItemConditionType> BLOCKSTATE = registerCondition("blockstate", LootBlockStateFromLocationPredicate.CODEC);
+
 	public static void init(IEventBus modBus)
 	{
 		FUNCTION_REGISTER.register(modBus);
 		ENTRY_REGISTER.register(modBus);
+		CONDITION_REGISTER.register(modBus);
 	}
 
 	private static Holder<LootPoolEntryType> registerEntry(
@@ -60,5 +67,12 @@ public class IELootFunctions
 	)
 	{
 		return FUNCTION_REGISTER.register(id, () -> new LootItemFunctionType<>(serializer));
+	}
+
+	private static Holder<LootItemConditionType> registerCondition(
+			String id, MapCodec<? extends LootItemCondition> serializer
+	)
+	{
+		return CONDITION_REGISTER.register(id, () -> new LootItemConditionType(serializer));
 	}
 }

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.tool.upgrade.PrevSlot;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.UpgradeableToolItem;
@@ -34,10 +35,10 @@ public record MessageMagnetEquip(int fetchSlot) implements IMessage
 		Player player = context.player();
 		context.enqueueWork(() -> {
 			ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
-			var upgrades = UpgradeableToolItem.getUpgradesStatic(held);
 			if(fetchSlot >= 0)
 			{
 				ItemStack s = player.getInventory().items.get(fetchSlot);
+				UpgradeData upgrades = UpgradeableToolItem.getUpgradesStatic(s);
 				if(s.getItem() instanceof IEShieldItem&&upgrades.has(UpgradeEffect.MAGNET))
 				{
 					var withSlot = upgrades.with(UpgradeEffect.MAGNET, new PrevSlot(fetchSlot));
@@ -48,6 +49,7 @@ public record MessageMagnetEquip(int fetchSlot) implements IMessage
 			}
 			else
 			{
+				UpgradeData upgrades = UpgradeableToolItem.getUpgradesStatic(held);
 				var prevSlot = upgrades.get(UpgradeEffect.MAGNET).prevSlot();
 				if(held.getItem() instanceof IEShieldItem&&((IEShieldItem)held.getItem()).getUpgrades(held).has(UpgradeEffect.MAGNET)&&prevSlot.isPresent())
 				{

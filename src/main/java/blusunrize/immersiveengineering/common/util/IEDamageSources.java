@@ -26,6 +26,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.FakePlayer;
 
 import javax.annotation.Nullable;
 
@@ -161,8 +162,8 @@ public class IEDamageSources
 
 	private static DamageSource maybeTurret(Entity shot, @Nullable Entity shooter, TurretDamageType type)
 	{
-		if(shooter==null)
-			return sources(shot).invokeSource(type.turretType(), shot, null);
+		if(shooter==null || shooter instanceof FakePlayer)
+			return sources(shot).invokeSource(type.turretType(), shot, shooter);
 		return sources(shot).invokeSource(type.playerType(), shot, shooter);
 	}
 

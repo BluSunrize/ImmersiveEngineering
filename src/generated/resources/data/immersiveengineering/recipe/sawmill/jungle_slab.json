@@ -5,10 +5,8 @@
     "item": "minecraft:jungle_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:jungle_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:jungle_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

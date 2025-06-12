@@ -9,7 +9,7 @@ For mass production, the acid can be easily created in a <link;mixer;Mixer>, usi
 <&redstone_acid_copper>When used in a <link;chemical_thrower;Chemical Thrower> or in a <link;bottling_machine;Bottling Machine> it can be used to oxidize copper blocks.<br>
 The bottling recipe consumes an eighth of a bucket for each block oxidized.<np>
 <&plant_oil_ethanol>§lPlant Oil§r and §lEthanol§r are plant-derived fuels primarily used in <link;industrial_fluids;Biodiesel;biodiesel>.<br>
-Ethanol can also be used as a precursor to <link;industrial_fluids;Acetaldehyde;resin_and_acetaldehyde>. Plant Oil can also be used to lubricate the bearings of large tools.<np>
+Ethanol can also be used as a precursor to <link;industrial_fluids;Acetaldehyde;resin_acetaldehyde>. Plant Oil can also be used to lubricate the bearings of large tools.<np>
 <&biodiesel>§lBiodiesel§r is the great prime mover of any aspiring industrial engineer, and created from <link;industrial_fluids;Plant Oil and Ethanol;plant_oil_ethanol> in the <link;refinery;Refinery>.<br>
 When burned in the <link;diesel_generator;Diesel Generator>, biodiesel will produce truly industrial amounts of power.<np>
 <&high_power_biodiesel>To increase the energy output of §lBiodiesel§r further, it can be combined with a <link;industrial_fluids;Potion of Strength;potion> in the <link;refinery;Refinery> at 95 to 5 ratio. The resulting §lHigh-Cetane Biodiesel§r has a 25% longer burn time!<np>

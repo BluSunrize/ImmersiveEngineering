@@ -5,10 +5,8 @@
     "item": "minecraft:dark_oak_wood"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:dark_oak_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:dark_oak_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_dark_oak_wood"
+    "id": "minecraft:stripped_dark_oak_wood"
   },
   "strippingSecondaries": [
     {

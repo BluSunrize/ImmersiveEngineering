@@ -52,6 +52,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, IBlockEntityDrop
@@ -81,7 +82,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 				sideConfig.put(f, IOSideConfig.INPUT);
 			else
 				sideConfig.put(f, IOSideConfig.NONE);
-			energyCaps.put(f, new CapacitorEnergyHandler(f, sideConfig, energyStorage));
+			energyCaps.put(f, new CapacitorEnergyHandler(f, this::getSideConfig, energyStorage));
 		}
 		nullEnergyCap = new WrappingEnergyStorage(energyStorage, false, false);
 	}
@@ -231,7 +232,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 			mutable.setStoredEnergy(stored);
 		final var sideConfig = stack.get(IEDataComponents.CAPACITOR_CONFIG);
 		if(sideConfig!=null)
-			this.sideConfig = new EnumMap<>(sideConfig.sideConfig);
+			this.sideConfig.putAll(sideConfig.sideConfig);
 	}
 
 	protected IEnergyStorage makeMainEnergyStorage()
@@ -240,7 +241,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	private record CapacitorEnergyHandler(
-			Direction side, Map<Direction, IOSideConfig> sideConfigs, IEnergyStorage base
+			Direction side, Function<Direction, IOSideConfig> sideConfig, IEnergyStorage base
 	) implements IEnergyStorage
 	{
 
@@ -275,13 +276,13 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		@Override
 		public boolean canExtract()
 		{
-			return sideConfigs.get(side)==IOSideConfig.OUTPUT;
+			return sideConfig.apply(side)==IOSideConfig.OUTPUT;
 		}
 
 		@Override
 		public boolean canReceive()
 		{
-			return sideConfigs.get(side)==IOSideConfig.INPUT;
+			return sideConfig.apply(side)==IOSideConfig.INPUT;
 		}
 	}
 

@@ -1,21 +1,21 @@
 {
   "variants": {
-    "age=0,top=false": {
+    "age=0,half=lower": {
       "model": "immersiveengineering:block/hemp/bottom0"
     },
-    "age=1,top=false": {
+    "age=1,half=lower": {
       "model": "immersiveengineering:block/hemp/bottom1"
     },
-    "age=2,top=false": {
+    "age=2,half=lower": {
       "model": "immersiveengineering:block/hemp/bottom2"
     },
-    "age=3,top=false": {
+    "age=3,half=lower": {
       "model": "immersiveengineering:block/hemp/bottom3"
     },
-    "age=4,top=false": {
+    "age=4,half=lower": {
       "model": "immersiveengineering:block/hemp/bottom4"
     },
-    "top=true": {
+    "half=upper": {
       "model": "immersiveengineering:block/hemp/top"
     }
   }

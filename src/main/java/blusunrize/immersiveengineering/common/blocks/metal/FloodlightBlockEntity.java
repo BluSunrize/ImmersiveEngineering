@@ -137,7 +137,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 				level.setBlock(cc, Misc.FAKE_LIGHT.defaultBlockState(), 2);
 				BlockEntity te = level.getBlockEntity(cc);
 				if(te instanceof FakeLightBlockEntity)
-					((FakeLightBlockEntity)te).floodlightCoords = getBlockPos();
+					((FakeLightBlockEntity)te).setFloodlightCoords(getBlockPos());
 				fakeLights.add(cc);
 				it.remove();
 			}

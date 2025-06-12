@@ -2,20 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "c": {
-      "item": "immersiveengineering:circuit_board"
-    },
     "t": {
       "item": "immersiveengineering:electron_tube"
     },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "wtw",
-    "tct",
-    "wtw"
+    " t ",
+    "twt",
+    " t "
   ],
   "result": {
     "count": 1,

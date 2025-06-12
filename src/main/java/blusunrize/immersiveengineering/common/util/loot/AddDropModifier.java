@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition.Builder;
@@ -28,6 +25,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 public class AddDropModifier extends LootModifier
 {
@@ -37,22 +35,22 @@ public class AddDropModifier extends LootModifier
 	private static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<AddDropModifier>> GRASS_DROPS = REGISTER.register(
 			"add_drop", () -> RecordCodecBuilder.mapCodec(
 					inst -> codecStart(inst)
-							.and(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(m -> m.item))
-							.apply(inst, AddDropModifier::new)
+							.and(ItemStack.CODEC.fieldOf("item").forGetter(m -> m.item.get()))
+							.apply(inst, (lootItemConditions, itemStack) -> new AddDropModifier(lootItemConditions, itemStack::copy))
 			)
 	);
 
-	private final Item item;
+	private final Supplier<ItemStack> item;
 
-	protected AddDropModifier(LootItemCondition[] conditionsIn, Item item)
+	protected AddDropModifier(LootItemCondition[] conditionsIn, Supplier<ItemStack> item)
 	{
 		super(conditionsIn);
 		this.item = item;
 	}
 
-	public AddDropModifier(ItemLike item, LootItemCondition.Builder... conditionsIn)
+	public AddDropModifier(Supplier<ItemStack> item, LootItemCondition.Builder... conditionsIn)
 	{
-		this(Arrays.stream(conditionsIn).map(Builder::build).toArray(LootItemCondition[]::new), item.asItem());
+		this(Arrays.stream(conditionsIn).map(Builder::build).toArray(LootItemCondition[]::new), item);
 	}
 
 	public static void init(IEventBus modBus)
@@ -64,7 +62,7 @@ public class AddDropModifier extends LootModifier
 	@Override
 	protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
 	{
-		generatedLoot.add(new ItemStack(item));
+		generatedLoot.add(item.get());
 		return generatedLoot;
 	}
 

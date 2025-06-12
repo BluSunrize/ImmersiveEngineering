@@ -127,7 +127,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		while(!openList.isEmpty()&&closedList.size() < 1024)
 		{
 			BlockPos next = openList.get(0);
-			BlockEntity pipeTile = Utils.getExistingTileEntity(world, next);
+			BlockEntity pipeTile = SafeChunkUtils.getSafeBE(world, next); 
 			if(!closedList.contains(next)&&(pipeTile instanceof FluidPipeBlockEntity pipe))
 			{
 				closedList.add(next);
@@ -135,7 +135,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					if(pipe.hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.relative(fd);
-						BlockEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
+						BlockEntity adjacentTile = SafeChunkUtils.getSafeBE(world, nextPos);
 						if(adjacentTile instanceof FluidPipeBlockEntity)
 							openList.add(nextPos);
 						else
@@ -535,7 +535,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 
 		if(connections!=3&&connections!=12&&connections!=48) //add flange if not a straight pipe
 			return ConnectionStyle.FLANGE;
-		BlockEntity con = Utils.getExistingTileEntity(level, getBlockPos().relative(connection));
+		BlockEntity con = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(connection));
 		if(con instanceof FluidPipeBlockEntity pipe)
 		{
 			int tileConnections = pipe.connections|(1<<connection.getOpposite().get3DDataValue());

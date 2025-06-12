@@ -1,0 +1,15 @@
+Resonanz Observer
+A song we all dance to, ...
+§o...but few can hear§r<br>
+There is a curiosity about this world, not easily described. It appears as if any machine and living being simply stops moving when no one is close enough to perceive it.<br>
+But no engineer can afford to waste their time standing next to the machine to keep it running - so an artificial observer shall do so instead!<np>
+<&structure>
+The resonanz observer relies on the strange qualities of echo shards and the highly sensitive sculk sensor to keep an area of approximately §o<config;i;machines.resonanz_observer_radius> blocks§r around it active and working, even if no one is nearby.<np>
+To operate, the observer needs energy, input through the port on the §lright side§r of the structure.<br>
+To protocol its observations, it also requires a supply of §2paper§r, fed in through the port on the §lleft side§r.<br>
+Applying a redstone signal to the control panel at the front will disable the machine, this behavior can be inverted by use of the Engineer's Screwdriver.<np>
+Interacting with the machine will bring up its interface.<br>
+The readout on the left shows all the blocks which the observer is keeping active.
+Clicking an entry in the list will send out some vibration to indicate the blocks.<br>
+§2Paper§r can also be input here, with the remaining duration displayed next to the slot.
+A single piece of paper lasts for §o<config;i;machines.resonanz_observer_paper_duration> seconds§r of recording.

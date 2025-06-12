@@ -87,6 +87,7 @@ public class IEBlockTags extends BlockTagsProvider
 		tag(BlockTags.WOODEN_TRAPDOORS)
 				.add(WoodenDecoration.TRAPDOOR.get())
 				.add(WoodenDecoration.TRAPDOOR_FRAMED.get());
+		registerSigns(WoodenDecoration.SIGN, MetalDecoration.STEEL_SIGN, MetalDecoration.ALU_SIGN);
 		tag(BlockTags.PLANKS).add(WoodenDecoration.FIBERBOARD.get());
 		tag(IETags.fencesSteel)
 				.add(MetalDecoration.STEEL_FENCE.get());
@@ -277,8 +278,8 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(BlockTags.SLABS).add(slab.get());
 		for(BlockEntry<?> stairs : IEBlocks.TO_STAIRS.values())
 			tag(BlockTags.STAIRS).add(stairs.get());
-		for(BlockEntry<?> stairs : IEBlocks.TO_WALL.values())
-			tag(BlockTags.WALLS).add(stairs.get());
+		for(BlockEntry<?> walls : IEBlocks.TO_WALL.values())
+			tag(BlockTags.WALLS).add(walls.get());
 
 		tag(IETags.incorrectDropsSteel).addTag(BlockTags.INCORRECT_FOR_IRON_TOOL);
 
@@ -414,13 +415,13 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.REDSTONE_BREAKER.get(), Connectors.CURRENT_TRANSFORMER.get(), Connectors.POST_TRANSFORMER.get());
 		// multiblock components
 		tag.add(MetalDecoration.LV_COIL.get(), MetalDecoration.MV_COIL.get(), MetalDecoration.MV_COIL.get());
-		tag.add(MetalDecoration.ENGINEERING_RS.get(), MetalDecoration.ENGINEERING_LIGHT.get(), MetalDecoration.ENGINEERING_HEAVY.get(), MetalDecoration.RADIATOR.get(), MetalDecoration.GENERATOR.get());
+		tag.add(MetalDecoration.ENGINEERING_RS.get(), MetalDecoration.ENGINEERING_LIGHT.get(), MetalDecoration.ENGINEERING_HEAVY.get(), MetalDecoration.ENGINEERING_RESONANZ.get(), MetalDecoration.RADIATOR.get(), MetalDecoration.GENERATOR.get());
 		// multiblock blocks?
 		tag.add(IEMultiblocks.CRUSHER.getBlock(), IEMultiblocks.SAWMILL.getBlock(), IEMultiblocks.ARC_FURNACE.getBlock(), IEMultiblocks.ASSEMBLER.getBlock(),
 				IEMultiblocks.AUTO_WORKBENCH.getBlock(), IEMultiblocks.BOTTLING_MACHINE.getBlock(), IEMultiblocks.BUCKET_WHEEL.getBlock(),
 				IEMultiblocks.DIESEL_GENERATOR.getBlock(), IEMultiblocks.EXCAVATOR.getBlock(), IEMultiblocks.FERMENTER.getBlock(), IEMultiblocks.LIGHTNING_ROD.getBlock(),
 				IEMultiblocks.METAL_PRESS.getBlock(), IEMultiblocks.MIXER.getBlock(), IEMultiblocks.REFINERY.getBlock(), IEMultiblocks.SHEETMETAL_TANK.getBlock(),
-				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock(), IEMultiblocks.RADIO_TOWER.getBlock());
+				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock(), IEMultiblocks.RADIO_TOWER.getBlock(), IEMultiblocks.CHUNK_LOADER.getBlock());
 	}
 
 	private void registerAxeMineable()
@@ -458,9 +459,11 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDecoration.DOOR_FRAMED,
 				WoodenDecoration.TRAPDOOR,
 				WoodenDecoration.TRAPDOOR_FRAMED,
+				WoodenDecoration.BASIC_ENGINEERING,
 				Cloth.SHADER_BANNER,
 				Cloth.SHADER_BANNER_WALL
 		);
+		registerMineable(tag, WoodenDecoration.SIGN.getEntries());
 		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())
 			registerMineable(tag, treatedWood);
 	}
@@ -525,7 +528,8 @@ public class IEBlockTags extends BlockTagsProvider
 				IEMultiblockLogic.BUCKET_WHEEL,
 				IEMultiblockLogic.ARC_FURNACE,
 				IEMultiblockLogic.LIGHTNING_ROD,
-				IEMultiblockLogic.MIXER
+				IEMultiblockLogic.MIXER,
+				IEMultiblockLogic.CHUNK_LOADER
 		);
 		registerMineable(
 				tag,
@@ -590,6 +594,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.ENGINEERING_RS,
 				MetalDecoration.ENGINEERING_HEAVY,
 				MetalDecoration.ENGINEERING_LIGHT,
+				MetalDecoration.ENGINEERING_RESONANZ,
 				MetalDecoration.GENERATOR,
 				MetalDecoration.RADIATOR,
 				MetalDecoration.STEEL_FENCE,
@@ -634,6 +639,8 @@ public class IEBlockTags extends BlockTagsProvider
 		registerMineable(tag, MetalDecoration.METAL_LADDER);
 		registerMineable(tag, MetalDecoration.STEEL_SCAFFOLDING);
 		registerMineable(tag, MetalDecoration.ALU_SCAFFOLDING);
+		registerMineable(tag, MetalDecoration.STEEL_SIGN.getEntries());
+		registerMineable(tag, MetalDecoration.ALU_SIGN.getEntries());
 		registerMineable(tag, MetalDecoration.WARNING_SIGNS);
 		registerMineable(tag, MetalDevices.CHUTES);
 		registerMineable(tag, MetalDevices.DYED_CHUTES);
@@ -677,13 +684,24 @@ public class IEBlockTags extends BlockTagsProvider
 	private void setMiningLevel(Supplier<Block> block, Tiers level)
 	{
 		TagKey<Block> tag = switch(level)
-				{
-					case STONE -> BlockTags.NEEDS_STONE_TOOL;
-					case IRON -> BlockTags.NEEDS_IRON_TOOL;
-					case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
-					default -> throw new IllegalArgumentException("No tag available for "+level.name());
-				};
+		{
+			case STONE -> BlockTags.NEEDS_STONE_TOOL;
+			case IRON -> BlockTags.NEEDS_IRON_TOOL;
+			case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
+			default -> throw new IllegalArgumentException("No tag available for "+level.name());
+		};
 		tag(tag).add(block.get());
+	}
+
+	private void registerSigns(SignHolder... signs)
+	{
+		for(SignHolder holder : signs)
+		{
+			tag(BlockTags.STANDING_SIGNS).add(holder.sign().get());
+			tag(BlockTags.WALL_SIGNS).add(holder.wall().get());
+			tag(BlockTags.CEILING_HANGING_SIGNS).add(holder.hanging().get());
+			tag(BlockTags.WALL_HANGING_SIGNS).add(holder.wallHanging().get());
+		}
 	}
 
 	private void checkAllRegisteredForBreaking()

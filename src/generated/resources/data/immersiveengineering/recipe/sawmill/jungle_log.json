@@ -5,10 +5,8 @@
     "item": "minecraft:jungle_log"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:jungle_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:jungle_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_jungle_log"
+    "id": "minecraft:stripped_jungle_log"
   },
   "strippingSecondaries": [
     {

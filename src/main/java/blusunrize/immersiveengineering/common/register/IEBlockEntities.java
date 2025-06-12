@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.IEHangingSignBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.IESignBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
@@ -33,8 +35,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class IEBlockEntities
@@ -55,6 +60,14 @@ public class IEBlockEntities
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoresampleBlockEntity>> CORE_SAMPLE = REGISTER.register(
 			"coresample", makeType(CoresampleBlockEntity::new, StoneDecoration.CORESAMPLE)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<IESignBlockEntity>> SIGN = REGISTER.register(
+			"sign", makeTypeMultipleBlocks(IESignBlockEntity::new,
+					Stream.of(WoodenDecoration.SIGN, MetalDecoration.STEEL_SIGN, MetalDecoration.ALU_SIGN).mapMulti(SignHolder::mapMultiSign).toList())
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<IEHangingSignBlockEntity>> HANGING_SIGN = REGISTER.register(
+			"hanging_sign", makeTypeMultipleBlocks(IEHangingSignBlockEntity::new,
+					Stream.of(WoodenDecoration.SIGN, MetalDecoration.STEEL_SIGN, MetalDecoration.ALU_SIGN).mapMulti(SignHolder::mapMultiHanging).toList())
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CraftingTableBlockEntity>> CRAFTING_TABLE = REGISTER.register(
 			"craftingtable", makeType(CraftingTableBlockEntity::new, WoodenDevices.CRAFTING_TABLE)

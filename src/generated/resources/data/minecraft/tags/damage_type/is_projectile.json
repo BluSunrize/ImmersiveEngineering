@@ -1,0 +1,24 @@
+{
+  "values": [
+    "immersiveengineering:revolver_casull",
+    "immersiveengineering:revolver_casull_turret",
+    "immersiveengineering:revolver_armorpiercing",
+    "immersiveengineering:revolver_armorpiercing_turret",
+    "immersiveengineering:revolver_buckshot",
+    "immersiveengineering:revolver_buckshot_turret",
+    "immersiveengineering:revolver_dragonsbreath",
+    "immersiveengineering:revolver_dragonsbreath_turret",
+    "immersiveengineering:revolver_homing",
+    "immersiveengineering:revolver_homing_turret",
+    "immersiveengineering:revolver_wolfpack",
+    "immersiveengineering:revolver_wolfpack_turret",
+    "immersiveengineering:revolver_silver",
+    "immersiveengineering:revolver_silver_turret",
+    "immersiveengineering:revolver_potion",
+    "immersiveengineering:revolver_potion_turret",
+    "immersiveengineering:railgun",
+    "immersiveengineering:railgun_turret",
+    "immersiveengineering:sawblade",
+    "immersiveengineering:sawblade_turret"
+  ]
+}

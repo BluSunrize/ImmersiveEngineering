@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient.TagValue;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
@@ -221,4 +223,10 @@ public abstract class IERecipeProvider extends RecipeProvider
 		return Ingredient.of(in);
 	}
 
+	@SafeVarargs
+	@Nonnull
+	protected final Ingredient makeIngredient(TagKey<Item>... tags)
+	{
+		return Ingredient.fromValues(Arrays.stream(tags).map(TagValue::new));
+	}
 }

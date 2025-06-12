@@ -9,6 +9,6 @@
     "item": "minecraft:honey_bottle"
   },
   "result": {
-    "item": "minecraft:glass_bottle"
+    "id": "minecraft:glass_bottle"
   }
 }

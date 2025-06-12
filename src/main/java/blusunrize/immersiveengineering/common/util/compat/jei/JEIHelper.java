@@ -10,13 +10,15 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEApiDataComponents;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.gui.*;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
@@ -43,27 +45,35 @@ import blusunrize.immersiveengineering.common.util.compat.jei.workbench.Workbenc
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotRichTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @JeiPlugin
 public class JEIHelper implements IModPlugin
@@ -83,20 +93,26 @@ public class JEIHelper implements IModPlugin
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry)
 	{
 		subtypeRegistry.registerSubtypeInterpreter(
-				VanillaTypes.ITEM_STACK,
 				Misc.BLUEPRINT.asItem(),
-				(stack, $) -> IEApiDataComponents.getBlueprintType(stack)
+				makeInterpreter(
+						IEApiDataComponents::getBlueprintType,
+						s -> s
+				)
 		);
 		subtypeRegistry.registerSubtypeInterpreter(
-				VanillaTypes.ITEM_STACK,
 				Misc.POTION_BUCKET.asItem(),
-				(stack, $) -> stack.get(DataComponents.POTION_CONTENTS).potion().map(h -> h.getRegisteredName()).orElse("")
+				makeInterpreter(
+						stack -> stack.get(DataComponents.POTION_CONTENTS),
+						p -> p.potion().map(Holder::getRegisteredName).orElse("")
+				)
 		);
 		for(IConveyorType<?> conveyor : ConveyorHandler.getConveyorTypes())
 			subtypeRegistry.registerSubtypeInterpreter(
-					VanillaTypes.ITEM_STACK,
 					ConveyorHandler.getBlock(conveyor).asItem(),
-					(stack, $) -> stack.getOrDefault(IEDataComponents.DEFAULT_COVER, Blocks.AIR).getDescriptionId()
+					makeInterpreter(
+							stack -> stack.getOrDefault(IEDataComponents.DEFAULT_COVER, Blocks.AIR),
+							Block::getDescriptionId
+					)
 			);
 	}
 
@@ -121,8 +137,11 @@ public class JEIHelper implements IModPlugin
 				new RefineryRecipeCategory(guiHelper),
 				ArcFurnaceRecipeCategory.getDefault(guiHelper),
 				ArcFurnaceRecipeCategory.getRecycling(guiHelper),
-				new BottlingMachineRecipeCategory(guiHelper),
-				new MixerRecipeCategory(guiHelper)
+				MixerRecipeCategory.getDefault(guiHelper),
+				MixerRecipeCategory.getPotions(guiHelper),
+				BottlingMachineRecipeCategory.getDefault(guiHelper),
+				BottlingMachineRecipeCategory.getPotions(guiHelper),
+				BottlingMachineRecipeCategory.getBuckets(guiHelper)
 		);
 
 		slotDrawable = guiHelper.getSlotDrawable();
@@ -138,18 +157,28 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(JEIRecipeTypes.BLAST_FUEL, getRecipes(BlastFurnaceFuel.RECIPES));
 		registration.addRecipes(JEIRecipeTypes.CLOCHE, getRecipes(ClocheRecipe.RECIPES));
 		registration.addRecipes(JEIRecipeTypes.CLOCHE_FERTILIZER, getRecipes(ClocheFertilizer.RECIPES));
-		registration.addRecipes(JEIRecipeTypes.METAL_PRESS, getFiltered(MetalPressRecipe.STANDARD_RECIPES, IJEIRecipe::listInJEI));
+		registration.addRecipes(JEIRecipeTypes.METAL_PRESS, getFilteredAndSorted(MetalPressRecipe.STANDARD_RECIPES, IJEIRecipe::listInJEI, compareInRecipe(o -> o.mold.getDescriptionId())));
 		registration.addRecipes(JEIRecipeTypes.CRUSHER, getFiltered(CrusherRecipe.RECIPES, IJEIRecipe::listInJEI));
 		registration.addRecipes(JEIRecipeTypes.SAWMILL, getFiltered(SawmillRecipe.RECIPES, IJEIRecipe::listInJEI));
-		registration.addRecipes(JEIRecipeTypes.BLUEPRINT, getFiltered(BlueprintCraftingRecipe.RECIPES, IJEIRecipe::listInJEI));
+		registration.addRecipes(JEIRecipeTypes.BLUEPRINT, getFilteredAndSorted(BlueprintCraftingRecipe.RECIPES, IJEIRecipe::listInJEI, compareInRecipe(o -> o.blueprintCategory)));
 		registration.addRecipes(JEIRecipeTypes.SQUEEZER, getFiltered(SqueezerRecipe.RECIPES, IJEIRecipe::listInJEI));
 		registration.addRecipes(JEIRecipeTypes.FERMENTER, getFiltered(FermenterRecipe.RECIPES, IJEIRecipe::listInJEI));
 		registration.addRecipes(JEIRecipeTypes.REFINERY, getFiltered(RefineryRecipe.RECIPES, IJEIRecipe::listInJEI));
-		registration.addRecipes(JEIRecipeTypes.ARC_FURNACE_RECYCLING, getFiltered(ArcFurnaceRecipe.RECIPES, input -> input instanceof ArcRecyclingRecipe&&input.listInJEI()));
-		registration.addRecipes(JEIRecipeTypes.ARC_FURNACE, getFiltered(ArcFurnaceRecipe.RECIPES, input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI()));
-		registration.addRecipes(JEIRecipeTypes.BOTTLING_MACHINE, getFiltered(BottlingMachineRecipe.RECIPES, IJEIRecipe::listInJEI));
-		registration.addRecipes(JEIRecipeTypes.BOTTLING_MACHINE, getFluidBucketRecipes());
-		registration.addRecipes(JEIRecipeTypes.MIXER, getFiltered(MixerRecipe.RECIPES, IJEIRecipe::listInJEI));
+		registration.addRecipes(JEIRecipeTypes.ARC_FURNACE_RECYCLING, getFilteredAndSorted(ArcFurnaceRecipe.RECIPES, input -> input.isSpecialType(ArcRecyclingRecipe.SPECIAL_TYPE)&&input.listInJEI(), compareIDs()));
+		registration.addRecipes(JEIRecipeTypes.ARC_FURNACE, getFilteredAndSorted(ArcFurnaceRecipe.RECIPES, input -> input.isNotSpecialType()&&input.listInJEI(), compareIDs()));
+		getPartitioned(MixerRecipe.RECIPES, r -> {
+			if(r.getFluidOutputs().stream().anyMatch(s -> s.is(IETags.fluidPotion)))
+				return JEIRecipeTypes.MIXER_POTIONS;
+			else
+				return JEIRecipeTypes.MIXER;
+		}, compareIDs()).forEach(registration::addRecipes);
+		getPartitioned(BottlingMachineRecipe.RECIPES, r -> {
+			if(r.getItemOutputs().stream().anyMatch(s -> s.is(Tags.Items.POTIONS)||s.is(BulletHandler.getBulletItem(IEBullets.POTION))))
+				return JEIRecipeTypes.BOTTLING_MACHINE_POTIONS;
+			else
+				return JEIRecipeTypes.BOTTLING_MACHINE;
+		}, compareIDs()).forEach(registration::addRecipes);
+		registration.addRecipes(JEIRecipeTypes.BOTTLING_MACHINE_BUCKETS, getFluidBucketRecipes());
 	}
 
 	private <T extends Recipe<?>> List<RecipeHolder<T>> getRecipes(CachedRecipeList<T> cachedList)
@@ -159,10 +188,41 @@ public class JEIHelper implements IModPlugin
 
 	private <T extends Recipe<?>> List<RecipeHolder<T>> getFiltered(CachedRecipeList<T> cachedList, Predicate<T> include)
 	{
-		return cachedList.getRecipes(Minecraft.getInstance().level).stream()
-				.filter(h -> include.test(h.value()))
-				.toList();
+		return getFilteredAndSorted(cachedList, include, null);
 	}
+
+	private <T extends Recipe<?>> List<RecipeHolder<T>> getFilteredAndSorted(CachedRecipeList<T> cachedList, Predicate<T> include, @Nullable Comparator<RecipeHolder<T>> sorting)
+	{
+		Stream<RecipeHolder<T>> ret = cachedList.getRecipes(Minecraft.getInstance().level).stream()
+				.filter(h -> include.test(h.value()));
+		if(sorting!=null)
+			ret = ret.sorted(sorting);
+		return ret.toList();
+	}
+
+	private <T extends MultiblockRecipe> Map<RecipeType<RecipeHolder<T>>, List<RecipeHolder<T>>> getPartitioned(
+			CachedRecipeList<T> cachedList, Function<T, RecipeType<RecipeHolder<T>>> grouping, Comparator<RecipeHolder<T>> sorting
+	)
+	{
+		return cachedList.getRecipes(Minecraft.getInstance().level).stream()
+				.filter(h -> h.value().listInJEI()) // filter to JEI visible
+				.sorted(sorting)
+				.collect(Collectors.groupingBy(h -> grouping.apply(h.value()))); // group with function
+	}
+
+	private <T extends Recipe<?>, C extends Comparable<? super C>> Comparator<RecipeHolder<T>> compareIDs()
+	{
+		return (h1, h2) -> h1.id().compareNamespaced(h2.id());
+	}
+
+	private <T extends Recipe<?>, C extends Comparable<? super C>> Comparator<RecipeHolder<T>> compareInRecipe(Function<? super T, C> keyExtractor)
+	{
+		return (h1, h2) -> {
+			int ret = keyExtractor.apply(h1.value()).compareTo(keyExtractor.apply(h2.value()));
+			return ret!=0?ret: h1.id().compareNamespaced(h2.id());
+		};
+	}
+
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
@@ -194,8 +254,8 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeCatalyst(IEMultiblockLogic.FERMENTER.iconStack(), JEIRecipeTypes.FERMENTER);
 		registration.addRecipeCatalyst(IEMultiblockLogic.REFINERY.iconStack(), JEIRecipeTypes.REFINERY);
 		registration.addRecipeCatalyst(IEMultiblockLogic.ARC_FURNACE.iconStack(), JEIRecipeTypes.ARC_FURNACE, JEIRecipeTypes.ARC_FURNACE_RECYCLING);
-		registration.addRecipeCatalyst(IEMultiblockLogic.BOTTLING_MACHINE.iconStack(), JEIRecipeTypes.BOTTLING_MACHINE);
-		registration.addRecipeCatalyst(IEMultiblockLogic.MIXER.iconStack(), JEIRecipeTypes.MIXER);
+		registration.addRecipeCatalyst(IEMultiblockLogic.BOTTLING_MACHINE.iconStack(), JEIRecipeTypes.BOTTLING_MACHINE, JEIRecipeTypes.BOTTLING_MACHINE_POTIONS);
+		registration.addRecipeCatalyst(IEMultiblockLogic.MIXER.iconStack(), JEIRecipeTypes.MIXER, JEIRecipeTypes.MIXER_POTIONS);
 	}
 
 	@Override
@@ -209,7 +269,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeClickArea(FermenterScreen.class, 90, 19, 20, 33, JEIRecipeTypes.FERMENTER);
 		registration.addRecipeClickArea(RefineryScreen.class, 92, 24, 14, 20, JEIRecipeTypes.REFINERY);
 		registration.addRecipeClickArea(ArcFurnaceScreen.class, 81, 38, 23, 35, JEIRecipeTypes.ARC_FURNACE, JEIRecipeTypes.ARC_FURNACE_RECYCLING);
-		registration.addRecipeClickArea(MixerScreen.class, 52, 11, 16, 47, JEIRecipeTypes.MIXER);
+		registration.addRecipeClickArea(MixerScreen.class, 52, 11, 16, 47, JEIRecipeTypes.MIXER, JEIRecipeTypes.MIXER_POTIONS);
 
 		registration.addRecipeClickArea(ModWorkbenchScreen.class, 4, 41, 53, 18, JEIRecipeTypes.BLUEPRINT);
 		registration.addRecipeClickArea(AutoWorkbenchScreen.class, 90, 12, 39, 37, JEIRecipeTypes.BLUEPRINT);
@@ -220,41 +280,45 @@ public class JEIHelper implements IModPlugin
 		registration.addGhostIngredientHandler(FluidSorterScreen.class, new FluidSorterGhostHandler());
 	}
 
-
-	// TODO these throw when joining servers!
 	private List<RecipeHolder<BottlingMachineRecipe>> getFluidBucketRecipes()
 	{
-		// assume a source and flowing version of each fluid:
-		int fluidCount = BuiltInRegistries.FLUID.size()/2;
-
-		List<RecipeHolder<BottlingMachineRecipe>> recipes = new ArrayList<>(fluidCount);
-		for(Fluid f : BuiltInRegistries.FLUID)
-			if(f.isSource(f.defaultFluidState()))
-			{
-				// Sort tags, prioritize vanilla/forge tags, and assume that more slashes means more specific tag
-				Optional<ResourceLocation> tag = f.builtInRegistryHolder().tags()
-						.map(TagKey::location)
-						.min((o1, o2) -> {
-							// TODO not symmetric!
-							if(!("minecraft".equals(o1.getNamespace())||"forge".equals(o1.getNamespace())))
-								return 1;
-							return -Long.compare(
-									o1.getPath().codePoints().filter(ch -> ch=='/').count(),
-									o2.getPath().codePoints().filter(ch -> ch=='/').count()
-							);
-						});
-				ItemStack bucket = f.getBucket().getDefaultInstance();
-				if(!bucket.isEmpty()&&tag.isPresent())
-					recipes.add(
-							new RecipeHolder<>(
-									IEApi.ieLoc("jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
-									new BottlingMachineRecipe(
-											new TagOutputList(new TagOutput(bucket)),
-											IngredientWithSize.of(new ItemStack(Items.BUCKET)),
-											new FluidTagInput(tag.get(), 1000)
-									))
+		return BuiltInRegistries.FLUID.holders()
+				.filter(holder -> holder.value().isSource(holder.value().defaultFluidState()))
+				.filter(holder -> !holder.value().getBucket().getDefaultInstance().isEmpty())
+				.map(holder -> {
+					ItemStack bucket = holder.value().getBucket().getDefaultInstance();
+					ResourceLocation key = holder.key().location();
+					return new RecipeHolder<>(
+							IEApi.ieLoc("jei_bucket_"+key.getNamespace()+"_"+key.getPath()),
+							new BottlingMachineRecipe(
+									new TagOutputList(new TagOutput(bucket)),
+									IngredientWithSize.of(new ItemStack(Items.BUCKET)),
+									SizedFluidIngredient.of(holder.value(), 1000)
+							)
 					);
+				}).toList();
+	}
+
+	private <T> ISubtypeInterpreter<ItemStack> makeInterpreter(
+			Function<ItemStack, T> componentGetter,
+			Function<T, String> legacyStringGetter
+	)
+	{
+		return new ISubtypeInterpreter<ItemStack>()
+		{
+
+			@Override
+			public @Nullable Object getSubtypeData(ItemStack itemStack, UidContext uidContext)
+			{
+				return componentGetter.apply(itemStack);
 			}
-		return recipes;
+
+			// deprecated for future removal?
+			@Override
+			public String getLegacyStringSubtypeInfo(ItemStack itemStack, UidContext uidContext)
+			{
+				return componentGetter.andThen(legacyStringGetter).apply(itemStack);
+			}
+		};
 	}
 }

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockB
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
+import blusunrize.immersiveengineering.client.utils.SpacerComponent;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
@@ -32,6 +33,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -92,7 +94,6 @@ public class BlockOverlayUtils
 			return;
 		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
 		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
-		var transform = graphics.pose();
 
 		ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
 		boolean hammer = !held.isEmpty()&&Utils.isHammer(held);
@@ -105,7 +106,7 @@ public class BlockOverlayUtils
 			else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
 			{
 				Component[] text = overlayText.getOverlayText(player, mop, false);
-				BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
+				BlockOverlayUtils.drawBlockOverlayText(graphics, text, scaledWidth, scaledHeight);
 			}
 		}
 		else if(mop instanceof BlockHitResult)
@@ -116,10 +117,10 @@ public class BlockOverlayUtils
 			if(tileEntity instanceof IBlockOverlayText overlayBlock)
 			{
 				Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-				BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
+				BlockOverlayUtils.drawBlockOverlayText(graphics, text, scaledWidth, scaledHeight);
 			}
 			else if(!(tileEntity instanceof IMultiblockBE<?> multiblock)||!renderMultiblockOverlay(
-					multiblock, hammer, transform, scaledWidth, scaledHeight
+					graphics, multiblock, hammer, scaledWidth, scaledHeight
 			))
 			{
 				List<ItemFrame> list = player.level().getEntitiesOfClass(ItemFrame.class,
@@ -131,7 +132,7 @@ public class BlockOverlayUtils
 	}
 
 	private static <S extends IMultiblockState> boolean renderMultiblockOverlay(
-			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
+			GuiGraphics graphics, IMultiblockBE<S> be, boolean hammer, int scaledWidth, int scaledHeight
 	)
 	{
 		final IMultiblockBEHelper<S> helper = be.getHelper();
@@ -142,29 +143,48 @@ public class BlockOverlayUtils
 		);
 		if(overlayText==null)
 			return false;
-		BlockOverlayUtils.drawBlockOverlayText(transform, overlayText, scaledWidth, scaledHeight);
+		BlockOverlayUtils.drawBlockOverlayText(graphics, overlayText, scaledWidth, scaledHeight);
 		return true;
 	}
 
 	/* ----------- OVERLAY TEXT ----------- */
 
-	public static void drawBlockOverlayText(PoseStack transform, Component[] text, int scaledWidth, int scaledHeight)
+	public static void drawBlockOverlayText(GuiGraphics graphics, Component[] text, int scaledWidth, int scaledHeight)
 	{
 		if(text!=null&&text.length > 0)
-			drawBlockOverlayText(transform, Arrays.asList(text), scaledWidth, scaledHeight);
+			drawBlockOverlayText(graphics, Arrays.asList(text), scaledWidth, scaledHeight);
 	}
 
-	public static void drawBlockOverlayText(PoseStack transform, Iterable<Component> text, int scaledWidth, int scaledHeight)
+	public static void drawBlockOverlayText(GuiGraphics graphics, List<Component> text, int scaledWidth, int scaledHeight)
 	{
-		int i = 0;
+		if(text.isEmpty())
+			return;
 		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-		for(Component s : text)
-			if(s!=null)
-				ClientUtils.font().drawInBatch(
-						Language.getInstance().getVisualOrder(s),
-						scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().lineHeight, 0xffffffff, true,
-						transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0
-				);
+		// determine starting position
+		int maxWidth = text.stream().reduce(0, (aggr, component) -> Integer.max(aggr,
+				(component instanceof SpacerComponent spacer?spacer.getSpaceWidth(ClientUtils.font()): 0)+ClientUtils.font().width(component)
+		), Integer::max);
+		int xPos = scaledWidth/2-(maxWidth/2);
+		int yPos = scaledHeight/2+16;
+		int tooltipHeight = (text.size()==1?-2: 0)+text.size()*10;
+		TooltipRenderUtil.renderTooltipBackground(graphics, xPos, yPos, maxWidth, tooltipHeight, 0,
+				0xb01c1d13,
+				0xb01c1d13,
+				0x50ff5000,
+				0x507f2800
+		);
+
+		// track lines
+		int i = 0;
+		for(Component component : text)
+		{
+			int xOffset = component instanceof SpacerComponent spacer?spacer.getSpaceWidth(ClientUtils.font()): 0;
+			ClientUtils.font().drawInBatch(
+					Language.getInstance().getVisualOrder(component),
+					xPos+xOffset, yPos+(i++)*10, 0xffffffff, true,
+					graphics.pose().last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0
+			);
+		}
 		buffer.endBatch();
 	}
 

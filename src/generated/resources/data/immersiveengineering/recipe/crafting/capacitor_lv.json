@@ -6,21 +6,20 @@
       "tag": "c:plates/lead"
     },
     "e": {
+      "tag": "c:ingots/copper"
+    },
+    "r": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
       "tag": "c:redstone_acid"
     },
-    "f": {
-      "tag": "c:ingots/iron"
-    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "waw",
-    "fef",
-    "waw"
+    "ere",
+    "awa"
   ],
   "result": {
     "count": 1,

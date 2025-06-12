@@ -5,9 +5,7 @@
     "item": "minecraft:quartz_block"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:quartz"
-    },
-    "count": 4
+    "count": 4,
+    "id": "minecraft:quartz"
   }
 }

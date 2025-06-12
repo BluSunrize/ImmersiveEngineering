@@ -19,5 +19,8 @@
       "condition": "minecraft:block_state_property"
     }
   ],
-  "item": "immersiveengineering:seed"
+  "item": {
+    "count": 1,
+    "id": "immersiveengineering:seed"
+  }
 }

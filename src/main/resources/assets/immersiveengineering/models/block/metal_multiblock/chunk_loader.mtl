@@ -1,0 +1,14 @@
+newmtl amethyst
+map_Kd minecraft:block/calibrated_sculk_sensor_amethyst
+
+newmtl chunk_loader
+map_Kd immersiveengineering:block/multiblocks/chunk_loader
+
+newmtl multiblock_base
+map_Kd immersiveengineering:block/multiblocks/multiblock_base
+
+newmtl multiblock_components
+map_Kd immersiveengineering:block/multiblocks/multiblock_components
+
+newmtl paper
+map_Kd immersiveengineering:block/multiblocks/chunk_loader_paper

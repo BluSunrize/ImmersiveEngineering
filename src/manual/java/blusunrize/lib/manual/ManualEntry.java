@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -28,14 +27,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
@@ -50,6 +46,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private final ManualInstance manual;
 	private final Supplier<EntryData> getContent;
 	private final ResourceLocation location;
+	private final ResourceLocation requiredAdvancement;
 
 	// in basic init
 	private String title;
@@ -63,11 +60,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 	private Int2ObjectMap<SpecialManualElement> specials;
 	private Object2IntMap<String> anchorPoints;
 
-	private ManualEntry(ManualInstance m, Supplier<EntryData> getContent, ResourceLocation location)
+	private ManualEntry(ManualInstance m, Supplier<EntryData> getContent, ResourceLocation location, ResourceLocation requiredAdvancement)
 	{
 		this.manual = m;
 		this.getContent = getContent;
 		this.location = location;
+		this.requiredAdvancement = requiredAdvancement;
 	}
 
 	public void initBasic()
@@ -183,7 +181,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 				y+p.special.getPixelsTaken(), pageButtons);
 		List<Button> tempButtons = new ArrayList<>();
 		pages.get(gui.page).special.onOpened(gui, x, y, tempButtons);
-        pageButtons.addAll(tempButtons);
+		pageButtons.addAll(tempButtons);
 	}
 
 	public String getSubtext()
@@ -200,6 +198,11 @@ public class ManualEntry implements Comparable<ManualEntry>
 	public ResourceLocation getLocation()
 	{
 		return location;
+	}
+
+	public Optional<ResourceLocation> getRequiredAdvancement()
+	{
+		return Optional.ofNullable(requiredAdvancement);
 	}
 
 	public ItemStack getHighlightedStack(int page)
@@ -266,6 +269,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		private Supplier<EntryData> getContent = null;
 		private ResourceLocation location;
 		private final List<SpecialElementData> hardcodedSpecials = new ArrayList<>();
+		private ResourceLocation requiredAdvancement;
 
 		public ManualEntryBuilder(ManualInstance manual)
 		{
@@ -319,43 +323,49 @@ public class ManualEntry implements Comparable<ManualEntry>
 		public void readFromFile(ResourceLocation name)
 		{
 			location = name;
+
+			// Load JSON, fetching required advancement if necessary.
+			// The rest of the JSON is consumed in the getContent supplier.
+			Resource resData = Minecraft.getInstance().getResourceManager().getResource(
+					name.withPath("manual/"+name.getPath()+".json")
+			).orElseThrow();
+			final JsonObject json = ManualUtils.loadFromStream(
+					resData::openAsReader,
+					dataStream -> GsonHelper.fromJson(GSON, dataStream, JsonObject.class, true),
+					() -> "Failed to load manual entry from "+name
+			);
+			if(json.has("require_advancement"))
+				requiredAdvancement = ResourceLocation.parse(json.remove("require_advancement").getAsString());
+
 			getContent = () -> {
 				ResourceLocation langLoc = name.withPath("manual/"+Minecraft.getInstance().getLanguageManager().getSelected()
 						+"/"+name.getPath()+".txt");
-				ResourceLocation dataLoc = name.withPath("manual/"+name.getPath()+".json");
 				Resource resLang = getResourceNullable(langLoc);
-				ResourceManager manager = Minecraft.getInstance().getResourceManager();
-				Resource resData = manager.getResource(dataLoc).orElseThrow();
 				if(resLang==null)
 					resLang = getResourceNullable(name.withPath("manual/en_us/"+name.getPath()+".txt"));
 				if(resLang==null)
 					return new EntryData(
 							"ERROR", "This is not a good thing", "Could not find the file for "+name, ImmutableList.of()
 					);
-				try(
-						BufferedReader dataStream = resData.openAsReader();
-						InputStream langStream = resLang.open();
-				)
-				{
-					JsonObject json = GsonHelper.fromJson(GSON, dataStream, JsonObject.class, true);
-					byte[] bytesLang = IOUtils.toByteArray(langStream);
-					String content = new String(bytesLang, StandardCharsets.UTF_8);
-					List<SpecialElementData> allSpecials = new ArrayList<>(hardcodedSpecials);
-					assert json!=null;
-					ManualUtils.parseSpecials(json, manual, allSpecials);
-					int titleEnd = content.indexOf('\n');
-					String title = content.substring(0, titleEnd).trim();
-					content = content.substring(titleEnd+1);
-					int subtitleEnd = content.indexOf('\n');
-					String subtext = content.substring(0, subtitleEnd).trim();
-					content = content.substring(subtitleEnd+1).trim();
-					Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
-					String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
-					return new EntryData(title, subtext, rawText, allSpecials);
-				} catch(Exception e)
-				{
-					throw new RuntimeException("Failed to load manual entry from "+name, e);
-				}
+				return ManualUtils.loadFromStream(
+						resLang::open,
+						langStream -> {
+							byte[] bytesLang = IOUtils.toByteArray(langStream);
+							String content = new String(bytesLang, StandardCharsets.UTF_8);
+							List<SpecialElementData> allSpecials = new ArrayList<>(hardcodedSpecials);
+							ManualUtils.parseSpecials(json, manual, allSpecials);
+							int titleEnd = content.indexOf('\n');
+							String title = content.substring(0, titleEnd).trim();
+							content = content.substring(titleEnd+1);
+							int subtitleEnd = content.indexOf('\n');
+							String subtext = content.substring(0, subtitleEnd).trim();
+							content = content.substring(subtitleEnd+1).trim();
+							Pattern backslashNewline = Pattern.compile("[^\\\\][\\\\][\r]?\n[\r]?");
+							String rawText = backslashNewline.matcher(content).replaceAll("").replace("\\\\", "\\");
+							return new EntryData(title, subtext, rawText, allSpecials);
+						},
+						() -> "Failed to load manual entry from "+name
+				);
 			};
 		}
 
@@ -369,7 +379,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			Preconditions.checkNotNull(manual);
 			Preconditions.checkNotNull(getContent);
 			Preconditions.checkNotNull(location);
-			return new ManualEntry(manual, getContent, location);
+			return new ManualEntry(manual, getContent, location, requiredAdvancement);
 		}
 
 		private static Resource getResourceNullable(ResourceLocation rl)

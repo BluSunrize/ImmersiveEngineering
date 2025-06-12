@@ -10,14 +10,12 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:nether_quartz_ore"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:nether_gold_ore"
       }
     },
@@ -33,21 +31,18 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
         "id": "minecraft:netherrack"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:basalt"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     }

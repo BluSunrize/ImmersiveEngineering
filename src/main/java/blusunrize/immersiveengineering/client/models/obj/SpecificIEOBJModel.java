@@ -92,7 +92,14 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				MirroredModelLoader.reversedQuads(quads), EMPTY_ALL_SIDES,
 				baseModel.useAmbientOcclusion(), baseModel.usesBlockLight(), baseModel.isGui3d(),
 				baseModel.getParticleIcon(), ItemTransforms.NO_TRANSFORMS, baseModel.getOverrides()
-		));
+		)
+		{
+			@Override
+			public boolean isCustomRenderer()
+			{
+				return SpecificIEOBJModel.this.isCustomRenderer();
+			}
+		});
 	}
 
 	@Nonnull
@@ -153,6 +160,10 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			return baseModel.getRenderTypes(itemStack, fabulous);
 	}
 
+	public ItemTransform getBaseTransforms(@Nonnull ItemDisplayContext transformType){
+		return baseModel.getOwner().getTransforms().getTransform(transformType);
+	}
+
 	private static final Matrix4f INVERT = new Matrix4f().scale(-1, -1, -1);
 	private static final Matrix3f INVERT_NORMAL = new Matrix3f(INVERT);
 
@@ -163,7 +174,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	)
 	{
 		BakedModel result = this;
-		ItemTransform baseItemTransform = baseModel.getOwner().getTransforms().getTransform(transformType);
+		ItemTransform baseItemTransform = getBaseTransforms(transformType);
 		Vector3f scale = baseItemTransform.scale;
 		if(scale.x()*scale.y()*scale.z() < 0)
 		{

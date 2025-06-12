@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "immersiveengineering:block/metal_decoration/resonanz_engineering"
+  }
+}

@@ -4,15 +4,19 @@
     "item": "immersiveengineering:seed"
   },
   "render": {
-    "type": "immersiveengineering:hemp"
+    "type": "immersiveengineering:doublecrop",
+    "block": "immersiveengineering:hemp",
+    "doublingAge": 3
   },
   "results": [
     {
-      "item": "immersiveengineering:hemp_fiber"
+      "id": "immersiveengineering:hemp_fiber"
     },
     {
-      "count": 2,
-      "id": "immersiveengineering:seed"
+      "chance": 0.5,
+      "output": {
+        "id": "immersiveengineering:seed"
+      }
     }
   ],
   "soil": {

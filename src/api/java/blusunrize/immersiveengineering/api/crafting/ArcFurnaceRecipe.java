@@ -16,11 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -41,16 +39,17 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public final List<StackWithChance> secondaryOutputs;
 	@Nonnull
 	public final TagOutput slag;
+	@Nonnull
+	public final String specialRecipeType;
 
-	public String specialRecipeType;
-	public static List<String> specialRecipeTypes = new ArrayList<>();
 	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE);
 
 	public ArcFurnaceRecipe(
 			TagOutputList output, @Nonnull TagOutput slag, List<StackWithChance> secondaryOutputs,
 			int time, int energy,
 			IngredientWithSize input,
-			List<IngredientWithSize> additives
+			List<IngredientWithSize> additives,
+			@Nonnull String specialRecipeType
 	)
 	{
 		super(output.getLazyList().get(0), IERecipeTypes.ARC_FURNACE, time, energy, MULTIPLIERS);
@@ -59,12 +58,23 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.input = input;
 		this.slag = slag;
 		this.additives = additives;
+		this.specialRecipeType = specialRecipeType;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);
 		if(!this.additives.isEmpty())
 			inputList.addAll(Lists.newArrayList(this.additives));
 		setInputListWithSizes(inputList);
 		this.outputList = this.output;
+	}
+
+	public ArcFurnaceRecipe(
+			TagOutputList output, @Nonnull TagOutput slag, List<StackWithChance> secondaryOutputs,
+			int time, int energy,
+			IngredientWithSize input,
+			List<IngredientWithSize> additives
+	)
+	{
+		this(output, slag, secondaryOutputs, time, energy, input, additives, "");
 	}
 
 	@Override
@@ -89,12 +99,12 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		Random random = new Random(seed);
 		var output = this.output.get();
 		int remainingIndex = output.size();
-		NonNullList<ItemStack> actualOutput = NonNullList.withSize(output.size() + secondaryOutputs.size() , ItemStack.EMPTY);
+		NonNullList<ItemStack> actualOutput = NonNullList.withSize(output.size()+secondaryOutputs.size(), ItemStack.EMPTY);
 		for(int i = 0; i < output.size(); ++i)
 			actualOutput.set(i, output.get(i).copy());
 		for(StackWithChance secondary : secondaryOutputs)
 		{
-			if(secondary.chance() > random.nextFloat())
+			if(secondary.chance() < random.nextFloat())
 				continue;
 			ItemStack remaining = secondary.stack().get();
 			for(ItemStack existing : actualOutput)
@@ -104,7 +114,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 					remaining = ItemStack.EMPTY;
 					break;
 				}
-			if(!remaining.isEmpty()) {
+			if(!remaining.isEmpty())
+			{
 				actualOutput.set(remainingIndex, remaining);
 				remainingIndex++;
 			}
@@ -185,12 +196,14 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return false;
 	}
 
-	public ArcFurnaceRecipe setSpecialRecipeType(String type)
+	public boolean isSpecialType(String checkFor)
 	{
-		this.specialRecipeType = type;
-		if(!specialRecipeTypes.contains(type))
-			specialRecipeTypes.add(type);
-		return this;
+		return this.specialRecipeType.equals(checkFor);
+	}
+
+	public boolean isNotSpecialType()
+	{
+		return this.specialRecipeType.isEmpty();
 	}
 
 	public static RecipeHolder<ArcFurnaceRecipe> findRecipe(Level level, ItemStack input, NonNullList<ItemStack> additives)

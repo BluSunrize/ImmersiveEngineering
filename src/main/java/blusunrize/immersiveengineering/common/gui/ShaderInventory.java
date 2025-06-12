@@ -109,8 +109,11 @@ public class ShaderInventory implements Container
 	@Override
 	public void setChanged()
 	{
-		if(wrapper!=null&&shader.getItem() instanceof IShaderItem shaderItem)
-			wrapper.setShader(shaderItem.getShaderName());
+		if(wrapper!=null)
+			if(shader.getItem() instanceof IShaderItem shaderItem)
+				wrapper.setShader(shaderItem.getShaderName());
+			else
+				wrapper.setShader(null);
 	}
 
 	@Override

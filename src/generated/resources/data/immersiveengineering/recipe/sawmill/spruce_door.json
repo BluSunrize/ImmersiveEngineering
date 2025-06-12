@@ -5,7 +5,7 @@
     "item": "minecraft:spruce_door"
   },
   "result": {
-    "item": "minecraft:spruce_planks"
+    "id": "minecraft:spruce_planks"
   },
   "secondaryOutputs": [
     {

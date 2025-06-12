@@ -13,21 +13,18 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:terracotta"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:red_sandstone"
       }
     },
     {
       "chance": 0.1,
       "output": {
-        "count": 1,
         "id": "minecraft:red_sand"
       }
     }
@@ -36,21 +33,18 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.1,
       "output": {
-        "count": 1,
         "id": "minecraft:coarse_dirt"
       }
     }

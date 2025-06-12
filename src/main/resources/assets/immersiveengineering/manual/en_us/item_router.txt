@@ -6,6 +6,6 @@ Items can be inserted from any side, and will be output from one of the other fi
 Routers will extract from routers and inventories they are connected to when they are extracted from themselves.<br>
 Colors match to a cardinal direction and a set of filters the router will sort with.<np>
 The buttons above each filter can be used to further adjust how the filter works:<br>
-§2Tag-based filtering§r allows items through the filter if their tags match that of the specified item. This can be used to filter all kinds and shapes of copper ingot together, or other items with similar properties.<br>
-The §2NBT filter§r option allows respecting additional, special properties of the item, such as enchantments.<br>
-The §2Damage filter§r option allows the filter to ignore the damage value of a tool or weapon.
+§2Tag-based filtering§r allows items through the filter if they match a tag of the specified item. The specific tag can be selected with the scroll-wheel. This can be used to filter ingots, ores or other items with similar properties together.<br>
+The §2Damage filter§r option allows the filter to ignore the damage value of a tool or weapon.<np>
+The §2Components filter§r option allows respecting additional, special properties of the item, such as enchantments or color.

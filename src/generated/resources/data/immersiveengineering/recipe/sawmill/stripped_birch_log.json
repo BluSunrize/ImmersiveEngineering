@@ -10,10 +10,8 @@
     }
   ],
   "result": {
-    "basePredicate": {
-      "item": "minecraft:birch_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:birch_planks"
   },
   "secondaryOutputs": [
     {

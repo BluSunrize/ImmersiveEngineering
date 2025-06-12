@@ -36,6 +36,8 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 
 	void tickClient();
 
+	void onRemoved();
+
 	void invalidateAllCaps();
 
 	interface Factory

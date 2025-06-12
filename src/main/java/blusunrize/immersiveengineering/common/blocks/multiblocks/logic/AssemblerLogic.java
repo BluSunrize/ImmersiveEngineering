@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -20,6 +23,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.blocks.metal.CrafterPatternInventory;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
@@ -42,6 +48,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -64,6 +71,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final int NUM_PATTERNS = 3;
@@ -78,6 +87,17 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	public static final BlockPos[] REDSTONE_PORTS = {
 			new BlockPos(0, 0, 1), new BlockPos(2, 0, 1)
 	};
+
+	// register additional conditions for machine interface
+	public static ResourceLocation[] MIF_CONDITION_TANKS = IntStream.range(0, NUM_TANKS)
+			.mapToObj(i -> ieLoc("assembler/tank_"+i))
+			.toArray(ResourceLocation[]::new);
+
+	static
+	{
+		for(ResourceLocation tank_cond : MIF_CONDITION_TANKS)
+			MachineInterfaceHandler.copyOptions(tank_cond, MachineInterfaceHandler.BASIC_FLUID_IN);
+	}
 
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
@@ -96,7 +116,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		final State state = context.getState();
 		final boolean wasPlaying = state.shouldPlaySound;
-		if(!state.rsState.isEnabled(context) && wasPlaying!=state.rsState.isEnabled(context))
+		if(!state.rsState.isEnabled(context)&&wasPlaying!=state.rsState.isEnabled(context))
 		{
 			state.shouldPlaySound = false;
 			context.requestMasterBESync();
@@ -241,7 +261,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	}
 
 	private boolean consumeFluid(
-			List<FluidStack> tankFluids, int slot, RecipeQuery query, @Nullable RecipeInputSources sources
+			List<FluidStack> tankFluids, int queryIndex, RecipeQuery query, @Nullable RecipeInputSources sources
 	)
 	{
 		for(FluidStack tankFluid : tankFluids)
@@ -249,14 +269,14 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			{
 				tankFluid.shrink(query.getFluidSize());
 				if(sources!=null)
-					sources.providedByNonItem.set(slot, true);
+					sources.providedByNonItem.set(sources.getSlotForQueryIndex(queryIndex), true);
 				return true;
 			}
 		return false;
 	}
 
 	private int consumeItem(
-			int maxConsume, int slot, ItemStack next, RecipeQuery query, @Nullable RecipeInputSources sources
+			int maxConsume, int queryIndex, ItemStack next, RecipeQuery query, @Nullable RecipeInputSources sources
 	)
 	{
 		if(maxConsume <= 0||next.isEmpty()||!query.matchesIgnoringSize(next))
@@ -264,7 +284,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		int taken = Math.min(maxConsume, next.getCount());
 		ItemStack forGrid = next.split(taken);
 		if(sources!=null)
-			sources.gridItems.set(slot, forGrid);
+			sources.gridItems.set(sources.getSlotForQueryIndex(queryIndex), forGrid);
 		return taken;
 	}
 
@@ -308,6 +328,8 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		register.registerAt(ItemHandler.BLOCK, ITEM_INPUT, state -> state.itemInput);
 		register.registerAt(FluidHandler.BLOCK, FLUID_INPUT, state -> state.fluidInput);
 		register.registerAt(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		for(BlockPos bp : REDSTONE_PORTS)
+			register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, bp, state -> state.mifHandler);
 	}
 
 	@Override
@@ -320,6 +342,13 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
 		return AssemblerShapes.SHAPE_GETTER;
+	}
+
+	public static ComparatorManager<State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(
+				SimpleComparatorValue.inventory(State::getInventory, 0, 18), REDSTONE_PORTS
+		);
 	}
 
 	public static class State implements IMultiblockState
@@ -338,6 +367,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		private final Supplier<@Nullable IItemHandler> output;
 		private final IItemHandler itemInput;
 		private final IFluidHandler fluidInput;
+		private final IMachineInterfaceConnection mifHandler;
 		private BooleanSupplier isPlayingSound = () -> false;
 		private boolean shouldPlaySound;
 
@@ -350,6 +380,14 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			);
 			itemInput = new WrappingItemHandler(inventory, true, false);
 			fluidInput = new ArrayFluidHandler(tanks, false, true, ctx.getMarkDirtyRunnable());
+			mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>(itemInput, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(tanks[0], MIF_CONDITION_TANKS[0]),
+					new MachineCheckImplementation<>(tanks[1], MIF_CONDITION_TANKS[1]),
+					new MachineCheckImplementation<>(tanks[2], MIF_CONDITION_TANKS[2]),
+					new MachineCheckImplementation<>(output, MachineInterfaceHandler.BASIC_ITEM_OUT),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY)
+			};
 		}
 
 		@Override
@@ -409,6 +447,15 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		public RecipeInputSources(CrafterPatternInventory pattern)
 		{
 			this(new ArrayList<>(pattern.inv), new BooleanArrayList(new boolean[9]));
+		}
+
+		public int getSlotForQueryIndex(int queryIdx)
+		{
+			int slot = 0;
+			for(; slot < gridItems.size(); slot++)
+				if(!this.gridItems.get(slot).isEmpty()&&--queryIdx < 0)
+					return slot;
+			return 0;
 		}
 	}
 }

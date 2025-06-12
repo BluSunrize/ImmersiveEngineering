@@ -9,10 +9,10 @@
   },
   "results": [
     {
-      "item": "immersiveengineering:plate_duroplast"
+      "id": "immersiveengineering:plate_duroplast"
     },
     {
-      "item": "immersiveengineering:mold_plate"
+      "id": "immersiveengineering:mold_plate"
     }
   ]
 }

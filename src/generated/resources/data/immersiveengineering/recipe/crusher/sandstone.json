@@ -5,10 +5,8 @@
     "tag": "c:sandstone/uncolored_blocks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:sand"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:sand"
   },
   "secondaries": [
     {

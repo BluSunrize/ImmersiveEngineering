@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hempcrete_chiseled": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:hempcrete_chiseled"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:stonecutting/hempcrete2"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hempcrete_chiseled"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:stonecutting/hempcrete2"
+    ]
+  }
+}

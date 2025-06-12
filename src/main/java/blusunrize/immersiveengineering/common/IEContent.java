@@ -141,6 +141,7 @@ public class IEContent
 		IEEntityDataSerializers.REGISTER.register(modBus);
 		IEIngredients.REGISTER.register(modBus);
 		IEDataAttachments.REGISTER.register(modBus);
+		IEItemSubPredicates.REGISTER.register(modBus);
 		MultiblockAdvancementTrigger.REGISTER.register(modBus);
 		IEStats.modConstruction(modBus);
 		IEItems.init(modBus);
@@ -193,7 +194,7 @@ public class IEContent
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
 			if(o.getCustomIngredient() instanceof IngredientFluidStack fluidIngred)
-				return new FluidTagRecipeQuery(fluidIngred.getFluidTagInput());
+				return new FluidTagRecipeQuery(fluidIngred.fluidIngredient());
 			else
 				return null;
 		});

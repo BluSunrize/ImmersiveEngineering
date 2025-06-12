@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.data.loot;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.AddDropModifier;
+import blusunrize.immersiveengineering.common.util.loot.LootBlockStateFromLocationPredicate;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Blocks;
@@ -36,16 +38,21 @@ public class LootModifierProvider extends GlobalLootModifierProvider
 	protected void start()
 	{
 		add("hemp_from_grass", new AddDropModifier(
-				Misc.HEMP_SEEDS,
+				() -> Misc.HEMP_SEEDS.asItem().getDefaultInstance(),
 				randomChance(0.1f),
 				invert(toolMatches(item().of(Items.TOOLS_SHEAR))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.SHORT_GRASS)
 		));
 		add("hemp_from_tall_grass", new AddDropModifier(
-				Misc.HEMP_SEEDS,
+				() -> Misc.HEMP_SEEDS.asItem().getDefaultInstance(),
 				randomChance(0.1f),
 				invert(toolMatches(item().of(Items.TOOLS_SHEAR))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.TALL_GRASS)
+		));
+		add("trial_vault_blueprint", new AddDropModifier(
+				() -> BlueprintCraftingRecipe.getTypedBlueprint("automatons"),
+				randomChance(0.062f), // same chance as Bolt Armor Trim
+				new LootBlockStateFromLocationPredicate.Builder(Blocks.VAULT)
 		));
 	}
 }

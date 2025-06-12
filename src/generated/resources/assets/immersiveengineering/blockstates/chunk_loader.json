@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "facing=east,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_split",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_mirrored_split",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_split",
+      "uvlock": true
+    },
+    "facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_mirrored_split",
+      "uvlock": true
+    },
+    "facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_split",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_mirrored_split",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_split",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/chunk_loader_mirrored_split",
+      "uvlock": true,
+      "y": 270
+    }
+  }
+}

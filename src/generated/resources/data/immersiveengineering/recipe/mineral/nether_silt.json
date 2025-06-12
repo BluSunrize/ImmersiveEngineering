@@ -10,21 +10,18 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
         "id": "minecraft:soul_soil"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:soul_sand"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     }
@@ -34,21 +31,18 @@
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
         "id": "minecraft:netherrack"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:basalt"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     }

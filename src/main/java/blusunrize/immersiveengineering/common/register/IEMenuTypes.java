@@ -104,6 +104,9 @@ public class IEMenuTypes
 	public static final MultiblockContainer<RadioTowerLogic.State, RadioTowerMenu> RADIO_TOWER = registerMultiblock(
 			Lib.GUIID_RadioTower, RadioTowerMenu::makeServer, RadioTowerMenu::makeClient
 	);
+	public static final MultiblockContainer<ChunkLoaderLogic.State, ChunkLoaderMenu> CHUNK_LOADER = registerMultiblock(
+			Lib.GUIID_ChunkLoader, ChunkLoaderMenu::makeServer, ChunkLoaderMenu::makeClient
+	);
 	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
 			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
 	);

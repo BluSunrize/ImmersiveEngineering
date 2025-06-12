@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -44,9 +43,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -57,7 +53,6 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
-@EventBusSubscriber(modid = Lib.MODID)
 public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipment
 {
 	public static final String TYPE = "SKYHOOK";
@@ -117,28 +112,44 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 		return builder.build();
 	}
 
-	@SubscribeEvent
-	public static void criticalHit(CriticalHitEvent ev)
+	private static boolean canSmash(LivingEntity entity)
 	{
-		ItemStack heldItem = ev.getEntity().getMainHandItem();
-		if(heldItem.is(IEItems.Misc.SKYHOOK.asItem())&&getUpgradesStatic(heldItem).has(UpgradeEffect.MACE_ATTACK)&&ev.isVanillaCritical())
-		{
-			// This is a similar formula to the mace inflicts in 1.21, but we can't do a flat damage bonus,
-			// so we approximate with a multiplier
-			float fallDistance = ev.getEntity().fallDistance;
-			if(fallDistance < 1.5)
-				return;
-			float damageBonus;
-			if(fallDistance <= 3)
-				damageBonus = 0.66f*fallDistance; // 66% / 4 damage for the first 3 blocks
-			else if(fallDistance <= 8)
-				damageBonus = 2f+0.33f*(fallDistance-3); // 33% / 2 damage for the next 5 blocks
-			else
-				damageBonus = 3.65f+0.165f*(fallDistance-8); // 16.5% / 1 damage for the rest of the way
-			ev.setDamageMultiplier(ev.getDamageMultiplier()+damageBonus);
-			// also reset fall damage on a successful attack
-			ev.getEntity().fallDistance = 0;
-		}
+		return entity.fallDistance > 1.5F&&!entity.isFallFlying()&&getUpgradesStatic(entity.getMainHandItem()).has(UpgradeEffect.MACE_ATTACK);
+	}
+
+	@Override
+	public float getAttackDamageBonus(Entity target, float damage, DamageSource damageSource)
+	{
+		Entity attacker = damageSource.getDirectEntity();
+		if(attacker instanceof LivingEntity livingentity)
+			if(canSmash(livingentity))
+			{
+				float fallDistance = livingentity.fallDistance;
+				float damageBonus;
+				if(fallDistance <= 3)
+					damageBonus = 4f*fallDistance;
+				else if(fallDistance <= 8)
+					damageBonus = 12f+2f*(fallDistance-3f);
+				else
+					damageBonus = 22f+fallDistance-8f;
+				return damageBonus;
+			}
+		return 0;
+	}
+
+	@Override
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker)
+	{
+		// need this so that postHurtEnemy triggers
+		return true;
+	}
+
+	@Override
+	public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker)
+	{
+		// reset fall damage on a successful attack
+		if(canSmash(attacker))
+			attacker.resetFallDistance();
 	}
 
 	@Nonnull

@@ -11,9 +11,12 @@ package blusunrize.immersiveengineering.api.utils;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Either;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FastEither<L, R>
@@ -81,6 +84,14 @@ public class FastEither<L, R>
 			return right.apply(rightNonnull());
 	}
 
+	public void consume(Consumer<L> left, Consumer<R> right)
+	{
+		if(isLeft())
+			left.accept(leftNonnull());
+		else
+			right.accept(rightNonnull());
+	}
+
 	@Override
 	public boolean equals(Object o)
 	{
@@ -99,5 +110,24 @@ public class FastEither<L, R>
 	public Either<L, R> toDFU()
 	{
 		return map(Either::left, Either::right);
+	}
+
+	public static <B extends ByteBuf, L, R> StreamCodec<B, FastEither<L, R>> streamCodec(
+			final StreamCodec<? super B, L> leftCodec,
+			final StreamCodec<? super B, R> rightCodec)
+	{
+		return StreamCodec.of(
+				(buffer, either) -> either.consume(
+						left -> {
+							buffer.writeBoolean(true);
+							leftCodec.encode(buffer, left);
+						},
+						right -> {
+							buffer.writeBoolean(false);
+							rightCodec.encode(buffer, right);
+						}
+				),
+				(buffer) -> buffer.readBoolean()?FastEither.left(leftCodec.decode(buffer)): FastEither.right(rightCodec.decode(buffer))
+		);
 	}
 }

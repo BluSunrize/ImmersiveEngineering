@@ -106,7 +106,6 @@ public class CollectingVertexBuilder implements VertexConsumer
 	protected void clear()
 	{
 		pool.addAll(vertices);
-		pool.add(this.currentVertex);
 		this.currentVertex = null;
 		vertices.clear();
 	}

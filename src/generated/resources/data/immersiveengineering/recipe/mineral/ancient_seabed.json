@@ -13,21 +13,18 @@
     {
       "chance": 0.65,
       "output": {
-        "count": 1,
         "id": "minecraft:calcite"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:dripstone_block"
       }
     },
     {
       "chance": 0.05,
       "output": {
-        "count": 1,
         "id": "minecraft:bone_block"
       }
     }
@@ -36,21 +33,18 @@
     {
       "chance": 0.6,
       "output": {
-        "count": 1,
         "id": "minecraft:sandstone"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.1,
       "output": {
-        "count": 1,
         "id": "minecraft:sand"
       }
     }

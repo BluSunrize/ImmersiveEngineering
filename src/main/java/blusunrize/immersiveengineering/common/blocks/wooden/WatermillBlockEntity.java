@@ -153,39 +153,48 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		//Search for the waterwheel with the dynamo, or process the update if we have the connected dynamo
 		if(dynamo.getCapability()!=null)
 		{
+			//Get the direction to step in
 			Direction step = facingCap.getCapability()==null?getFacing(): getFacing().getOpposite();
-			//Get total torque across all connected wheels up to maximum
-			double torque = getIFScaledTorque();
-			int wheels = 1;
-			while(wheels < MAX_WHEELS)
+			//Set power & speed to zero to start calculation
+			powerOut = 0;
+			speed = 0;
+			//Calculate the new torque this wheel will produce
+			if (!this.isBlocked())
 			{
-				BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(step, wheels));
-				if(be instanceof WatermillBlockEntity watermill)
-					if(watermill.isBlocked())
-						break;
+				//Number of wheels in a row, determined to be at least one
+				int wheels = 1;
+				//Get total torque across all connected wheels up to maximum, and check how many connected wheels there are
+				double torque = getIFScaledTorque();
+				for(int i = 1; i < MAX_WHEELS; i++)
+				{
+					BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(step, i));
+					if(be instanceof WatermillBlockEntity watermill)
+						if(watermill.isBlocked())
+							break;
+						else
+							torque += watermill.getIFScaledTorque();
 					else
-						torque += watermill.getIFScaledTorque();
-				else
-					break;
-				wheels++;
+						break;
+					wheels++;
+				}
+				//Calculate torque to use for this wheel
+				powerOut = Math.abs(torque);
+				speed = 0.00025*torque/wheels;
 			}
-			//Update connected wheels with new torque as necessary
-			powerOut = Math.abs(torque);
-			speed = 0.00025*torque/wheels;
 			//Update client with the data we just set
 			level.sendBlockUpdated(getBlockPos(), level.getBlockState(getBlockPos()), level.getBlockState(getBlockPos()), 3);
-			for(int i=1; i < wheels; i++)
+			//Updated connected waterwheels with torque & speed
+			boolean blocked = false;
+			for(int i=1; i < MAX_WHEELS; i++)
 			{
 				BlockPos pos = getBlockPos().relative(step, i);
 				BlockEntity be = SafeChunkUtils.getSafeBE(level, pos);
 				if(be instanceof WatermillBlockEntity watermill)
-					if(watermill.isBlocked())
-						break;
-					else
-					{
-						watermill.speed = speed;
-						watermill.rotation = rotation;
-					}
+				{
+					blocked = blocked || watermill.isBlocked();
+					watermill.speed = blocked?0: speed;
+					watermill.rotation = blocked?0: rotation;
+				}
 				//Update client with the data we just set
 				level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
 			}

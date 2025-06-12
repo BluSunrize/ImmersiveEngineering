@@ -5,10 +5,8 @@
     "item": "minecraft:cherry_log"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:cherry_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:cherry_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_cherry_log"
+    "id": "minecraft:stripped_cherry_log"
   },
   "strippingSecondaries": [
     {

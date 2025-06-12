@@ -23,6 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -140,9 +141,9 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 				thrower = shooter.getItemInHand(InteractionHand.MAIN_HAND);
 
 			if(mop.getType()==Type.ENTITY&&((EntityHitResult)mop).getEntity() instanceof LivingEntity)
-				effect.applyToEntity((LivingEntity)((EntityHitResult)mop).getEntity(), shooter, thrower, fluidStack);
+				effect.applyToEntity((LivingEntity)((EntityHitResult)mop).getEntity(), shooter, this, thrower, fluidStack);
 			else if(mop.getType()==Type.BLOCK)
-				effect.applyToBlock(level(), mop, shooter, thrower, fluidStack);
+				effect.applyToBlock(level(), mop, shooter, this, thrower, fluidStack);
 		}
 		else if(mop.getType()==Type.ENTITY&&fluid.getFluidType().getTemperature(fluidStack) > 500)
 		{
@@ -179,9 +180,10 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		return 0;
 	}
 
+	@Nonnull
 	@Override
 	protected ItemStack getDefaultPickupItem()
 	{
-		return ItemStack.EMPTY;
+		return Items.WATER_BUCKET.getDefaultInstance();
 	}
 }

@@ -8,7 +8,6 @@ Once they're experienced enough to prospect, they may even sell you a treasure m
 The workstation of the Structural Engineer is a §2Turntable§r.<np>
 <&machinist>The §lMachinist§r is an expert in metals, mechanics and tools.<br>
 They sell hammers, toolboxes and drill heads while buying raw materials such as steel.<br>
-Highly experienced machinists can draw blueprints for <link;coke_and_graphite;graphite electrodes;electrode>.<br>
 The workstation of the Machinist is an §2Engineer's Crafting Table§r.<np>
 <&electrician> The §lElectrician§r offers wirecutters, coils of wire and pieces of a faraday suit.<br>
 More experienced engineers will sell complex components such as circuits. Some less reputable may also have a stash of experimental weapon upgrades...<br>

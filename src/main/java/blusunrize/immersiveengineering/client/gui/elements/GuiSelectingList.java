@@ -18,11 +18,11 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class GuiSelectingList extends GuiReactiveList
+public class GuiSelectingList extends GuiReactiveList<String>
 {
 	public GuiSelectingList(int x, int y, int w, int h, IIEPressable<GuiSelectingList> handler, String... entries)
 	{
-		super(x, y, w, h, handler, () -> Arrays.asList(entries));
+		super(x, y, w, h, handler, () -> Arrays.asList(entries), s->s);
 	}
 
 	@Override

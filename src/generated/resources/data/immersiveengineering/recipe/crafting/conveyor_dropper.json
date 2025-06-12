@@ -5,9 +5,14 @@
     "c": {
       "item": "immersiveengineering:conveyor_basic"
     },
-    "t": {
-      "item": "minecraft:iron_trapdoor"
-    }
+    "t": [
+      {
+        "tag": "c:plates/iron"
+      },
+      {
+        "tag": "c:plates/steel"
+      }
+    ]
   },
   "pattern": [
     "c",

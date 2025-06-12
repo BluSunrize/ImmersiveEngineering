@@ -30,6 +30,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -80,6 +81,8 @@ public class PotionBullet extends DamagingBullet<Data>
 			if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
 			{
 				Entity e = serverLevel.getEntity(shooterUUID);
+				if(e == null && projectile instanceof Projectile p)
+					e = p.getOwner();
 				if(e instanceof LivingEntity)
 					shooter = (LivingEntity)e;
 			}

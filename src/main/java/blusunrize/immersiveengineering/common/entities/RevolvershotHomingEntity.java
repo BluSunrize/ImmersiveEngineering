@@ -9,13 +9,17 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import com.mojang.datafixers.util.Unit;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.function.Predicate;
 
 public class RevolvershotHomingEntity extends RevolvershotEntity
 {
@@ -76,10 +80,11 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		double r = 20D;
 		AABB aabb = new AABB(getX()-r, getY()-r, getZ()-r, getX()+r, getY()+r, getZ()+r);
 		LivingEntity target = null;
-		for(LivingEntity o : level().getEntitiesOfClass(LivingEntity.class, aabb))
-			if(o!=null&&!o.getUUID().equals(this.shooterUUID))
-				if(target==null||o.distanceToSqr(this) < target.distanceToSqr(this))
-					target = o;
+		Entity shooter = getOwner();
+		Predicate<LivingEntity> validTarget = shooter!=null?e -> !PlayerUtils.isAllied(shooter, e): e -> true;
+		for(LivingEntity o : level().getEntitiesOfClass(LivingEntity.class, aabb, validTarget))
+			if(target==null||o.distanceToSqr(this) < target.distanceToSqr(this))
+				target = o;
 		return target;
 	}
 }

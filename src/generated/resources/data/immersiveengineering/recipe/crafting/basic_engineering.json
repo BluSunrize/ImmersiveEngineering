@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "w": {
+      "tag": "immersiveengineering:treated_wood"
+    }
+  },
+  "pattern": [
+    "iwi",
+    "w w",
+    "iwi"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:basic_engineering"
+  }
+}

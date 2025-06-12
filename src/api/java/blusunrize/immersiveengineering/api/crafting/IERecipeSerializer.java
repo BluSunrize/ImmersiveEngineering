@@ -96,7 +96,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 
 	private static Codec<List<StackWithChance>> makeChanceOutputCodec()
 	{
-		Codec<List<StackWithChance>> baseCodec = StackWithChance.CODECS.codec().listOf();
+		Codec<List<StackWithChance>> baseCodec = StackWithChance.OPTIONAL_BASIC_CODEC.listOf();
 		Decoder<List<StackWithChance>> conditionalDecoder = new Decoder<>()
 		{
 			@Override

@@ -5,10 +5,8 @@
     "item": "minecraft:birch_wood"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:birch_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:birch_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_birch_wood"
+    "id": "minecraft:stripped_birch_wood"
   },
   "strippingSecondaries": [
     {

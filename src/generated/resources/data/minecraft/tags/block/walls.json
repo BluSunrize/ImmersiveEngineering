@@ -1,6 +1,12 @@
 {
   "values": [
+    "immersiveengineering:wall_concrete_leaded",
+    "immersiveengineering:wall_concrete",
+    "immersiveengineering:wall_concrete_tile",
     "immersiveengineering:wall_slag_brick",
+    "immersiveengineering:wall_concrete_brick",
+    "immersiveengineering:wall_hempcrete",
+    "immersiveengineering:wall_hempcrete_brick",
     "immersiveengineering:wall_clinker_brick"
   ]
 }

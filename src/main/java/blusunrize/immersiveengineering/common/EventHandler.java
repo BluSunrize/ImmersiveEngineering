@@ -29,18 +29,22 @@ import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageOpenManual;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.util.IEExplosion;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
@@ -65,9 +69,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.NoteBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -85,18 +91,19 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.NoteBlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class EventHandler
 {
-	public static Map<Level, Set<IEExplosion>> currentExplosions = new WeakHashMap<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -175,19 +182,6 @@ public class EventHandler
 			Runnable next = SERVER_TASKS.poll();
 			if(next!=null)
 				next.run();
-		}
-
-		final Set<IEExplosion> explosionsInLevel = currentExplosions.get(level);
-		if(explosionsInLevel!=null)
-		{
-			Iterator<IEExplosion> itExplosion = explosionsInLevel.iterator();
-			while(itExplosion.hasNext())
-			{
-				IEExplosion ex = itExplosion.next();
-				ex.doExplosionTick();
-				if(ex.isExplosionFinished)
-					itExplosion.remove();
-			}
 		}
 	}
 
@@ -363,6 +357,57 @@ public class EventHandler
 		}
 	}
 
+	private static final LoadingCache<UUID, int[]> RESONANZ_NOTES_HEARD = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.expireAfterAccess(30, TimeUnit.SECONDS)
+			.build(CacheLoader.from(() -> new int[]{-1, -1, -1}));
+	private static final int[] RESONANZ_TARGET = {5, 11, 15};
+
+	@SubscribeEvent
+	public void onNoteBlockPlay(NoteBlockEvent.Play event)
+	{
+		if(event.getInstrument().worksAboveNoteBlock()||!(event.getLevel() instanceof ServerLevel level))
+			// don't handle mob heads
+			return;
+		BlockPos pos = event.getPos();
+		if(!level.getBlockState(pos.below()).is(MetalDecoration.ENGINEERING_RESONANZ.get()))
+			// only handle our block
+			return;
+
+		// cancel event and play our own sound
+		event.setCanceled(true);
+		int note = event.getVanillaNoteId();
+		float pitch = NoteBlock.getPitchFromNote(note);
+		level.sendParticles(
+				ParticleTypes.NOTE,
+				pos.getX()+0.5, pos.getY()+1.2, pos.getZ()+0.5,
+				0, note/24.0, 0.0, 0.0, 1
+		);
+		level.playSeededSound(
+				null, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,
+				IESounds.note_block_resonanz, SoundSource.RECORDS, 3.0F, pitch,
+				level.random.nextLong()
+		);
+
+		// check all players in 48 block range
+		level.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(48), p -> !Utils.hasIEAdvancement(p, "main/secret_achtung")).forEach(player -> {
+			int[] lastHeard = RESONANZ_NOTES_HEARD.getUnchecked(player.getUUID());
+			boolean written = false;
+			for(int i = 0; i < lastHeard.length; i++)
+				if(lastHeard[i] < 0)
+				{
+					lastHeard[i] = note;
+					written = true;
+					break;
+				}
+			if(!written)
+				lastHeard = new int[]{note, -1, -1};
+			if(Arrays.equals(lastHeard, RESONANZ_TARGET))
+				Utils.unlockIEAdvancement(player, "main/secret_achtung");
+			RESONANZ_NOTES_HEARD.put(player.getUUID(), lastHeard);
+		});
+	}
+
 	@SubscribeEvent
 	public void onBlockRightclick(RightClickBlock event)
 	{
@@ -396,7 +441,7 @@ public class EventHandler
 		}
 	}
 
-	// TODO test if multiblocks are still bad when broken with a drill or similar
+// TODO test if multiblocks are still bad when broken with a drill or similar
 	/*@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void breakLast(BlockEvent.BreakEvent event)
 	{

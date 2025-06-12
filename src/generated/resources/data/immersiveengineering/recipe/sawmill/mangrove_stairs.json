@@ -5,7 +5,7 @@
     "item": "minecraft:mangrove_stairs"
   },
   "result": {
-    "item": "minecraft:mangrove_planks"
+    "id": "minecraft:mangrove_planks"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

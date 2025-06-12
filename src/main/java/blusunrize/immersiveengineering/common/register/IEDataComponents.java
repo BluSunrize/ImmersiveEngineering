@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import malte0811.dualcodecs.DualCodec;
-import malte0811.dualcodecs.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid.PotionBottleType;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.CoresampleMapData;
@@ -33,6 +33,8 @@ import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
+import malte0811.dualcodecs.DualCodec;
+import malte0811.dualcodecs.DualCodecs;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -130,6 +132,7 @@ public class IEDataComponents
 					.networkSynchronized(ByteBufCodecs.INT)
 					.build()
 	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<PotionBottleType>> POTION_BOTTLE_TYPE = make("potion_bottle_type", PotionFluid.PotionBottleType.CODEC);
 
 	public static void init(IEventBus bus)
 	{
@@ -137,10 +140,15 @@ public class IEDataComponents
 		for(ResourceLocation name : BulletHandler.getAllKeys())
 		{
 			var bullet = BulletHandler.getBullet(name);
-			var path = (name.getNamespace().equals(Lib.MODID)?"": name.getNamespace()+"_")+name.getPath();
 			var codecs = bullet.getCodec();
-			var entry = make(path, codecs.codecs());
-			BULLETS.put(bullet, entry::get);
+			if(codecs.vanillaDataComponent()!=null)
+				BULLETS.put(bullet, codecs::vanillaDataComponent);
+			else
+			{
+				var path = (name.getNamespace().equals(Lib.MODID)?"": name.getNamespace()+"_")+name.getPath();
+				var entry = make(path, codecs.codecs());
+				BULLETS.put(bullet, entry::get);
+			}
 		}
 		IEApiDataComponents.WIRE_LINK = make("wire_link", WireLink.CODECS);
 		IEApiDataComponents.BLUEPRINT_TYPE = make("blueprint", DualCodecs.STRING);

@@ -28,7 +28,7 @@ public record MessageSetGhostSlots(Map<Integer, ItemStack> stacksToSet) implemen
 {
 	public static final Type<MessageSetGhostSlots> ID = IMessage.createType("set_ghost_slot");
 	private static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, ItemStack>> MAP_CODEC = ByteBufCodecs.map(
-			HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC
+			HashMap::new, ByteBufCodecs.INT, ItemStack.OPTIONAL_STREAM_CODEC
 	);
 	public static final StreamCodec<RegistryFriendlyByteBuf, MessageSetGhostSlots> CODEC = MAP_CODEC
 			.map(MessageSetGhostSlots::new, MessageSetGhostSlots::stacksToSet);
@@ -39,23 +39,21 @@ public record MessageSetGhostSlots(Map<Integer, ItemStack> stacksToSet) implemen
 		Player player = context.player();
 		context.enqueueWork(() -> {
 			AbstractContainerMenu container = player.containerMenu;
-			if(container!=null)
-				for(Entry<Integer, ItemStack> e : stacksToSet.entrySet())
+			for(Entry<Integer, ItemStack> e : stacksToSet.entrySet())
+			{
+				int slot = e.getKey();
+				if(slot >= 0&&slot < container.slots.size())
 				{
-					int slot = e.getKey();
-					if(slot >= 0&&slot < container.slots.size())
+					Slot target = container.slots.get(slot);
+					if(!(target instanceof ItemHandlerGhost))
 					{
-						Slot target = container.slots.get(slot);
-						if(!(target instanceof ItemHandlerGhost))
-						{
-							IELogger.error("Player "+player.getDisplayName()+" tried to set the contents of a non-ghost slot."+
-									"This is either a bug in IE or an attempt at cheating.");
-							return;
-						}
-						//TODO this is most likely broken!
-						container.setItem(slot, container.getStateId(), e.getValue());
+						IELogger.error("Player "+player.getDisplayName()+" tried to set the contents of a non-ghost slot."+
+								"This is either a bug in IE or an attempt at cheating.");
+						return;
 					}
+					container.setItem(slot, container.getStateId(), e.getValue());
 				}
+			}
 		});
 	}
 

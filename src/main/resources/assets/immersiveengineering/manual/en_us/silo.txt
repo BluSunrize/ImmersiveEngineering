@@ -1,8 +1,9 @@
 Silo
 Full to the brim!
 Silos offer space for a lot of items of the same type, making them excellent for mass storage of seeds, slag or cobblestone. They have space for 41472 items, equaling the capacity of 24 chests.<np>
+The structure can be constructed out of any sheetmetal, it is not limited to using iron.<br>
 Items can be input through the top grate, or through the bottom port. Items must be extracted from the bottom port.<br>
-Applying a redstone signal to the bottom block will make it output automatically.<br>
+Applying a redstone signal to the bottom block will make it output automatically.<np>
 A comparator attached to the bottom center block will it emit a redstone signal proportional the fill of the silo.<br>
 Attaching the comparator to one of the top 6 layers results in a signal proportional to the height of the comparator.<br>
 For example, a comparator attached to the third layer of a silo would not emit any signal until the tank is 2/6 full and have a signal strength of 15 if the silo is half full or more.

@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -254,9 +253,17 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 		if(!Utils.isScrewdriver(player.getItemInHand(InteractionHand.MAIN_HAND)))
 			return null;
 		return new Component[]{
-				Component.translatable(Lib.DESC_INFO+"redstoneChannel", I18n.get("item.minecraft.firework_star."+redstoneChannel.getName())),
+				getChannelComponent("", redstoneChannel),
 				Component.translatable(Lib.DESC_INFO+"blockSide.io."+this.ioMode.getSerializedName())
 		};
+	}
+
+	protected static Component getChannelComponent(String subtype, DyeColor channel)
+	{
+		return Component.empty()
+				.append(Component.translatable(Lib.GUI_CONFIG+"redstone_color"+subtype))
+				.append(Component.literal(" "))
+				.append(Lib.getRedstoneColorComponent(channel));
 	}
 
 	@Override

@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.RevolverCallbacks.Key;
@@ -137,6 +138,13 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	@Override
 	public void handlePerspective(Key key, LivingEntity holder, ItemDisplayContext cameraItemDisplayContext, PoseStack mat)
 	{
+		if(ZoomHandler.isZooming && (cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND))
+		{
+			// hide the item in first person when zooming
+			mat.scale(0f,0f,0f);
+			return;
+		}
+
 		if(holder instanceof Player player&&(cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)==(holder.getMainArm()==HumanoidArm.RIGHT);

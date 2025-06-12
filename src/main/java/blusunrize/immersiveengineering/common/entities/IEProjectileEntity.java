@@ -11,10 +11,6 @@ package blusunrize.immersiveengineering.common.entities;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -29,19 +25,11 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
-import java.util.UUID;
 
 public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to extend arrow or else it's all weird and broken >_>
 {
-	private static final EntityDataAccessor<Optional<UUID>> SHOOTER_PARAMETER =
-			SynchedEntityData.defineId(IEProjectileEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-
 	public int ticksInAir;
 	protected IntSet piercedEntities;
-	@Nullable
-	protected UUID shooterUUID;
 	// Hack to disable vanilla gravity code in tick(). Using the vanilla setter would make MC sync the data value every
 	// tick
 	private boolean forceNoGravity;
@@ -71,7 +59,6 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	{
 		this(type, world);
 		setOwner(living);
-		this.setShooterSynced();
 		this.setPos(living.getX(), living.getEyeY()-0.1, living.getZ());
 		this.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, velocity, inaccuracy);
 	}
@@ -85,16 +72,8 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		this.setPos(this.getX(), this.getY(), this.getZ());
 		setDeltaMovement(ax, ay, az);
 		setOwner(living);
-		this.setShooterSynced();
 		Vec3 motion = getDeltaMovement();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
-	}
-
-	@Override
-	protected void defineSynchedData(Builder builder)
-	{
-		super.defineSynchedData(builder);
-		builder.define(SHOOTER_PARAMETER, Optional.empty());
 	}
 
 	@Nonnull
@@ -107,23 +86,6 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public void setTickLimit(int limit)
 	{
 		this.tickLimit = limit;
-	}
-
-	public void setShooterSynced()
-	{
-		this.entityData.set(SHOOTER_PARAMETER, Optional.ofNullable(this.shooterUUID));
-	}
-
-	public UUID getShooterSynced()
-	{
-		Optional<UUID> s = this.entityData.get(SHOOTER_PARAMETER);
-		return s.orElse(null);
-	}
-
-	@Nullable
-	public UUID getShooterUUID()
-	{
-		return shooterUUID;
 	}
 
 	@Nonnull
@@ -145,9 +107,6 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			++ticksInAir;
 		if(this.ticksInAir >= this.tickLimit||this.inGroundTime >= this.getMaxTicksInGround())
 			this.discard();
-
-		if(this.getOwner()==null&&this.level().isClientSide)
-			this.shooterUUID = getShooterSynced();
 
 		// store previous movement
 		Vec3 delta = this.getDeltaMovement().add(0, 0, 0);
@@ -270,32 +229,18 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public void addAdditionalSaveData(CompoundTag nbt)
 	{
 		super.addAdditionalSaveData(nbt);
-		if(this.shooterUUID!=null)
-			nbt.putUUID("Owner", this.shooterUUID);
-
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt)
 	{
 		super.readAdditionalSaveData(nbt);
-		if(nbt.contains("Owner"))
-			this.shooterUUID = nbt.getUUID("Owner");
-		else
-			this.shooterUUID = null;
 	}
 
 	@Override
 	public boolean hurt(DamageSource source, float amount)
 	{
 		return false;
-	}
-
-	public void setOwner(@Nullable Entity entityIn)
-	{
-		super.setOwner(entityIn);
-		if(entityIn!=null)
-			this.shooterUUID = entityIn.getUUID();
 	}
 
 	@Override

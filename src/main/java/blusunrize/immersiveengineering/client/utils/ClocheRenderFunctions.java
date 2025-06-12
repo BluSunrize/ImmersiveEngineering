@@ -12,8 +12,6 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
-import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -30,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -53,7 +52,7 @@ public class ClocheRenderFunctions
 		register("generic", RenderFunctionGeneric.CODEC);
 
 		register("doubleflower", RenderFunctionDoubleFlower.CODEC);
-		register("hemp", RenderFunctionHemp.CODEC);
+		register("doublecrop", RenderFunctionDoubleCrop.CODEC);
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
 
@@ -70,6 +69,23 @@ public class ClocheRenderFunctions
 				.fieldOf("block");
 	}
 
+	private static Pair<IntegerProperty, Integer> getCropAge(Block block) throws IllegalArgumentException
+	{
+		if(block instanceof CropBlock crop)
+			return Pair.of(((CropBlockAccess)crop).invokeGetAgeProperty(), crop.getMaxAge());
+		else
+		{
+			for(Property<?> prop : block.defaultBlockState().getProperties())
+				if("age".equals(prop.getName())&&prop instanceof IntegerProperty intProp)
+				{
+					int max = intProp.getPossibleValues().stream().max(Integer::compare).orElse(-1);
+					if(max > 0)
+						return Pair.of(intProp, max);
+				}
+		}
+		throw new IllegalArgumentException("Block "+block.getDescriptionId()+" is not a valid crop block");
+	}
+
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
 		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
@@ -81,30 +97,9 @@ public class ClocheRenderFunctions
 		public RenderFunctionCrop(Block cropBlock)
 		{
 			this.cropBlock = cropBlock;
-			if(cropBlock instanceof CropBlock)
-			{
-				this.maxAge = ((CropBlock)cropBlock).getMaxAge();
-				this.ageProperty = ((CropBlockAccess)cropBlock).invokeGetAgeProperty();
-			}
-			else
-			{
-				for(Property<?> prop : cropBlock.defaultBlockState().getProperties())
-					if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
-					{
-						int tmp = -1;
-						for(Integer allowed : ((IntegerProperty)prop).getPossibleValues())
-							if(allowed!=null&&allowed > tmp)
-								tmp = allowed;
-						if(tmp > 0)
-						{
-							this.maxAge = tmp;
-							this.ageProperty = (IntegerProperty)prop;
-							break;
-						}
-					}
-			}
-			if(this.ageProperty==null||this.maxAge <= 0)
-				throw new IllegalArgumentException("Block "+cropBlock.getDescriptionId()+" is not a valid crop block");
+			var cropAge = getCropAge(cropBlock);
+			this.ageProperty = cropAge.getFirst();
+			this.maxAge = cropAge.getSecond();
 		}
 
 		@Override
@@ -316,9 +311,27 @@ public class ClocheRenderFunctions
 		}
 	}
 
-	public static class RenderFunctionHemp implements ClocheRenderFunction
+	public static class RenderFunctionDoubleCrop implements ClocheRenderFunction
 	{
-		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionHemp> CODEC = DualMapCodec.unit(new RenderFunctionHemp());
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionDoubleCrop> CODEC = DualCompositeMapCodecs.composite(
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("block"), r -> r.cropBlock,
+				DualCodecs.INT.fieldOf("doublingAge"), r -> r.doublingAge,
+				RenderFunctionDoubleCrop::new
+		);
+
+		final Block cropBlock;
+		IntegerProperty ageProperty;
+		int maxAge;
+		final int doublingAge;
+
+		public RenderFunctionDoubleCrop(Block cropBlock, int doublingAge)
+		{
+			this.cropBlock = cropBlock;
+			var cropAge = getCropAge(cropBlock);
+			this.ageProperty = cropAge.getFirst();
+			this.maxAge = cropAge.getSecond();
+			this.doublingAge = doublingAge;
+		}
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -329,16 +342,16 @@ public class ClocheRenderFunctions
 		@Override
 		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
-			int age = Math.min(4, Math.round(growth*4));
-			if(age==4)
+			int age = Math.min(this.maxAge, Math.round(this.maxAge*growth));
+			if(age >= doublingAge)
 			{
 				Transformation top = new Transformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.AGE, 4), new Transformation(null)),
-						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.TOP, true), top)
+						Pair.of(cropBlock.defaultBlockState().setValue(ageProperty, age), new Transformation(null)),
+						Pair.of(cropBlock.defaultBlockState().setValue(ageProperty, age).setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.AGE, age), new Transformation(null)));
+			return ImmutableList.of(Pair.of(cropBlock.defaultBlockState().setValue(ageProperty, age), new Transformation(null)));
 		}
 
 		@Override
@@ -347,4 +360,5 @@ public class ClocheRenderFunctions
 			return CODEC;
 		}
 	}
+
 }

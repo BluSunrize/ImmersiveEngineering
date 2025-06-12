@@ -15,7 +15,7 @@
       "type": "neoforge:intersection",
       "children": [
         {
-          "tag": "c:glass_blocks/tinted"
+          "tag": "c:glass_blocks"
         },
         {
           "tag": "c:dyed/red"

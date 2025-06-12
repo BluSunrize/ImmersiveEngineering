@@ -8,18 +8,15 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemInput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +25,7 @@ public class MixerRecipeBuilder extends IERecipeBuilder<MixerRecipeBuilder>
 		implements ItemInput<MixerRecipeBuilder>
 {
 	private FluidStack fluidOutput;
-	private FluidTagInput fluidInput;
+	private SizedFluidIngredient fluidInput;
 	private final List<IngredientWithSize> itemInputs = new ArrayList<>();
 	private int energy;
 
@@ -62,7 +59,7 @@ public class MixerRecipeBuilder extends IERecipeBuilder<MixerRecipeBuilder>
 
 	public MixerRecipeBuilder fluidInput(TagKey<Fluid> fluid, int amount)
 	{
-		this.fluidInput = new FluidTagInput(fluid, amount);
+		this.fluidInput = SizedFluidIngredient.of(fluid, amount);
 		return this;
 	}
 

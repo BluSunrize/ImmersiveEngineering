@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.BlockSetTypes;
+import blusunrize.immersiveengineering.api.Lib.WoodTypes;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -37,13 +39,16 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -375,16 +380,22 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<DoorBlock> DOOR = new BlockEntry<>(
-				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(BlockSetTypes.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<DoorBlock> DOOR_FRAMED = new BlockEntry<>(
-				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(BlockSetTypes.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR = new BlockEntry<>(
-				"treated_trapdoor", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(BlockSetTypes.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR_FRAMED = new BlockEntry<>(
-				"treated_trapdoor_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(BlockSetTypes.TREATED_WOOD, blockProps)
+		);
+
+		public static final SignHolder SIGN = SignHolder.of(WoodTypes.TREATED_WOOD, 1f, MapColor.WOOD, NoteBlockInstrument.BASS, true);
+
+		public static final BlockEntry<IEBaseBlock> BASIC_ENGINEERING = BlockEntry.simple(
+				"basic_engineering", STANDARD_WOOD_PROPERTIES
 		);
 
 		private static void init()
@@ -472,6 +483,7 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> ENGINEERING_RS = BlockEntry.simple("rs_engineering", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> ENGINEERING_HEAVY = BlockEntry.simple("heavy_engineering", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> ENGINEERING_LIGHT = BlockEntry.simple("light_engineering", DEFAULT_METAL_PROPERTIES);
+		public static final BlockEntry<IEBaseBlock> ENGINEERING_RESONANZ = BlockEntry.simple("resonanz_engineering", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> GENERATOR = BlockEntry.simple("generator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> RADIATOR = BlockEntry.simple("radiator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<FenceBlock> STEEL_FENCE = BlockEntry.fence("steel_fence", METAL_PROPERTIES_NO_OVERLAY);
@@ -533,11 +545,14 @@ public final class IEBlocks
 				"alu_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
 		);
 		public static final BlockEntry<DoorBlock> STEEL_DOOR = new BlockEntry<>(
-				"steel_door", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
+				"steel_door", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(BlockSetTypes.STEEL, blockProps).setLockedByRedstone()
 		);
 		public static final BlockEntry<TrapDoorBlock> STEEL_TRAPDOOR = new BlockEntry<>(
-				"steel_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
+				"steel_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(BlockSetTypes.STEEL, blockProps).setLockedByRedstone()
 		);
+		public static final SignHolder STEEL_SIGN = SignHolder.of(WoodTypes.STEEL, 3f, MapColor.METAL, NoteBlockInstrument.IRON_XYLOPHONE, false);
+		public static final SignHolder ALU_SIGN = SignHolder.of(WoodTypes.ALUMINUM, 3f, MapColor.METAL, NoteBlockInstrument.IRON_XYLOPHONE, false);
+
 		public static final Map<WarningSignIcon, BlockEntry<IEBaseBlock>> WARNING_SIGNS = new EnumMap<>(WarningSignIcon.class);
 
 		private static void init()
@@ -570,7 +585,7 @@ public final class IEBlocks
 			}
 			for(WarningSignIcon icon : WarningSignIcon.values())
 				WARNING_SIGNS.put(icon, new BlockEntry<>(
-						"warning_sign_"+icon.getSerializedName(), METAL_PROPERTIES_NO_OVERLAY, blockProps -> new WarningSignBlock(icon, blockProps)
+						"warning_sign_"+icon.getSerializedName(), WarningSignBlock.PROPERTIES, blockProps -> new WarningSignBlock(icon, blockProps)
 				));
 		}
 	}
@@ -620,8 +635,7 @@ public final class IEBlocks
 				"electric_lantern", ElectricLanternBlock.PROPERTIES, ElectricLanternBlock::new
 		);
 		public static final BlockEntry<HorizontalFacingEntityBlock<ChargingStationBlockEntity>> CHARGING_STATION = new BlockEntry<>(
-				// TODO move shape into block impl
-				"charging_station", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.CHARGING_STATION, p)
+				"charging_station", METAL_PROPERTIES_DYNAMIC, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.CHARGING_STATION, p)
 		);
 		public static final BlockEntry<FluidPipeBlock> FLUID_PIPE = new BlockEntry<>("fluid_pipe", METAL_PROPERTIES_DYNAMIC, FluidPipeBlock::new);
 		public static final BlockEntry<SampleDrillBlock> SAMPLE_DRILL = new BlockEntry<>("sample_drill", METAL_PROPERTIES_NO_OCCLUSION, SampleDrillBlock::new);
@@ -825,11 +839,18 @@ public final class IEBlocks
 		registerStairs(StoneDecoration.CONCRETE_LEADED);
 		registerWall(StoneDecoration.SLAG_BRICK);
 		registerWall(StoneDecoration.CLINKER_BRICK);
+		registerWall(StoneDecoration.HEMPCRETE);
+		registerWall(StoneDecoration.HEMPCRETE_BRICK);
+		registerWall(StoneDecoration.CONCRETE);
+		registerWall(StoneDecoration.CONCRETE_BRICK);
+		registerWall(StoneDecoration.CONCRETE_TILE);
+		registerWall(StoneDecoration.CONCRETE_LEADED);
 
 		for(BlockEntry<?> entry : BlockEntry.ALL_ENTRIES)
 		{
 			if(entry==Misc.FAKE_LIGHT||entry==Misc.POTTED_HEMP||entry==StoneDecoration.CORESAMPLE||
 					entry==MetalDevices.TOOLBOX||entry==Cloth.SHADER_BANNER||entry==Cloth.SHADER_BANNER_WALL||
+					WoodenDecoration.SIGN.matchesEntries(entry)||MetalDecoration.STEEL_SIGN.matchesEntries(entry)||MetalDecoration.ALU_SIGN.matchesEntries(entry)||
 					entry==Misc.HEMP_PLANT||entry==Connectors.POST_TRANSFORMER||IEFluids.ALL_FLUID_BLOCKS.contains(entry))
 				continue;
 			Function<Block, BlockItemIE> toItem;
@@ -845,6 +866,83 @@ public final class IEBlocks
 				toItem = toItem.andThen(b -> b.setBurnTime(10*IEItems.COKE_BURN_TIME));
 			Function<Block, BlockItemIE> finalToItem = toItem;
 			IEItems.REGISTER.register(entry.getId().getPath(), () -> finalToItem.apply(entry.get()));
+		}
+		// Signs
+		WoodenDecoration.SIGN.registerItems(IEItems.REGISTER);
+		MetalDecoration.STEEL_SIGN.registerItems(IEItems.REGISTER);
+		MetalDecoration.ALU_SIGN.registerItems(IEItems.REGISTER);
+	}
+
+	public record SignHolder(String baseName, BlockEntry<IESignBlocks.Standing> sign,
+							 BlockEntry<IESignBlocks.Wall> wall, BlockEntry<IESignBlocks.Hanging> hanging,
+							 BlockEntry<IESignBlocks.WallHanging> wallHanging)
+	{
+		public static SignHolder of(WoodType wood, float strength, MapColor mapColor, NoteBlockInstrument nbi, boolean ignite)
+		{
+			String baseName = ResourceLocation.parse(wood.name()).getPath();
+			BlockEntry<IESignBlocks.Standing> sign = new BlockEntry<>(
+					baseName+"_sign", buildProperties(strength, mapColor, nbi, ignite, null),
+					blockProps -> new IESignBlocks.Standing(wood, blockProps)
+			);
+			BlockEntry<IESignBlocks.Wall> wall = new BlockEntry<>(
+					baseName+"_wall_sign", buildProperties(strength, mapColor, nbi, ignite, sign::get),
+					blockProps -> new IESignBlocks.Wall(wood, blockProps)
+			);
+			BlockEntry<IESignBlocks.Hanging> hanging = new BlockEntry<>(
+					baseName+"_hanging_sign", buildProperties(strength, mapColor, nbi, ignite, null),
+					blockProps -> new IESignBlocks.Hanging(wood, blockProps)
+			);
+			BlockEntry<IESignBlocks.WallHanging> wallHanging = new BlockEntry<>(
+					baseName+"_wall_hanging_sign", buildProperties(strength, mapColor, nbi, ignite, hanging::get),
+					blockProps -> new IESignBlocks.WallHanging(wood, blockProps)
+			);
+			return new SignHolder(baseName, sign, wall, hanging, wallHanging);
+		}
+
+		private static Supplier<BlockBehaviour.Properties> buildProperties(float strength, MapColor mapColor, NoteBlockInstrument nbi, boolean ignite, Supplier<Block> dropsLike)
+		{
+			return () -> {
+				BlockBehaviour.Properties props = Properties.of().mapColor(mapColor).instrument(nbi).strength(strength).forceSolidOn().noCollission();
+				if(ignite)
+					props.ignitedByLava();
+				if(dropsLike!=null)
+					props.dropsLike(dropsLike.get());
+				return props;
+			};
+		}
+
+		public void registerItems(DeferredRegister<Item> register)
+		{
+			register.register(
+					baseName+"_sign",
+					() -> new SignItem(new Item.Properties().stacksTo(16), this.sign().get(), this.wall().get())
+			);
+			register.register(
+					baseName+"_hanging_sign",
+					() -> new HangingSignItem(this.hanging().get(), this.wallHanging.get(), new Item.Properties().stacksTo(16))
+			);
+		}
+
+		public boolean matchesEntries(BlockEntry<?> entry)
+		{
+			return entry==sign()||entry==wall()||entry==hanging()||entry==wallHanging();
+		}
+
+		public List<BlockEntry<?>> getEntries()
+		{
+			return Arrays.asList(sign, wall, hanging, wallHanging);
+		}
+
+		public void mapMultiSign(Consumer<BlockEntry<?>> consumer)
+		{
+			consumer.accept(sign());
+			consumer.accept(wall());
+		}
+
+		public void mapMultiHanging(Consumer<BlockEntry<?>> consumer)
+		{
+			consumer.accept(hanging());
+			consumer.accept(wallHanging());
 		}
 	}
 

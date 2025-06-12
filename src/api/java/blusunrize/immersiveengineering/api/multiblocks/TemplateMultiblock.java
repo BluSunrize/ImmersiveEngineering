@@ -190,7 +190,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 		return false;
 	}
 
-	private BlockState applyToState(BlockState in, Mirror m, Rotation r)
+	protected BlockState applyToState(BlockState in, Mirror m, Rotation r)
 	{
 		return in.mirror(m).rotate(r);
 	}

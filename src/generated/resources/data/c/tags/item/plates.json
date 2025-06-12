@@ -10,6 +10,7 @@
     "#c:plates/electrum",
     "#c:plates/steel",
     "#c:plates/iron",
-    "#c:plates/gold"
+    "#c:plates/gold",
+    "#c:plates/hop_graphite"
   ]
 }

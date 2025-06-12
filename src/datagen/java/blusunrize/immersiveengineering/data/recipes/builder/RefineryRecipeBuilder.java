@@ -8,9 +8,7 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemInput;
-import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemOutput;
+import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -18,12 +16,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 public class RefineryRecipeBuilder extends IERecipeBuilder<RefineryRecipeBuilder>
 {
 	private FluidStack output;
-	private FluidTagInput input0;
-	private FluidTagInput input1;
+	private SizedFluidIngredient input0;
+	private SizedFluidIngredient input1;
 	private Ingredient catalyst = Ingredient.EMPTY;
 	private int energy;
 
@@ -61,10 +60,10 @@ public class RefineryRecipeBuilder extends IERecipeBuilder<RefineryRecipeBuilder
 
 	public RefineryRecipeBuilder input(TagKey<Fluid> fluid, int amount)
 	{
-		return this.input(new FluidTagInput(fluid, amount));
+		return this.input(SizedFluidIngredient.of(fluid, amount));
 	}
 
-	public RefineryRecipeBuilder input(FluidTagInput input)
+	public RefineryRecipeBuilder input(SizedFluidIngredient input)
 	{
 		if(input0==null)
 			input0 = input;

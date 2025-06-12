@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -92,6 +93,9 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.*;
+
+import static blusunrize.immersiveengineering.api.fluid.FluidUtils.getFluidContained;
+import static net.minecraft.core.component.DataComponents.POTION_CONTENTS;
 
 public class Utils
 {
@@ -402,6 +406,18 @@ public class Utils
 		return Math.abs(d) < .25;
 	}
 
+	public static boolean hasIEAdvancement(Player player, String name)
+	{
+		if(player instanceof ServerPlayer)
+		{
+			PlayerAdvancements advancements = ((ServerPlayer)player).getAdvancements();
+			ServerAdvancementManager manager = ((ServerLevel)player.getCommandSenderWorld()).getServer().getAdvancements();
+			AdvancementHolder advancement = manager.get(IEApi.ieLoc(name));
+			if(advancement!=null)
+				return advancements.getOrStartProgress(advancement).isDone();
+		}
+		return false;
+	}
 	public static void unlockIEAdvancement(Player player, String name)
 	{
 		if(player instanceof ServerPlayer)
@@ -729,8 +745,10 @@ public class Utils
 		loottable.getRandomItems(lootcontext, out);
 	}
 
-	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)
+	public static ItemStack getPickBlock(BlockState state, HitResult rtr, @Nullable Player player)
 	{
+		if(player==null)
+			return ItemStack.EMPTY;
 		final RegistryAccess registries = player.level().registryAccess();
 		final LevelReader w = TemplateWorld.createSingleBlock(state, registries);
 		return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
@@ -765,5 +783,15 @@ public class Utils
 		if(flipFront)
 			result = new AABB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
 		return result;
+	}
+
+	public static FluidStack deriveFluidStack(@Nonnull ItemStack stack)
+	{
+		{
+			var potionContents = stack.get(POTION_CONTENTS);
+			return (potionContents==null)?
+					getFluidContained(stack).orElse(FluidStack.EMPTY):
+					PotionFluid.getFluidStackForType(potionContents.potion(), 250, PotionFluid.PotionBottleType.fromItem(stack.getItemHolder()));
+		}
 	}
 }

@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
@@ -92,7 +93,7 @@ public class IEBullets
 		});
 
 		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet<>(
-				CodecsAndDefault.UNIT, null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), IEApi.ieLoc("item/bullet_he")
+				CodecsAndDefault.UNIT, null, 0, () -> BulletHandler.emptyShell.asItem().getDefaultInstance(), IEApi.ieLoc("item/bullet_he")
 		)
 		{
 			@Override
@@ -101,6 +102,8 @@ public class IEBullets
 				Entity shooter = null;
 				if(shooterId!=null&&world instanceof ServerLevel serverLevel)
 					shooter = serverLevel.getEntity(shooterId);
+				if(shooter == null && projectile instanceof Projectile p)
+					shooter = p.getOwner();
 				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, ExplosionInteraction.MOB);
 			}
 

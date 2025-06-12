@@ -5,6 +5,6 @@
     "tag": "c:glass_blocks"
   },
   "result": {
-    "item": "minecraft:sand"
+    "id": "minecraft:sand"
   }
 }

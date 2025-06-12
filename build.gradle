@@ -132,7 +132,7 @@ dependencies {
     compileOnly "cc.tweaked:cc-tweaked-1.20.4-forge-api:${version_cctweaked}"
     compileOnly "curse.maven:the-one-probe-245211:3825695"
     compileOnly "curse.maven:curios-309927:4780213"
-    compileOnly "curse.maven:jade-324717:4801177"
+    compileOnly "curse.maven:jade-324717:6291517"
     compileOnly "curse.maven:opencomputers2-437654:3630307"
 
     jarJar(implementation("malte0811:BlockModelSplitter")) {
@@ -150,11 +150,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("net.neoforged:testframework:${version_neoforge}")
-}
-
-def customGradle = rootProject.file('custom.gradle');
-if (customGradle.exists()) {
-    apply from: customGradle;
 }
 
 String buildVersionString() {
@@ -211,6 +206,7 @@ abstract class GenerateUpdateJSON extends DefaultTask {
     static def RECOMMENDED = "-recommended"
     static def LATEST = "-latest"
     static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
+
     @Incremental
     @PathSensitive(PathSensitivity.NAME_ONLY)
     @InputFile
@@ -275,7 +271,7 @@ abstract class GenerateUpdateJSON extends DefaultTask {
                         }
                         if (mcVer == null) {
                             throw new NullPointerException("Could not find MC version for " + currentVersion);
-                        } else if (mcVer == getBuildingForVersion()) {
+                        } else if (mcVer == getBuildingForVersion().get()) {
                             if (!changelogForVersions.containsKey(mcVer)) {
                                 promos.put(mcVer + RECOMMENDED, currentVersion)
                                 promos.put(mcVer + LATEST, currentVersion)
@@ -416,20 +412,36 @@ publishing {
 def pngPatterns = ["**/*.png"]
 //Minimize any PNGs in the source sets
 // Credits: BrainStone
+static String getShortenedAssetPath(File file) {
+    return file.getPath()
+            .replaceFirst('^.*?resources.(assets.immersiveengineering.)?', '') // remove start
+            .replaceAll('[/\\\\]+', '_') // replace slashes with underscores
+            .replaceAll('.png+', '') // trim the ending
+}
+
 for (dir in project.sourceSets.main.resources.srcDirs) {
     fileTree(dir: dir, includes: pngPatterns).each { file ->
-        // TODO relative to some reasonable root?
-        tasks.create(name: "optimizePng_"+file.getPath().replaceAll('[/\\\\:]', '_'), type: Exec) {
-            // TODO log size reductions? Somehow this is all very brittle right now
+        def path = getShortenedAssetPath(file);
+        tasks.register("optimizePng_" + path, Exec) {
             executable "optipng"
-            args "-q", "-o7", "-zm1-9", "-strip", "all", file
+            args "-q", "-log", "optipng_${path}.log", "-o7", "-zm1-9", "-strip", "all", file
         }
     }
 }
 task optimizePng {
     for (dir in project.sourceSets.main.resources.srcDirs) {
         fileTree(dir: dir, includes: pngPatterns).each { file ->
-            dependsOn "optimizePng_"+file.getPath().replace('/', '_')
+            def path = getShortenedAssetPath(file);
+            dependsOn "optimizePng_${path}"
+            doLast {
+                def logfile = new File("optipng_${path}.log")
+                if (logfile.exists()) {
+                    def decrease = logfile.text.trim().find('[\\d\\.]+% decrease')
+                    if (decrease)
+                        println "${file.name} optimized:\n\t${decrease} in size"
+                    logfile.delete()
+                }
+            }
         }
     }
 }
@@ -438,4 +450,10 @@ tasks.withType(Task) {
     if (it.name == "runServer") {
         it.standardInput = System.in
     }
+}
+
+// load developer specific gradle config
+def customGradle = rootProject.file('custom.gradle');
+if (customGradle.exists()) {
+    apply from: customGradle;
 }

@@ -5,7 +5,7 @@
     "item": "immersiveengineering:stairs_treated_wood_vertical"
   },
   "result": {
-    "item": "immersiveengineering:treated_wood_vertical"
+    "id": "immersiveengineering:treated_wood_vertical"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

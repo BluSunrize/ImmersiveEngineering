@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
+
 public class IEMultiblocks
 {
 	public static final List<IMultiblock> IE_MULTIBLOCKS = new ArrayList<>();
@@ -54,8 +55,8 @@ public class IEMultiblocks
 	public static IETemplateMultiblock SHEETMETAL_TANK;
 	public static IETemplateMultiblock SILO;
 	public static IETemplateMultiblock SQUEEZER;
-
 	public static IETemplateMultiblock RADIO_TOWER;
+	public static IETemplateMultiblock CHUNK_LOADER;
 
 	public static void init()
 	{
@@ -101,6 +102,12 @@ public class IEMultiblocks
 				return found.setValue(HopperBlock.FACING, expected.getValue(HopperBlock.FACING));
 			return found;
 		});
+		//Ignore sculk sensor properties
+		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
+			if(expected.getBlock()==Blocks.CALIBRATED_SCULK_SENSOR&&found.getBlock()==Blocks.CALIBRATED_SCULK_SENSOR)
+				return expected;
+			return found;
+		});
 		//Allow multiblocks to be formed under water
 		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			// Un-waterlog if the expected state is dry, but the found one is not
@@ -140,10 +147,12 @@ public class IEMultiblocks
 						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
 				)));
 		RADIO_TOWER = register(new RadioTowerMultiblock());
+		CHUNK_LOADER = register(new ChunkLoaderMultiblock());
 	}
 
 	private static <T extends IMultiblock>
-	T register(T multiblock) {
+	T register(T multiblock)
+	{
 		IE_MULTIBLOCKS.add(multiblock);
 		MultiblockHandler.registerMultiblock(multiblock);
 		return multiblock;

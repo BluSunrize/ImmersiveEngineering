@@ -5,23 +5,17 @@
     "c": {
       "item": "immersiveengineering:component_iron"
     },
-    "i": {
-      "tag": "c:ingots/iron"
-    },
-    "p": {
+    "e": {
       "item": "immersiveengineering:component_electronic"
     },
-    "r": {
-      "tag": "c:dusts/redstone"
-    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "wrw",
-    "ici",
-    "wpw"
+    "c",
+    "w",
+    "e"
   ],
   "result": {
     "count": 1,

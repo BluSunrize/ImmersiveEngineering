@@ -16,6 +16,7 @@ import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class ManualElementBottling extends ManualElementIECrafting
@@ -37,10 +38,12 @@ public class ManualElementBottling extends ManualElementIECrafting
 				int h = (int)Math.ceil(recipe.output.get().size()/2f);
 				int middle = (int)(h/2f*18);
 
-				FluidStack fs = recipe.fluidInput.getRandomizedExampleStack(0);
-				ItemStack bucket = fs.getFluid().getBucket().getDefaultInstance();
-				bucket.applyComponents(fs.getComponents());
-				String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
+				List<ItemStack> buckets = Arrays.stream(recipe.fluidInput.getFluids()).map(fs -> {
+					ItemStack bucket = fs.getFluid().getBucket().getDefaultInstance();
+					bucket.applyComponents(fs.getComponents());
+					return bucket;
+				}).toList();
+				String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.amount());
 
 				int inputSize = recipe.inputs.size();
 				int outputSize = recipe.output.get().size();
@@ -48,8 +51,8 @@ public class ManualElementBottling extends ManualElementIECrafting
 				PositionedItemStack[] pIngredients = new PositionedItemStack[inputSize+outputSize+1];
 				int idx = 0;
 				for(int i = 0; i < inputSize; i++)
-					pIngredients[idx++] = new PositionedItemStack(recipe.inputs.get(i).getMatchingStacks(), 20-i%2*18, 8+i/2*18);
-				pIngredients[idx++] = new PositionedItemStack(bucket, 46, middle-8, bucketFraction);
+					pIngredients[idx++] = new PositionedItemStack(recipe.inputs.get(i).getMatchingStacks(), 26-i%2*18, 8+i/2*18);
+				pIngredients[idx++] = new PositionedItemStack(buckets, 48, middle-8, bucketFraction);
 
 				List<ItemStack> outputs = recipe.output.get();
 				for(int i = 0; i < outputs.size(); i++)
@@ -59,7 +62,7 @@ public class ManualElementBottling extends ManualElementIECrafting
 				}
 
 				this.recipes.add(pIngredients);
-				this.arrowPositions.add(new ArrowPosition(46, h*18+1));
+				this.arrowPositions.add(new ArrowPosition(48, h*18+1));
 
 				if(h*18 > yOff)
 					yOff = h*18+14;

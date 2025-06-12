@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 import malte0811.dualcodecs.DualCodec;
 import malte0811.dualcodecs.DualCompositeCodecs;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.DyeColor;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class LogicCircuitHandler
@@ -83,7 +85,7 @@ public class LogicCircuitHandler
 			return valueOf(name);
 		}
 
-		public Component getDescription()
+		public MutableComponent getDescription()
 		{
 			return Component.translatable(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
 		}
@@ -102,7 +104,7 @@ public class LogicCircuitHandler
 		public MutableComponent getDescription()
 		{
 			if(this.ordinal() < 16)
-				return Component.translatable("color.minecraft."+DyeColor.byId(this.ordinal()).getName());
+				return Lib.getRedstoneColorComponent(DyeColor.byId(this.ordinal()));
 			else
 				return Component.translatable(Lib.DESC_INFO+"register", this.ordinal()-16);
 		}
@@ -132,12 +134,15 @@ public class LogicCircuitHandler
 			this.output = output;
 			this.inputs = inputs;
 
-			this.formattedString = this.output.getDescription();
-			this.formattedString.append(" = ");
-			this.formattedString.append(this.operator.getDescription());
+
+			this.formattedString = Component.empty();
+			this.formattedString.append(this.output.getDescription());
+			this.formattedString.append(
+					Component.literal(" = ").append(this.operator.getDescription()).withStyle(ChatFormatting.GRAY)
+			);
 			for(int i = 0; i < inputs.length; i++)
 			{
-				this.formattedString.append(i!=0?", ": ": ");
+				this.formattedString.append(Component.literal(i!=0?", ": ": ")).withStyle(ChatFormatting.GRAY);
 				this.formattedString.append(inputs[i].getDescription());
 			}
 		}
@@ -191,6 +196,21 @@ public class LogicCircuitHandler
 			for(int i = 0; i < inputs.length; i++)
 				inputs[i] = LogicCircuitRegister.valueOf(inputList.getString(i));
 			return new LogicCircuitInstruction(operator, output, inputs);
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			LogicCircuitInstruction that = (LogicCircuitInstruction)o;
+			return operator==that.operator&&output==that.output&&Objects.deepEquals(inputs, that.inputs);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(operator, output, Arrays.hashCode(inputs));
 		}
 	}
 

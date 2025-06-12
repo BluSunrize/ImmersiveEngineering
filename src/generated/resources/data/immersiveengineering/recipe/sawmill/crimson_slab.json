@@ -5,10 +5,8 @@
     "item": "minecraft:crimson_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:crimson_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:crimson_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;

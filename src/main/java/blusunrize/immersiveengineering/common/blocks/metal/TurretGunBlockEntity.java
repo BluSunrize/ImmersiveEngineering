@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.core.BlockPos;
@@ -30,12 +31,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -154,9 +157,15 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 
 	private Entity getBulletEntity(Vec3 vecDir, ItemStack bulletStack)
 	{
-		return ((BulletItem<?>)bulletStack.getItem()).createBullet(
+		Entity shot = ((BulletItem<?>)bulletStack.getItem()).createBullet(
 				level, null, getGunPosition(), vecDir, bulletStack, false
 		);
+		if(shot instanceof Projectile projectile)
+		{
+			FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer(level);
+			projectile.setOwner(fakePlayer);
+		}
+		return shot;
 	}
 
 	@Override

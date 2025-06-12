@@ -5,10 +5,8 @@
     "item": "minecraft:acacia_planks"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:acacia_slab"
-    },
-    "count": 2
+    "count": 2,
+    "id": "minecraft:acacia_slab"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

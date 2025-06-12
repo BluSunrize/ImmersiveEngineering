@@ -76,7 +76,7 @@ public class BuzzsawCallbacks implements ItemCallback<Key>
 
 		if("upgrade_lube".equals(group))
 			return key.oiled();
-		if("upgrade_launcher".equals(group))
+		if("upgrade_launcher".equals(group)||"upgrade_waterproof".equals(group))
 			// TODO remove from model?
 			return false;
 		if("upgrade_blades0".equals(group))

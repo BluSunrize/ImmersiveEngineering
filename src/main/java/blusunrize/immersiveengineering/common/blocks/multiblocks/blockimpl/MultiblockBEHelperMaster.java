@@ -211,6 +211,12 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	}
 
 	@Override
+	public void onRemoved()
+	{
+		multiblock.logic().onRemoved(getContext());
+	}
+
+	@Override
 	public void invalidateAllCaps()
 	{
 		Level level = be.getLevel();

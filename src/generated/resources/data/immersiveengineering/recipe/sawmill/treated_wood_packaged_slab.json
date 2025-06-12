@@ -5,10 +5,8 @@
     "item": "immersiveengineering:treated_wood_packaged"
   },
   "result": {
-    "basePredicate": {
-      "item": "immersiveengineering:slab_treated_wood_packaged"
-    },
-    "count": 2
+    "count": 2,
+    "id": "immersiveengineering:slab_treated_wood_packaged"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [

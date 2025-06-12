@@ -15,14 +15,18 @@
     "items": [
       {
         "id": "immersiveengineering:dust_hop_graphite"
-      },
-      {
-        "id": "immersiveengineering:ingot_hop_graphite"
       }
     ]
   },
-  "electrode": {
-    "type": "blueprint",
-    "recipe": "blueprint/graphite_electrode"
+  "shaping": {
+    "type": "bottling",
+    "recipes": [
+      {
+        "id": "immersiveengineering:plate_hop_graphite"
+      },
+      {
+        "id": "immersiveengineering:graphite_electrode"
+      }
+    ]
   }
 }

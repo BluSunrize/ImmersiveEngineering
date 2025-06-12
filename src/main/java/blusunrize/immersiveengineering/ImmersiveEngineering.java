@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ChunkLoaderLogic;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -60,6 +61,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -95,6 +97,7 @@ public class ImmersiveEngineering
 		modBus.addListener(this::setup);
 		modBus.addListener(this::setupNetwork);
 		modBus.addListener(this::enqueueIMCs);
+		modBus.addListener(this::registerTicketController);
 		NeoForge.EVENT_BUS.addListener(this::registerCommands);
 		NeoForge.EVENT_BUS.addListener(this::serverStarted);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
@@ -275,6 +278,11 @@ public class ImmersiveEngineering
 	{
 		//TODO do client commands exist yet? I don't think so
 		CommandHandler.registerServer(event.getDispatcher());
+	}
+
+	public void registerTicketController(RegisterTicketControllersEvent e)
+	{
+		e.register(ChunkLoaderLogic.TICKET_CONTROLLER);
 	}
 
 	public void serverStarted(ServerStartedEvent event)

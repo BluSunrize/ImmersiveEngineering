@@ -1,0 +1,9 @@
+Automaton Wolves
+K-9 Mark I
+Within the Trial Chambers, you have found a slightly faded but still legible blueprint. It seems to contain instructions on how to construct a synthetic creature akin to the common wolf!<br>
+This construct is loyal to the person that deploys it.<np>
+Being powered by a thermoelectric generator, it should never run out of energy to move itself.<br>
+The metallic chassis affords it more durability and attack damage than its organic counterparts.<br>
+The circuitry that serves to control it, emulates the basic behaviors of a trained wolf: sitting, following, and attacking enemies alongside its owner.<np>
+Much like a normal wolf, Automaton Wolves can also be equipped with armor, and can have their collar dyed.<br>
+They can not be healed with food, but can be repaired by using a hammer on them while holding any metal plate in your other hand.

@@ -12,13 +12,13 @@
       "tag": "c:glass_blocks"
     },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
     "geg",
-    "g g",
-    "wcw"
+    "gcg",
+    " w "
   ],
   "result": {
     "count": 1,

@@ -1,0 +1,15 @@
+{
+  "target_pool": "repurposed_structures:villages/swamp/houses",
+  "fallback": "repurposed_structures:villages/swamp/terminators",
+  "elements": [
+    {
+      "weight": 4,
+      "element": {
+        "location": "immersiveengineering:villages/houses/swamp_engineer",
+        "processors": "repurposed_structures:villages/swamp/mossify",
+        "projection": "rigid",
+        "element_type": "minecraft:legacy_single_pool_element"
+      }
+    }
+  ]
+}

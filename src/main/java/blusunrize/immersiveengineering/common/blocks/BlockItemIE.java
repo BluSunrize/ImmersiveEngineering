@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.BundleTooltip;
@@ -122,7 +123,7 @@ public class BlockItemIE extends BlockItem
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack stack)
 	{
-		final ItemContainerContents items = stack.get(IEDataComponents.GENERIC_ITEMS);
+		final ItemContainerContents items = stack.get(DataComponents.CONTAINER);
 		if(items!=null)
 			return Optional.of(new BundleTooltip(new BundleContents(items.stream().toList())));
 		return super.getTooltipImage(stack);

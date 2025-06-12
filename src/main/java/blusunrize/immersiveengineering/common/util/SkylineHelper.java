@@ -93,7 +93,9 @@ public class SkylineHelper
 				double speedDiff = player.getDeltaMovement().y-vertSpeed;
 				if(speedDiff < 0)
 				{
-					player.causeFallDamage(fallDistanceFromSpeed(speedDiff), 1.2F, player.damageSources().fall());
+					// todo: Add an upgrade to nullify this
+					float fallDamageMod = 0.4f;
+					player.causeFallDamage(fallDistanceFromSpeed(speedDiff), fallDamageMod, player.damageSources().fall());
 					player.fallDistance = 0;
 				}
 

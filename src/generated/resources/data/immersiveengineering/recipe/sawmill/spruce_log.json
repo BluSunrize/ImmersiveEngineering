@@ -5,10 +5,8 @@
     "item": "minecraft:spruce_log"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:spruce_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:spruce_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_spruce_log"
+    "id": "minecraft:stripped_spruce_log"
   },
   "strippingSecondaries": [
     {

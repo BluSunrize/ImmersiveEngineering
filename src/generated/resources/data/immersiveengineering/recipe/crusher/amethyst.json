@@ -5,9 +5,7 @@
     "item": "minecraft:amethyst_block"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:amethyst_shard"
-    },
-    "count": 4
+    "count": 4,
+    "id": "minecraft:amethyst_shard"
   }
 }

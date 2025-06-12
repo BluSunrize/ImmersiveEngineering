@@ -102,6 +102,10 @@ public class ItemModels extends TRSRItemModelProvider
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
 		addItemModel("door_steel", MetalDecoration.STEEL_DOOR);
+		addItemModel("sign_steel", MetalDecoration.STEEL_SIGN.sign());
+		addItemModel("sign_steel_hanging", MetalDecoration.STEEL_SIGN.hanging());
+		addItemModel("sign_aluminum", MetalDecoration.ALU_SIGN.sign());
+		addItemModel("sign_aluminum_hanging", MetalDecoration.ALU_SIGN.hanging());
 
 		for(Entry<WarningSignIcon, BlockEntry<IEBaseBlock>> warningSign : MetalDecoration.WARNING_SIGNS.entrySet())
 		{
@@ -174,6 +178,11 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(rl("item/multiblock"));
 		obj(IEMultiblockLogic.MIXER.blockItem().get(), rl("block/metal_multiblock/mixer.obj"))
 				.transforms(rl("item/multiblock"));
+		obj(IEMultiblockLogic.RADIO_TOWER.blockItem().get(), rl("block/metal_multiblock/radio_tower.obj"))
+				.transforms(rl("item/radio_tower"));
+		obj(IEMultiblockLogic.CHUNK_LOADER.blockItem().get(), rl("block/metal_multiblock/chunk_loader.obj.ie"))
+				.transforms(rl("item/chunk_loader"))
+				.renderType(ModelProviderUtils.getName(translucent()));
 
 		obj(MetalDecoration.ALU_WALLMOUNT, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/metal_decoration/aluminum_wallmount"))
@@ -213,6 +222,8 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/post"));
 		addItemModel("door_treated", WoodenDecoration.DOOR);
 		addItemModel("door_treated_framed", WoodenDecoration.DOOR_FRAMED);
+		addItemModel("sign_treated", WoodenDecoration.SIGN.sign());
+		addItemModel("sign_treated_hanging", WoodenDecoration.SIGN.hanging());
 
 		obj(WoodenDevices.WORKBENCH, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
@@ -258,7 +269,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.ERSATZ_LEATHER, Ingredients.COAL_COKE, Ingredients.SLAG,
 				Ingredients.COMPONENT_IRON, Ingredients.COMPONENT_STEEL, Ingredients.WATERWHEEL_SEGMENT, Ingredients.WINDMILL_BLADE, Ingredients.WINDMILL_SAIL,
 				Ingredients.WOODEN_GRIP, Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER,
-				Ingredients.DUST_COKE, Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE,
+				Ingredients.DUST_COKE, Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE, Ingredients.PLATE_HOP_GRAPHITE,
 				Ingredients.WIRE_COPPER, Ingredients.WIRE_ELECTRUM, Ingredients.WIRE_ALUMINUM, Ingredients.WIRE_STEEL, Ingredients.WIRE_LEAD,
 				Ingredients.DUST_SALTPETER, Ingredients.DUST_SULFUR, Ingredients.DUST_WOOD,
 				Ingredients.LIGHT_BULB, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD,
@@ -295,12 +306,13 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.FERTILIZER);
 		for(BannerEntry holder : IEBannerPatterns.ALL_BANNERS)
 			addItemModel("banner_pattern_"+holder.name(), holder.item());
-		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
+		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY, IEItems.Misc.ICON_ACHTUNG,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
 		withExistingParent(name(SpawnEggs.EGG_FUSILIER), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
 		withExistingParent(name(SpawnEggs.EGG_COMMANDO), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
 		withExistingParent(name(SpawnEggs.EGG_BULWARK), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
+		addItemModels("", IEItems.SpawnEggs.ROBOT_WOLF);
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));

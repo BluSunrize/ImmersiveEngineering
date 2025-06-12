@@ -8,11 +8,9 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -31,7 +29,7 @@ public class LogicCircuitBoardItem extends IEBaseItem
 	{
 		LogicCircuitInstruction instruction = stack.get(IEDataComponents.CIRCUIT_INSTRUCTION);
 		if(instruction!=null)
-			list.add(TextUtils.applyFormat(instruction.getFormattedString(), ChatFormatting.GRAY));
+			list.add(instruction.getFormattedString());
 	}
 
 	public static ItemStack buildCircuitBoard(LogicCircuitInstruction instruction)

@@ -24,21 +24,18 @@
     {
       "chance": 0.2,
       "output": {
-        "count": 1,
         "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "count": 1,
         "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "count": 1,
         "id": "minecraft:cobbled_deepslate"
       }
     }

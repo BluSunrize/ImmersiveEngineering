@@ -9,21 +9,20 @@
       "tag": "c:plates/iron"
     },
     "e": {
+      "tag": "c:ingots/electrum"
+    },
+    "r": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
       "tag": "c:redstone_acid"
     },
-    "f": {
-      "tag": "c:ingots/steel"
-    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "waw",
-    "fef",
-    "wcw"
+    "ere",
+    "awc"
   ],
   "result": {
     "count": 1,

@@ -207,6 +207,16 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.TRAPDOOR)));
 		addVariationChain(out, WoodenDecoration.TRAPDOOR, WoodenDecoration.TRAPDOOR_FRAMED);
+		addSigns(WoodenDecoration.SIGN, IETags.getItemTag(IETags.treatedWood), Tags.Items.RODS_WOODEN, out);
+
+		shapedMisc(WoodenDecoration.BASIC_ENGINEERING, 4)
+				.pattern("iwi")
+				.pattern("w w")
+				.pattern("iwi")
+				.define('i', Tags.Items.INGOTS_IRON)
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(out, toRL(toPath(WoodenDecoration.BASIC_ENGINEERING)));
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -281,6 +291,12 @@ public class DecorationRecipes extends IERecipeProvider
 
 		addWall(StoneDecoration.SLAG_BRICK, out);
 		addWall(StoneDecoration.CLINKER_BRICK, out);
+		addWall(StoneDecoration.HEMPCRETE, out);
+		addWall(StoneDecoration.HEMPCRETE_BRICK, out);
+		addWall(StoneDecoration.CONCRETE, out);
+		addWall(StoneDecoration.CONCRETE_BRICK, out);
+		addWall(StoneDecoration.CONCRETE_TILE, out);
+		addWall(StoneDecoration.CONCRETE_LEADED, out);
 
 		addStonecuttingRecipe(Ingredients.SLAG, StoneDecoration.SLAG_BRICK, out);
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.SLAG_BRICK.getId()), 2, out);
@@ -293,6 +309,11 @@ public class DecorationRecipes extends IERecipeProvider
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_PILLAR, StoneDecoration.HEMPCRETE, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_CHISELED, StoneDecoration.HEMPCRETE, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, StoneDecoration.HEMPCRETE, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_SHEET, 16, out);
@@ -302,6 +323,10 @@ public class DecorationRecipes extends IERecipeProvider
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_TILE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_TILE.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_TILE.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_TILE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_REINFORCED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED.getId()), 2, out);
@@ -315,6 +340,9 @@ public class DecorationRecipes extends IERecipeProvider
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_BRICK, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_CHISELED, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_PILLAR, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, StoneDecoration.CONCRETE_TILE, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_CHISELED, StoneDecoration.CONCRETE_TILE, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_PILLAR, StoneDecoration.CONCRETE_TILE, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_TILE, out);
 
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.CONCRETE_BRICK), RecipeCategory.MISC, StoneDecoration.CONCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
@@ -514,7 +542,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("igi")
 				.define('c', IETags.copperWire)
 				.define('r', new Ingredient(new IntersectionIngredient(List.of(
-						Ingredient.of(Tags.Items.GLASS_BLOCKS_TINTED),
+						Ingredient.of(Tags.Items.GLASS_BLOCKS),
 						Ingredient.of(Tags.Items.DYED_RED)
 				))))
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).nugget)
@@ -586,6 +614,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_electrum_ingot", has(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
 				.unlockedBy("has_component_steel", has(Ingredients.COMPONENT_STEEL))
 				.save(out, toRL(toPath(MetalDecoration.ENGINEERING_HEAVY)));
+		shapedMisc(MetalDecoration.ENGINEERING_RESONANZ, 4)
+				.pattern("igi")
+				.pattern("geg")
+				.pattern("igi")
+				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).sheetmetal))
+				.define('e', Items.ECHO_SHARD)
+				.define('g', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.unlockedBy("has_echo_shard", has(Items.ECHO_SHARD))
+				.save(out, toRL(toPath(MetalDecoration.ENGINEERING_RESONANZ)));
 		shapedMisc(MetalDecoration.GENERATOR, 4)
 				.pattern("ici")
 				.pattern("cgc")
@@ -738,6 +775,9 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_TRAPDOOR)));
+
+		addSigns(MetalDecoration.STEEL_SIGN, IETags.getTagsFor(EnumMetals.STEEL).ingot, IETags.steelRod, out);
+		addSigns(MetalDecoration.ALU_SIGN, IETags.getTagsFor(EnumMetals.ALUMINUM).ingot, IETags.aluminumRod, out);
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)
@@ -754,6 +794,26 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("sss")
 				.unlockedBy("has_"+toPath(block), has(block))
 				.save(out, toRL(toPath(stairs)));
+	}
+
+	private void addSigns(IEBlocks.SignHolder holder, TagKey<Item> block, TagKey<Item> stick, RecipeOutput out)
+	{
+		shapedMisc(holder.sign(), 3)
+				.define('w', block)
+				.define('s', stick)
+				.pattern("www")
+				.pattern("www")
+				.pattern(" s ")
+				.unlockedBy("has_material", has(block))
+				.save(out, toRL(toPath(holder.sign())));
+		shapedMisc(holder.hanging(), 6)
+				.define('w', block)
+				.define('c', Blocks.CHAIN)
+				.pattern("c c")
+				.pattern("www")
+				.pattern("www")
+				.unlockedBy("has_material", has(block))
+				.save(out, toRL(toPath(holder.hanging())));
 	}
 
 	private void addVariationChain(RecipeOutput out, ItemLike... items)

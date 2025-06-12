@@ -33,17 +33,6 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class GuiHelper
 {
-	public static void drawColouredRect(int x, int y, int w, int h, int colour, MultiBufferSource buffers, PoseStack transform)
-	{
-		Matrix4f mat = transform.last().pose();
-		VertexConsumer worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		worldrenderer.setColor(colour>>16&255, colour>>8&255, colour&255, colour>>24&255);
-		worldrenderer.addVertex(mat, x, y+h, 0);
-		worldrenderer.addVertex(mat, x+w, y+h, 0);
-		worldrenderer.addVertex(mat, x+w, y, 0);
-		worldrenderer.addVertex(mat, x, y, 0);
-	}
-
 	public static void drawColouredRect(GuiGraphics graphics, int x, int y, int w, int h, DyeColor dyeColor)
 	{
 		Matrix4f mat = graphics.pose().last().pose();

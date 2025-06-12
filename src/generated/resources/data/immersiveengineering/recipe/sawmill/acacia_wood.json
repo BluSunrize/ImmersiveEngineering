@@ -5,10 +5,8 @@
     "item": "minecraft:acacia_wood"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:acacia_planks"
-    },
-    "count": 6
+    "count": 6,
+    "id": "minecraft:acacia_planks"
   },
   "secondaryOutputs": [
     {
@@ -16,7 +14,7 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_acacia_wood"
+    "id": "minecraft:stripped_acacia_wood"
   },
   "strippingSecondaries": [
     {

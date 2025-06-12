@@ -26,8 +26,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementNode;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -55,7 +59,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class ManualInstance implements ResourceManagerReloadListener
+public abstract class ManualInstance implements ResourceManagerReloadListener, ClientAdvancements.Listener
 {
 	public ResourceLocation texture;
 	private final Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
@@ -68,6 +72,8 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	private int numFailedEntries = 0;
 
 	private boolean initialized = false;
+
+	private final Set<ResourceLocation> unlockedAdvancements = new HashSet<>();
 
 	public ManualInstance(ResourceLocation texture, int pageWidth, int pageHeight, ResourceLocation name)
 	{
@@ -219,7 +225,14 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 
 	public abstract boolean showCategoryInList(String category);
 
-	public abstract boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node);
+	public boolean showNodeInList(Tree.AbstractNode<ResourceLocation, ManualEntry> node)
+	{
+		if(!node.isLeaf())
+			// on categories, check if any children are visible
+			return node.getChildren().stream().anyMatch(this::showNodeInList);
+		Optional<ResourceLocation> advancement = node.getLeafData().getRequiredAdvancement();
+		return advancement.map(this.unlockedAdvancements::contains).orElse(true);
+	}
 
 	public abstract int getTitleColour();
 
@@ -237,10 +250,20 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 
 	public void openManual()
 	{
+		// Update advancements the player has unlocked
+		var player = Minecraft.getInstance().player;
+		if(player!=null)
+		{
+			this.unlockedAdvancements.clear();
+			player.connection.getAdvancements().setListener(this);
+		}
 	}
 
 	public void closeManual()
 	{
+		var player = Minecraft.getInstance().player;
+		if(player!=null)
+			player.connection.getAdvancements().setListener(null);
 	}
 
 	public void openEntry(ManualEntry entry)
@@ -602,5 +625,45 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		{
 			return getKey().getPageForAnchor(getAnchor())+getOffset();
 		}
+	}
+
+	/* Advancement listening */
+
+	@Override
+	public void onUpdateAdvancementProgress(AdvancementNode advancementNode, AdvancementProgress advancementProgress)
+	{
+		if(advancementProgress.isDone())
+			this.unlockedAdvancements.add(advancementNode.holder().id());
+	}
+
+	/* The rest of these are completely unused */
+	@Override
+	public void onAddAdvancementRoot(AdvancementNode advancementNode)
+	{
+	}
+
+	@Override
+	public void onRemoveAdvancementRoot(AdvancementNode advancementNode)
+	{
+	}
+
+	@Override
+	public void onAddAdvancementTask(AdvancementNode advancementNode)
+	{
+	}
+
+	@Override
+	public void onRemoveAdvancementTask(AdvancementNode advancementNode)
+	{
+	}
+
+	@Override
+	public void onAdvancementsCleared()
+	{
+	}
+
+	@Override
+	public void onSelectedTabChanged(@org.jetbrains.annotations.Nullable AdvancementHolder advancementHolder)
+	{
 	}
 }

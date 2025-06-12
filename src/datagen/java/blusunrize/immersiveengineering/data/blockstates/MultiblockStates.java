@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.blockstates;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BottlingMachineCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.ChunkLoaderCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.ClocheCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.WorkbenchCallbacks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -198,6 +199,13 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				null, null);
 		createMultiblock(innerObj("block/metal_multiblock/auto_workbench.obj"), IEMultiblocks.AUTO_WORKBENCH);
 		createMultiblock(innerObj("block/metal_multiblock/radio_tower.obj", cutout()).ao(false), IEMultiblocks.RADIO_TOWER);
+		createDynamicMultiblock(
+				ieObjBuilder("block/metal_multiblock/chunk_loader.obj.ie", innerModels)
+						.callback(ChunkLoaderCallbacks.INSTANCE)
+						.layer(solid(), cutout(), translucent())
+						.end(),
+				IEMultiblocks.CHUNK_LOADER
+		);
 	}
 
 	@Nonnull

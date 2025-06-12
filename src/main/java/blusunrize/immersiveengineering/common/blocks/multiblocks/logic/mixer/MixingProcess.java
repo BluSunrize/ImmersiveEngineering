@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 	}
 
 	@Override
-	protected List<FluidTagInput> getRecipeFluidInputs(ProcessContextInMachine<MixerRecipe> context, Level level)
+	protected List<SizedFluidIngredient> getRecipeFluidInputs(ProcessContextInMachine<MixerRecipe> context, Level level)
 	{
 		return Collections.emptyList();
 	}
@@ -84,7 +84,7 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
 						amount++;
 				}
-				FluidStack drained = this.tank.drain(levelData.recipe().fluidInput.withAmount(amount), FluidAction.EXECUTE);
+				FluidStack drained = this.tank.drain(levelData.recipe().fluidInput.ingredient(), amount, FluidAction.EXECUTE);
 				if(!drained.isEmpty())
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
@@ -108,6 +108,6 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 			return true;
 		// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
 		return context.getEnergy().extractEnergy(levelData.energyPerTick(), true)==levelData.energyPerTick()&&
-				!tank.drain(levelData.recipe().fluidInput.withAmount(1), FluidAction.SIMULATE).isEmpty();
+				!tank.drain(levelData.recipe().fluidInput.ingredient(), 1, FluidAction.SIMULATE).isEmpty();
 	}
 }

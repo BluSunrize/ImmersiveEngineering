@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 250,
+    "tag": "c:creosote"
+  },
+  "inputs": [
+    {
+      "item": "immersiveengineering:mold_plate"
+    },
+    {
+      "tag": "c:dusts/hop_graphite"
+    }
+  ],
+  "results": [
+    {
+      "id": "immersiveengineering:plate_hop_graphite"
+    },
+    {
+      "id": "immersiveengineering:mold_plate"
+    }
+  ]
+}

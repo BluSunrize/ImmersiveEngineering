@@ -554,7 +554,7 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 				1, -.9, -0.1),
 		LUCK(f -> f < 0,
 				f -> Utils.NUMBERFORMAT_PREFIXED.format(f*100),
-				(l, r) -> l+r,
+				Double::sum,
 				0, 3, 0.5);
 
 		private final DoublePredicate isBadValue;

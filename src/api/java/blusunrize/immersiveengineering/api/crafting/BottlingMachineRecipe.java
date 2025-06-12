@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
@@ -35,10 +36,10 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final List<IngredientWithSize> inputs;
-	public final FluidTagInput fluidInput;
+	public final SizedFluidIngredient fluidInput;
 	public final TagOutputList output;
 
-	public BottlingMachineRecipe(TagOutputList output, List<IngredientWithSize> inputs, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(TagOutputList output, List<IngredientWithSize> inputs, SizedFluidIngredient fluidInput)
 	{
 		super(output.getLazyList().get(0), IERecipeTypes.BOTTLING_MACHINE, 60, 480, MULTIPLIERS);
 		this.output = output;
@@ -46,11 +47,11 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		this.fluidInput = fluidInput;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
-		this.fluidInputList = Lists.newArrayList(this.fluidInput);
+		this.fluidInputList = Lists.newArrayList(fluidInput);
 		this.outputList = this.output;
 	}
 
-	public BottlingMachineRecipe(TagOutputList output, IngredientWithSize input, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(TagOutputList output, IngredientWithSize input, SizedFluidIngredient fluidInput)
 	{
 		this(output, List.of(input), fluidInput);
 	}

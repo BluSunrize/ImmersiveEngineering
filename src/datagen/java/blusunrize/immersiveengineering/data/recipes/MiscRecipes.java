@@ -25,11 +25,8 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFlui
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
-import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
-import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
@@ -263,12 +260,6 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("blueprint/bullet_wolfpack"));
 
 		BlueprintCraftingRecipeBuilder.builder()
-				.category("electrode")
-				.output(Misc.GRAPHITE_ELECTRODE)
-				.input(IETags.hopGraphiteIngot, 4)
-				.build(out, toRL("blueprint/graphite_electrode"));
-
-		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.HAMMER.item())
 				.input(IETags.paper)
@@ -330,6 +321,17 @@ public class MiscRecipes extends IERecipeProvider
 					.input(IETags.plates)
 					.input(Tags.Items.DYES_YELLOW)
 					.build(out, toRL("blueprint/"+toPath(MetalDecoration.WARNING_SIGNS.get(icon))));
+
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("automatons")
+				.output(SpawnEggs.ROBOT_WOLF)
+				.input(MetalDevices.THERMOELECTRIC_GEN)
+				.input(MetalDecoration.RADIATOR)
+				.input(IETags.getTagsFor(EnumMetals.URANIUM).ingot, 3)
+				.input(IETags.getTagsFor(EnumMetals.STEEL).plate, 2)
+				.input(Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.input(Ingredients.COMPONENT_STEEL, 2)
+				.build(out, toRL("blueprint/"+toPath(SpawnEggs.ROBOT_WOLF)));
 	}
 
 	private void mineralMixes(RecipeOutput out)

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "tag": "c:rods/aluminum"
+    },
+    "w": {
+      "tag": "c:ingots/aluminum"
+    }
+  },
+  "pattern": [
+    "www",
+    "www",
+    " s "
+  ],
+  "result": {
+    "count": 3,
+    "id": "immersiveengineering:aluminum_sign"
+  }
+}

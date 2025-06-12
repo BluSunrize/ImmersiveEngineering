@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
+import blusunrize.immersiveengineering.common.items.RobotWolfItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
@@ -37,6 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.animal.WolfVariant;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -84,6 +86,13 @@ public class WorldGenerationProvider
 		registryBuilder.add(Keys.BIOME_MODIFIERS, ctx -> bootstrapBiomeModifiers(ctx, registrations));
 		registryBuilder.add(Registries.DAMAGE_TYPE, DamageTypeProvider::bootstrap);
 		registryBuilder.add(Registries.BANNER_PATTERN, BannerTags::bootstrap);
+		registryBuilder.add(Registries.WOLF_VARIANT, context -> {
+			ResourceLocation base_texture = RobotWolfItem.REGISTRY_KEY.withPrefix("entity/wolf/");
+			context.register(
+					ResourceKey.create(Registries.WOLF_VARIANT, RobotWolfItem.REGISTRY_KEY),
+					new WolfVariant(base_texture, base_texture.withSuffix("_tame"), base_texture.withSuffix("_angry"), HolderSet.empty())
+			);
+		});
 
 		CompletableFuture<Provider> combinedRegistries = append(vanillaRegistries, registryBuilder);
 		return List.of(

@@ -91,7 +91,7 @@ public class ArcFurnaceInputHandler implements IItemHandler
 	@Override
 	public int getSlotLimit(int slot)
 	{
-		return wrapped.getSlotLimit(slot);
+		return Math.min(64, wrapped.getSlotLimit(slot));
 	}
 
 	@Override

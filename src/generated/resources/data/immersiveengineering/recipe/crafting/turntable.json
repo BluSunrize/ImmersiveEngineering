@@ -3,21 +3,22 @@
   "category": "misc",
   "key": {
     "c": {
-      "item": "immersiveengineering:coil_lv"
-    },
-    "i": {
-      "tag": "c:ingots/iron"
+      "item": "immersiveengineering:component_iron"
     },
     "r": {
       "tag": "c:dusts/redstone"
     },
+    "s": {
+      "item": "immersiveengineering:wirecoil_copper"
+    },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "iwi",
-    "rcr"
+    " c ",
+    "sws",
+    " r "
   ],
   "result": {
     "count": 1,

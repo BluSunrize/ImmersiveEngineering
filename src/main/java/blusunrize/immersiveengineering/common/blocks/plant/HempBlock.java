@@ -23,7 +23,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -46,18 +47,19 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 			.randomTicks();
 
 	public final static IntegerProperty AGE = BlockStateProperties.AGE_4;
-	public final static BooleanProperty TOP = BooleanProperty.create("top");
+	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+
 
 	public HempBlock(Properties props)
 	{
 		super(props);
-		this.registerDefaultState(this.defaultBlockState().setValue(TOP, false));
+		this.registerDefaultState(this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		builder.add(AGE).add(TOP);
+		builder.add(AGE).add(HALF);
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos)
 	{
 		boolean b = super.canSurvive(state, world, pos);
-		if(state.getBlock().equals(this)&&state.getValue(TOP))
+		if(state.getBlock().equals(this)&&state.getValue(HALF)==DoubleBlockHalf.UPPER)
 		{
 			BlockState stateBelow = world.getBlockState(pos.below());
 			b = stateBelow.getBlock().equals(this)&&this.getAge(stateBelow)==this.getMaxAge();
@@ -102,14 +104,14 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	@SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		if(state.getValue(TOP))
+		if(state.getValue(HALF)==DoubleBlockHalf.UPPER)
 			return Shapes.block();
 		return shapesByAge[this.getAge(state)];
 	}
 
 	private boolean canGrowTop(LevelReader world, BlockPos pos, BlockState state)
 	{
-		if(state.getValue(TOP))
+		if(state.getValue(HALF)==DoubleBlockHalf.UPPER)
 			return false;
 		if(!world.isEmptyBlock(pos.above()))
 			return false;
@@ -119,7 +121,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	@Override
 	public boolean isRandomlyTicking(BlockState state)
 	{
-		return !state.getValue(TOP);
+		return state.getValue(HALF)==DoubleBlockHalf.LOWER;
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 					else if(canGrowTop)
 					{
 						BlockPos above = pos.above();
-						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
+						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(HALF, DoubleBlockHalf.UPPER);
 						world.setBlockAndUpdate(above, aboveState);
 						CommonHooks.fireCropGrowPost(world, above, aboveState);
 					}
@@ -159,7 +161,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	@Override
 	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state)
 	{
-		return (!this.isMaxAge(state)&&!state.getValue(TOP))||canGrowTop(world, pos, state);
+		return (!this.isMaxAge(state)&&state.getValue(HALF)==DoubleBlockHalf.LOWER)||canGrowTop(world, pos, state);
 	}
 
 	@Override
@@ -175,6 +177,6 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 
 		world.setBlock(pos, this.getStateForAge(newAge), 2);
 		if(growTop)
-			world.setBlockAndUpdate(pos.above(), this.getStateForAge(getMaxAge()).setValue(TOP, true));
+			world.setBlockAndUpdate(pos.above(), this.getStateForAge(getMaxAge()).setValue(HALF, DoubleBlockHalf.UPPER));
 	}
 }

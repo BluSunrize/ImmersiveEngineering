@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
@@ -33,6 +34,12 @@ public class IEDualCodecs
 	public static final DualCodec<RegistryFriendlyByteBuf, FluidStack> FLUID_STACK = new DualCodec<>(
 			FluidStack.OPTIONAL_CODEC, FluidStack.OPTIONAL_STREAM_CODEC
 	);
+
+	public static final DualCodec<RegistryFriendlyByteBuf, SizedFluidIngredient> SIZED_FLUID_INGREDIENT = new DualCodec<>(
+			SizedFluidIngredient.FLAT_CODEC,
+			SizedFluidIngredient.STREAM_CODEC
+	);
+
 	public static final DualCodec<ByteBuf, Vec3> VEC3 = new DualCodec<>(
 			Vec3.CODEC, IEStreamCodecs.VEC3_STREAM_CODEC
 	);

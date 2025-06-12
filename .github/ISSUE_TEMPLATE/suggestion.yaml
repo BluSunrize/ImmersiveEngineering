@@ -1,7 +1,6 @@
 name: Feature Suggestion
 description: If you have an idea or feature to add to Immersive Engineering
-title: "[Suggestion] ... "
-labels: ["suggestion :bulb:"]
+labels: ["suggestion 💡"]
 body:
   - type: markdown
     attributes:

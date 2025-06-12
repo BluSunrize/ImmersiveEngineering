@@ -5,10 +5,8 @@
     "item": "minecraft:bookshelf"
   },
   "result": {
-    "basePredicate": {
-      "item": "minecraft:oak_planks"
-    },
-    "count": 4
+    "count": 4,
+    "id": "minecraft:oak_planks"
   },
   "secondaryOutputs": [],
   "strippingSecondaries": [
@@ -16,10 +14,8 @@
       "tag": "c:dusts/wood"
     },
     {
-      "basePredicate": {
-        "item": "minecraft:book"
-      },
-      "count": 3
+      "count": 3,
+      "id": "minecraft:book"
     }
   ]
 }

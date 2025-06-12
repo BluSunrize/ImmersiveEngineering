@@ -2,7 +2,7 @@ Introduction
 Getting into Engineering
 Greetings and welcome to Immersive Engineering.<br>
 The following notes and guides will showcase the most recent technology available in the modern combined worlds.<br>
-All engineering in the following chapters is built around the concept of pre-computing transfer of energy.<br>
-The energy used by the machines is Forge Energy, a trait shared with many other generation methods currently available.<br>
+However, certain pieces of science may be so weird, that this manual can not yet explain them. In traveling the worlds, certain Eureka-moments may lead to new pages being added to the manual, though this will be a rare exception.<np>
+All engineering in the following chapters is built around the concept of pre-computing transfer of energy. The energy used by the machines is Forge Energy, a trait shared with many other generation methods currently available.<br>
 Many machines are <link;large_constructions;multiblock machines>, formed with the <link;basic_tools;Engineer's Hammer;engineers_hammer>.<br>
 All the information needed to use the technology is contained within, so venture boldly forth!

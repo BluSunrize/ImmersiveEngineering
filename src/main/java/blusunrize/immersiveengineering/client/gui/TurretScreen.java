@@ -64,12 +64,12 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 		this.addWidget(this.nameField);
 
 		this.clearWidgets();
-		this.addRenderableWidget(new GuiReactiveList(leftPos+10, topPos+10, 60, 72,
+		this.addRenderableWidget(GuiReactiveList.build(leftPos+10, topPos+10, 60, 72,
 				list -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					int rem = list.selectedOption;
-					if(rem >= 0&&menu.data.targetList().get().size() > 0)
+					if(rem >= 0&&!menu.data.targetList().get().isEmpty())
 					{
 						tag.putInt("remove", rem);
 						listOffset = list.getOffset()-1;

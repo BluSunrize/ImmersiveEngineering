@@ -3,4 +3,4 @@ Milk goes left, acid goes right
 <&recipe>The Fluid Router works like yhr <link;item_router;Item Router;start>. Fluids input will be redistributed based on the filters on its sides.<br>
 Clicking a bucket or any other type of fluid container into the slots of the GUI will configure the filter to that fluid.<np>
 When any fluids are piped into the router, they will be routed to an output whose filter matches the fluid, or, if no matching filter is found, the fluid routes to an unfiltered output. If there is no available or valid route, no fluid will be accepted.<br>
-The buttons above each filter can be used to have the router respect or ignore the fluid's NBT data.
+The buttons above each filter can be used to have the router respect or ignore the fluid's data components, such as the type of potion.

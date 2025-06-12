@@ -11,12 +11,21 @@ package blusunrize.immersiveengineering.api;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.BlockSetType.PressurePlateSensitivity;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.SimpleTier;
@@ -46,6 +55,18 @@ public class Lib
 	public static final float[] COLOUR_F_ImmersiveOrange = {247/255f, 128/255f, 52/255f};
 	public static final int COLOUR_I_ImmersiveOrangeShadow = 0xff3e200d;
 
+	public static MutableComponent getRedstoneColorComponent(DyeColor channel)
+	{
+		Style style = Style.EMPTY.withColor(channel.getTextureDiffuseColor());
+		if(channel==DyeColor.BLACK)
+			// special case for black to make it more readable
+			style = style.withColor(0x2d2c38);
+		return Component.empty()
+				.append(Component.literal("█ ").withStyle(style))
+				.append(Component.translatable("color.minecraft."+channel.getName()));
+	}
+
+
 	public static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
 	public static final String MAGNET_SOURCE_NBT = "immersiveengineering:magnet_source";
 	public static final String MAGNET_TIME_NBT = "immersiveengineering:magnet_last_pulled";
@@ -74,6 +95,7 @@ public class Lib
 	public static final String GUIID_AutoWorkbench = "autoworkbench";
 	public static final String GUIID_Mixer = "mixer";
 	public static final String GUIID_RadioTower = "radiotower";
+	public static final String GUIID_ChunkLoader = "chunkloader";
 	public static final String GUIID_Turret_Gun = "turret_gun";
 	public static final String GUIID_Turret_Chem = "turret_chem";
 	public static final String GUIID_FluidSorter = "fluidsorter";
@@ -118,6 +140,51 @@ public class Lib
 		public static final ResourceKey<DamageType> RAZOR_WIRE = ieDamage("razor_wire");
 		public static final ResourceKey<DamageType> RAZOR_SHOCK = ieDamage("razor_shock");
 		public static final ResourceKey<DamageType> WIRE_SHOCK = ieDamage("wire_shock");
+	}
+
+	public static class BlockSetTypes
+	{
+		public static final BlockSetType TREATED_WOOD = new BlockSetType("treated_wood");
+		public static final BlockSetType STEEL = new BlockSetType(
+				"steel",
+				true,
+				false,
+				false,
+				PressurePlateSensitivity.MOBS,
+				SoundType.METAL,
+				SoundEvents.IRON_DOOR_CLOSE,
+				SoundEvents.IRON_DOOR_OPEN,
+				SoundEvents.IRON_TRAPDOOR_CLOSE,
+				SoundEvents.IRON_TRAPDOOR_OPEN,
+				SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF,
+				SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
+				SoundEvents.STONE_BUTTON_CLICK_OFF,
+				SoundEvents.STONE_BUTTON_CLICK_ON
+		);
+		public static final BlockSetType ALUMINUM = new BlockSetType(
+				"aluminum",
+				true,
+				false,
+				false,
+				PressurePlateSensitivity.MOBS,
+				SoundType.METAL,
+				SoundEvents.IRON_DOOR_CLOSE,
+				SoundEvents.IRON_DOOR_OPEN,
+				SoundEvents.IRON_TRAPDOOR_CLOSE,
+				SoundEvents.IRON_TRAPDOOR_OPEN,
+				SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF,
+				SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON,
+				SoundEvents.STONE_BUTTON_CLICK_OFF,
+				SoundEvents.STONE_BUTTON_CLICK_ON
+		);
+	}
+
+	public static class WoodTypes
+	{
+		// Only one of these is a wood!
+		public static final WoodType TREATED_WOOD = WoodType.register(new WoodType(ieLoc("treated_wood").toString(), BlockSetTypes.TREATED_WOOD));
+		public static final WoodType STEEL = WoodType.register(new WoodType(ieLoc("steel").toString(), BlockSetTypes.STEEL));
+		public static final WoodType ALUMINUM = WoodType.register(new WoodType(ieLoc("aluminum").toString(), BlockSetTypes.ALUMINUM));
 	}
 
 	private static ResourceKey<DamageType> ieDamage(String path)

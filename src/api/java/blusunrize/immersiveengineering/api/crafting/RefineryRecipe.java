@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
@@ -35,17 +36,17 @@ public class RefineryRecipe extends MultiblockRecipe
 	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final FluidStack output;
-	public final FluidTagInput input0;
+	public final SizedFluidIngredient input0;
 	@Nullable
-	public final FluidTagInput input1;
+	public final SizedFluidIngredient input1;
 	public final Ingredient catalyst;
 
-	public RefineryRecipe(FluidStack output, FluidTagInput input0, Optional<FluidTagInput> input1, Ingredient catalyst, int energy)
+	public RefineryRecipe(FluidStack output, SizedFluidIngredient input0, Optional<SizedFluidIngredient> input1, Ingredient catalyst, int energy)
 	{
 		this(output, input0, input1.orElse(null), catalyst, energy);
 	}
 
-	public RefineryRecipe(FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
+	public RefineryRecipe(FluidStack output, SizedFluidIngredient input0, @Nullable SizedFluidIngredient input1, Ingredient catalyst, int energy)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.REFINERY, 1, energy, MULTIPLIERS);
 		this.output = output;
@@ -106,16 +107,16 @@ public class RefineryRecipe extends MultiblockRecipe
 			RefineryRecipe recipe = holder.value();
 			if(!input0.isEmpty()&&input1.isEmpty())
 			{
-				if(recipe.input0.testIgnoringAmount(input0)||(recipe.input1!=null&&recipe.input1.testIgnoringAmount(input0)))
+				if(recipe.input0.ingredient().test(input0)||(recipe.input1!=null&&recipe.input1.ingredient().test(input0)))
 					return Optional.of(recipe);
 			}
 			else if(input0.isEmpty()&&!input1.isEmpty())
 			{
-				if(recipe.input0.testIgnoringAmount(input1)||(recipe.input1!=null&&recipe.input1.testIgnoringAmount(input1)))
+				if(recipe.input0.ingredient().test(input1)||(recipe.input1!=null&&recipe.input1.ingredient().test(input1)))
 					return Optional.of(recipe);
 			}
-			else if((recipe.input1!=null&&recipe.input0.testIgnoringAmount(input0)&&recipe.input1.testIgnoringAmount(input1))
-					||(recipe.input1!=null&&recipe.input1.testIgnoringAmount(input0)&&recipe.input0.testIgnoringAmount(input1)))
+			else if((recipe.input1!=null&&recipe.input0.ingredient().test(input0)&&recipe.input1.ingredient().test(input1))
+					||(recipe.input1!=null&&recipe.input1.ingredient().test(input0)&&recipe.input0.ingredient().test(input1)))
 				return Optional.of(recipe);
 		}
 		return Optional.empty();

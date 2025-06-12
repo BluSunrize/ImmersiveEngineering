@@ -27,8 +27,9 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEItemSubPredicates;
+import blusunrize.immersiveengineering.common.register.IEItemSubPredicates.ItemBlueprintPredicate;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.world.Villages;
@@ -135,7 +136,11 @@ public class Advancements extends AdvancementProvider
 				.orRequirements()
 				.addCriterion("revolver_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
 						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
-						DamageSourcePredicate.Builder.damageType().direct(EntityPredicate.Builder.entity().of(IEEntityTypes.REVOLVERSHOT.get()))
+						DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE)).source(EntityPredicate.Builder.entity().equipment(
+								EntityEquipmentPredicate.Builder.equipment().mainhand(
+										ItemPredicate.Builder.item().of(Weapons.REVOLVER.asItem())
+								).build()
+						))
 				)).addCriterion("railgun_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
 						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
 						DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE)).source(EntityPredicate.Builder.entity().equipment(
@@ -145,7 +150,11 @@ public class Advancements extends AdvancementProvider
 						))
 				)).addCriterion("chemthrower_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
 						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
-						DamageSourcePredicate.Builder.damageType().direct(EntityPredicate.Builder.entity().of(IEEntityTypes.CHEMTHROWER_SHOT.get()))
+						DamageSourcePredicate.Builder.damageType().source(EntityPredicate.Builder.entity().equipment(
+								EntityEquipmentPredicate.Builder.equipment().mainhand(
+										ItemPredicate.Builder.item().of(Weapons.CHEMTHROWER.asItem())
+								).build()
+						))
 				))
 				.loot("shader_rare").save(consumer);
 
@@ -153,6 +162,8 @@ public class Advancements extends AdvancementProvider
 				.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);
 		AdvancementHolder luckofthedraw = AdvancementBuilder.child("secret_luckofthedraw", shaderbag).challenge().hidden()
 				.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
+		AdvancementHolder achtung = AdvancementBuilder.child("secret_achtung", rtfm).challenge().hidden()
+				.icon(Misc.ICON_ACHTUNG).codeTriggered().loot("shader_masterwork").save(consumer);
 
 		/* MULTIBLOCKS */
 		AdvancementBuilder.setPage("multiblocks");
@@ -261,6 +272,16 @@ public class Advancements extends AdvancementProvider
 				.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
 		AdvancementHolder bttf = AdvancementBuilder.child("secret_bttf", upgradePowerpack).challenge().hidden()
 				.icon(Misc.ICON_BTTF).codeTriggered().loot("shader_masterwork").save(consumer);
+
+		/* MANUAL UNLOCKS */
+		AdvancementBuilder.setPage("manual");
+		AdvancementHolder manualUnlocks = AdvancementBuilder.hiddenRoot().codeTriggered().save(consumer);
+		AdvancementBuilder.child("automatons", manualUnlocks)
+				.hasItemWithPredicate(Misc.BLUEPRINT, IEItemSubPredicates.BLUEPRINT.get(), new ItemBlueprintPredicate("automatons"))
+				.saveForManual(consumer);
+		AdvancementBuilder.child("resonanz", manualUnlocks)
+				.hasItems(Items.ECHO_SHARD)
+				.saveForManual(consumer);
 	}
 
 	private static Path createPath(Path pathIn, AdvancementHolder advancementIn)

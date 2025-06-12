@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemInput;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class BottlingMachineRecipeBuilder extends IERecipeBuilder<BottlingMachin
 		implements ItemInput<BottlingMachineRecipeBuilder>, ItemOutput<BottlingMachineRecipeBuilder>
 {
 	private final List<IngredientWithSize> inputs = new ArrayList<>();
-	private FluidTagInput fluidInput;
+	private SizedFluidIngredient fluidInput;
 	private final List<TagOutput> output = new ArrayList<>();
 
 	private BottlingMachineRecipeBuilder()
@@ -48,7 +48,7 @@ public class BottlingMachineRecipeBuilder extends IERecipeBuilder<BottlingMachin
 
 	public BottlingMachineRecipeBuilder fluidInput(TagKey<Fluid> input, int amount)
 	{
-		this.fluidInput = new FluidTagInput(input, amount);
+		this.fluidInput = SizedFluidIngredient.of(input, amount);
 		return this;
 	}
 

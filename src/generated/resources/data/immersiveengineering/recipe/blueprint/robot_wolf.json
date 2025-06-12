@@ -1,0 +1,36 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "automatons",
+  "inputs": [
+    {
+      "item": "immersiveengineering:thermoelectric_generator"
+    },
+    {
+      "item": "immersiveengineering:radiator"
+    },
+    {
+      "basePredicate": {
+        "tag": "c:ingots/uranium"
+      },
+      "count": 3
+    },
+    {
+      "basePredicate": {
+        "tag": "c:plates/steel"
+      },
+      "count": 2
+    },
+    {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    {
+      "basePredicate": {
+        "item": "immersiveengineering:component_steel"
+      },
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "immersiveengineering:robot_wolf"
+  }
+}

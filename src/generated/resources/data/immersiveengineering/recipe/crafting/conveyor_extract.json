@@ -5,19 +5,16 @@
     "c": {
       "item": "immersiveengineering:conveyor_basic"
     },
-    "m": {
-      "item": "immersiveengineering:component_iron"
-    },
     "s": {
       "item": "immersiveengineering:strip_curtain"
     },
     "w": {
-      "tag": "immersiveengineering:treated_wood"
+      "item": "immersiveengineering:basic_engineering"
     }
   },
   "pattern": [
-    "ws",
-    "mc"
+    " s",
+    "wc"
   ],
   "result": {
     "count": 1,

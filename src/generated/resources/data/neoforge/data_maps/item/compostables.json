@@ -1,0 +1,10 @@
+{
+  "values": {
+    "immersiveengineering:hemp_fiber": {
+      "chance": 0.65
+    },
+    "immersiveengineering:seed": {
+      "chance": 0.3
+    }
+  }
+}

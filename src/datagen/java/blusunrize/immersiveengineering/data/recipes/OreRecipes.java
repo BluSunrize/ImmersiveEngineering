@@ -252,7 +252,6 @@ public class OreRecipes extends IERecipeProvider
 					oreCrushing.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
 			oreCrushing.build(out, toRL("crusher/ore_"+ore.getName()));
 		}
-		addStandardSmeltingBlastingRecipe(IEItems.Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE, 0.5F, out);
 	}
 
 	private void makeMaterialRecipes(RecipeOutput out)

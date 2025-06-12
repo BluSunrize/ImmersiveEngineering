@@ -1,7 +1,8 @@
 {
   "entries": [
+    "immersiveengineering:hemp_from_grass",
     "immersiveengineering:hemp_from_tall_grass",
-    "immersiveengineering:hemp_from_grass"
+    "immersiveengineering:trial_vault_blueprint"
   ],
   "replace": false
 }

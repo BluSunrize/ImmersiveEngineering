@@ -16,23 +16,12 @@
         "recipe": "immersiveengineering:crafting/capacitor_lv"
       },
       "trigger": "minecraft:recipe_unlocked"
-    },
-    "has_treated_planks": {
-      "conditions": {
-        "items": [
-          {
-            "items": "#immersiveengineering:treated_wood"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
     }
   },
   "requirements": [
     [
       "has_the_recipe",
-      "has_lead_ingot",
-      "has_treated_planks"
+      "has_lead_ingot"
     ]
   ],
   "rewards": {

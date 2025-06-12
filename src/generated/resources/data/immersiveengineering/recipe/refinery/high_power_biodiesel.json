@@ -6,13 +6,14 @@
     "tag": "c:biodiesel"
   },
   "input1": {
+    "type": "neoforge:components",
     "amount": 5,
-    "nbt": {
+    "components": {
       "minecraft:potion_contents": {
         "potion": "minecraft:strength"
       }
     },
-    "tag": "c:potion"
+    "fluids": "immersiveengineering:potion"
   },
   "result": {
     "amount": 100,

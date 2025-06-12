@@ -19,10 +19,7 @@ import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -41,6 +38,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
@@ -52,6 +51,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -69,7 +69,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockBounds, IHasDummyBlocks,
-		IConfigurableSides, IFluidPipe, IBlockOverlayText
+		IConfigurableSides, IScrewdriverInteraction, IFluidPipe, IBlockOverlayText
 {
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
@@ -89,6 +89,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			this, be -> be.energyCap, FluidPumpBlockEntity::master, makeEnergyInput(energyStorage)
 	);
+	public boolean redstoneControlInverted = false;
 
 	private boolean checkingArea = false;
 	private Fluid searchFluid = null;
@@ -117,14 +118,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 
 		int consumption = IEServerConfig.MACHINES.pump_consumption.get();
-		boolean hasRSSignal = isRSPowered();
-		if(!hasRSSignal)
-		{
-			BlockEntity above = level.getBlockEntity(getBlockPos().above());
-			if(above instanceof FluidPumpBlockEntity)
-				hasRSSignal = ((FluidPumpBlockEntity)above).isRSPowered();
-		}
-		if(hasRSSignal)
+		if(canRun())
 		{
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)
@@ -172,6 +166,18 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 		if(checkingArea)
 			checkAreaTick();
+	}
+
+	private boolean canRun()
+	{
+		boolean isPowered = isRSPowered();
+		if(!isPowered)
+		{
+			BlockEntity above = level.getBlockEntity(getBlockPos().above());
+			if(above instanceof FluidPumpBlockEntity dummy)
+				isPowered = dummy.isRSPowered();
+		}
+		return (isPowered^redstoneControlInverted);
 	}
 
 	public void prepareAreaCheck()
@@ -349,6 +355,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(provider, nbt.getCompound("tank"));
 		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
+		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -363,6 +370,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 		EnergyHelper.serializeTo(energyStorage, nbt, provider);
+		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 	}
 
 	@Override
@@ -396,6 +404,29 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
+	{
+		if(isDummy())
+		{
+			BlockEntity te = level.getBlockEntity(worldPosition.below());
+			if(te instanceof FluidPumpBlockEntity master)
+				return master.screwdriverUseSide(side, player, hand, hitVec);
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		}
+		if(!level.isClientSide)
+		{
+			redstoneControlInverted = !redstoneControlInverted;
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")),
+					true
+			);
+			setChanged();
+			this.markContainingBlockForUpdate(null);
+		}
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	private final Map<Direction, IFluidHandler> sidedFluidHandler = new EnumMap<>(Direction.class);
