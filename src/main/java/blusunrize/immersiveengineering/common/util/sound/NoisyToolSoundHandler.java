@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
@@ -125,10 +126,10 @@ public class NoisyToolSoundHandler
 			ntsg.triggerAttack();
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent // event not cancelable, so no issues
 	public static void toolHeldCheck(Post ev)
 	{
-		if(ev.getEntity() instanceof LivingEntity noisyToolHolder) //todo
+		if(ev.getEntity() instanceof LivingEntity noisyToolHolder)
 		{
 			if(!noisyToolHolder.level().isClientSide()) // client side only
 				return;
@@ -143,7 +144,7 @@ public class NoisyToolSoundHandler
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST) //lowest priority, because if the event got cancelled, we don't wanna play the sound
 	public static void harvestCheck(LeftClickBlock ev)
 	{
 		if(INoisyTool.isAbleNoisyTool(ev.getItemStack()))
@@ -165,17 +166,21 @@ public class NoisyToolSoundHandler
 		}
 	}
 
-	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent(priority = EventPriority.LOWEST) //lowest priority, because if the event got cancelled, we don't wanna play the sound
 	public static void clientSideAttackCheck(AttackEntityEvent ev)
 	{
-		Player player = ev.getEntity();
-		if (INoisyTool.isAbleNoisyTool(player.getItemBySlot(EquipmentSlot.MAINHAND)))
+		if(ev.getTarget() instanceof LivingEntity) // a) for parity with LivingIncomingDamageEvent, b) MCs extra attack sounds also only happen on LivingEntities
 		{
-			handleAttack(player);
+			Player player = ev.getEntity();
+			if(player.level().isClientSide()&&INoisyTool.isAbleNoisyTool(player.getItemBySlot(EquipmentSlot.MAINHAND)))
+			{
+				handleAttack(player);
+			}
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST) //highest priority, because if the damage get's cancelled, it still was an attack
 	public static void serverSideAttackCheck(LivingIncomingDamageEvent ev)
 	{
 		// no null check for ev.getSource, because ev.getSource() is never null according to intelliJ: "Method 'getSource' inherits container annotation, thus 'non-null'"
@@ -208,7 +213,15 @@ public class NoisyToolSoundHandler
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	/**
+	 * Clear the list when exiting a level so it doesn't get carried over into other levels.
+	 * Currently it is not checked if entities in the list still are tracked in game, they are only removed when they stop being tracked.
+	 * This means better cleaning up when the player leaves the level, just to be sure no trash accumulates.
+	 * <p>
+	 * Also, left in server side, too, for safety, even though the server shouldn't build up any nTSGs anyways.
+	 *
+	 * @param ev
+	 */
 	@SubscribeEvent
 	public static void leaveLevel(Unload ev)
 	{
