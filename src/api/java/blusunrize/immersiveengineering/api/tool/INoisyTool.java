@@ -12,6 +12,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * An interface for Items (not ItemStacks, that would be stupid), no guarantees if it is used for non-Items.
+ */
 public interface INoisyTool
 {
 	Holder<SoundEvent> getIdleSound(ItemStack stack);
@@ -22,7 +25,7 @@ public interface INoisyTool
 	 * Due to lacking information on sound duration, the duration is hard coded. Any Fading sounds need to be <b>more</b> than <b>1.0s</b> in duration.
 	 * The sound cuts off after <b>1.0s</b>, but a little bit of excess duration (>~0.01s) is required for the noisy tool sound stage machine to work correctly
 	 *
-	 * @param stack
+	 * @param stack The stack of the INoisyTool, makes the sound stack sensitive if desired.
 	 * @return fading sound
 	 */
 	Holder<SoundEvent> getFadingSound(ItemStack stack);
@@ -33,7 +36,7 @@ public interface INoisyTool
 	 * Having a too small excess duration leads to notable gaps in the audio when transitioning, which is why the default attack sounds have ~0.06s extra.
 	 * Cause they used to be 0.35s and then it caused issues.. Take heed ^^
 	 *
-	 * @param stack
+	 * @param stack The stack of the INoisyTool, makes the sound stack sensitive if desired.
 	 * @return attack sound
 	 */
 	Holder<SoundEvent> getAttackSound(ItemStack stack);
@@ -45,7 +48,7 @@ public interface INoisyTool
 	/**
 	 * Checks if the stack item is a NoisyTool and is able to make noise.
 	 *
-	 * @param stack
+	 * @param stack the ItemStack to check. May be any ItemStack.
 	 * @return true if the stack item is a NoisyTool and is able to make noise.
 	 */
 	static boolean isAbleNoisyTool(ItemStack stack)
@@ -62,8 +65,8 @@ public interface INoisyTool
 	 * <p>
 	 * This check also assumes, that it has already been checked and confirmed, that the stacks are not identical
 	 *
-	 * @param mainStack
-	 * @param otherStack
+	 * @param mainStack the main stack of the comparison. Selects the Item to compare against
+	 * @param otherStack the stack mainStack is compared against
 	 * @return true if stacks are considered the same stack. By default: if stacks  produce the same sounds.
 	 */
 	default boolean noisySameStack(ItemStack mainStack, ItemStack otherStack)

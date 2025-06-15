@@ -104,11 +104,11 @@ public class NoisyToolSoundGroup
 	}
 
 	/**
-	 * @param motorOn
-	 * @param attack
+	 * @param motorOn   true if the motor is supposed to be on.
+	 * @param attack    true if there is supposed to be an attack. Currently irrelevant if the motor isn't on.
 	 * @param propagate true if switching the motor state should propagate to updateHarvestState.
 	 *                  Do take care that calls to updateHarvestState from here don't create loops (i.e. set propagate to false in the call)
-	 * @return
+	 * @return true if a new motor sound has been played. This is generally the case when the currenMotorState changes, but for more detail see the comments in the code.
 	 */
 	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
@@ -125,7 +125,7 @@ public class NoisyToolSoundGroup
 		else
 			newMotorState = OFF;
 
-		/**
+		/*
 		 * don't do anything if
 		 * a) newMotorStats already currentMotorState AND newMotorState isn't ATTACK
 		 * 		->	simply keep playing the same sound, UNLESS it's an attack, then play a new attack sound
@@ -170,10 +170,10 @@ public class NoisyToolSoundGroup
 	}
 
 	/**
-	 * @param newTargetPos
+	 * @param newTargetPos the new target block for the harvest sound. Nullable, to shut off the harvest sound (see NoisyToolHarvestSound::tick).
 	 * @param propagate    true if updating the HarvestState should propagate to switchMotorState
 	 *                     Do take care that calls to updateHarvestState from here don't create loops (i.e. set propagate to false in the call)
-	 * @return
+	 * @return true if currentTargetPos changed, even if to null.
 	 */
 	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{

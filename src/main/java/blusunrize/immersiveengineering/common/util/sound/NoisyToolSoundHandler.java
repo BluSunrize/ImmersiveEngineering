@@ -41,7 +41,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 @EventBusSubscriber(modid = MODID, bus = Bus.GAME)
 public class NoisyToolSoundHandler
 {
-	private static Map<LivingEntity, Map<EquipmentSlot, NoisyToolSoundGroup>> noisyToolSoundGroups = new HashMap<>();
+	private static final Map<LivingEntity, Map<EquipmentSlot, NoisyToolSoundGroup>> noisyToolSoundGroups = new HashMap<>();
 
 	private static Map<EquipmentSlot, NoisyToolSoundGroup> getSafeNTSGs(LivingEntity entity)
 	{
@@ -61,8 +61,8 @@ public class NoisyToolSoundHandler
 	 * Turns off sound groups that are obsolete and removes them from the mapping.
 	 * This should generally be the only point through which NoisyToolSoundGroups are accessed.
 	 *
-	 * @param entity
-	 * @param slot
+	 * @param entity the entity that's supposed to receive a NTSG
+	 * @param slot the entities EquipmentSlot. <b>Must</b> be a Type.HAND type
 	 * @return a NoisyToolSoundGroup for the given slot or null, if the provided slot does not hold a suitable item
 	 */
 	@Nullable
@@ -197,7 +197,9 @@ public class NoisyToolSoundHandler
 	 * handles stopping the sound instances and unlisting the sound group when the entity is removed
 	 * consider checking entity.isRemoved() in the ticking sound instances (see MinecartSoundInstance.tick())
 	 *
-	 * @param ev
+	 * only handled clientside because the server shouldn't have any NTSGS to begin with.
+	 *
+	 * @param ev the EntityLeaveLevelEvent event
 	 */
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
@@ -218,9 +220,9 @@ public class NoisyToolSoundHandler
 	 * Currently it is not checked if entities in the list still are tracked in game, they are only removed when they stop being tracked.
 	 * This means better cleaning up when the player leaves the level, just to be sure no trash accumulates.
 	 * <p>
-	 * Also, left in server side, too, for safety, even though the server shouldn't build up any nTSGs anyways.
+	 * Also, left in server side, too, for safety, even though the server shouldn't build up any NTSGs anyways.
 	 *
-	 * @param ev
+	 * @param ev the Unload event
 	 */
 	@SubscribeEvent
 	public static void leaveLevel(Unload ev)
