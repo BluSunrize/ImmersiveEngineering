@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 
 public interface INoisyTool
 {
-	static final float TEST_VOLUME_ADJUSTMENT = 1.0f; //TODO: temporary measure, remove after settling on a volume for the PR and re-adjusting the sounds themselves
-
 	Holder<SoundEvent> getIdleSound(ItemStack stack);
 
 	Holder<SoundEvent> getBusySound(ItemStack stack);
@@ -44,6 +42,12 @@ public interface INoisyTool
 
 	boolean ableToMakeNoise(ItemStack stack);
 
+	/**
+	 * Checks if the stack item is a NoisyTool and is able to make noise.
+	 *
+	 * @param stack
+	 * @return true if the stack item is a NoisyTool and is able to make noise.
+	 */
 	static boolean isAbleNoisyTool(ItemStack stack)
 	{
 		return stack.getItem() instanceof INoisyTool noisyTool&&noisyTool.ableToMakeNoise(stack);
@@ -53,9 +57,9 @@ public interface INoisyTool
 	 * When an ItemStack gets modified server side (i.e. takes damage, changes tags (i.e. uses fuel), etc.), it creates a new ItemStack on the client side.
 	 * There is no unreasonably involved way to check if the new ItemStack is actually just the old ItemStack, but modified.
 	 * So this for these cases, this default implementation checks the next best thing: Item equality and sound equality.
-	 *
+	 * <p>
 	 * It is encouraged to override this with a simpler check.
-	 *
+	 * <p>
 	 * This check also assumes, that it has already been checked and confirmed, that the stacks are not identical
 	 *
 	 * @param mainStack

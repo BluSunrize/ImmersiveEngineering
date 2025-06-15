@@ -71,11 +71,11 @@ public class NoisyToolSoundGroup
 
 	private boolean checkItemMatch(ItemStack handItemStack)
 	{
-		if (noisyToolStack == handItemStack)
+		if(noisyToolStack==handItemStack)
 		{
 			return true;
 		}
-		else if (noisyToolItem.noisySameStack(noisyToolStack, handItemStack))
+		else if(noisyToolItem.noisySameStack(noisyToolStack, handItemStack))
 		{
 			noisyToolStack = handItemStack;
 			return true;
@@ -103,18 +103,37 @@ public class NoisyToolSoundGroup
 		return switchMotorState(motorOn, false, true);
 	}
 
+	/**
+	 * @param motorOn
+	 * @param attack
+	 * @param propagate true if switching the motor state should propagate to updateHarvestState.
+	 *                  Do take care that calls to updateHarvestState from here don't create loops (i.e. set propagate to false in the call)
+	 * @return
+	 */
 	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
-		ToolMotorState newMotorState = motorOn?
-				(attack?
-						ATTACK
-						: (currentTargetPos==null?
-						(currentMotorState==BUSY||currentMotorState==FADING?
-								FADING
-								: IDLE)
-						: BUSY))
-				: OFF;
+		ToolMotorState newMotorState;
+		if(motorOn)
+			if(attack)
+				newMotorState = ATTACK;
+			else if(currentTargetPos!=null)
+				newMotorState = BUSY;
+			else if(currentMotorState==BUSY||currentMotorState==FADING)
+				newMotorState = FADING;
+			else
+				newMotorState = IDLE;
+		else
+			newMotorState = OFF;
 
+		/**
+		 * don't do anything if
+		 * a) newMotorStats already currentMotorState AND newMotorState isn't ATTACK
+		 * 		->	simply keep playing the same sound, UNLESS it's an attack, then play a new attack sound
+		 * b) propagate is true and currentMotorState is ATTACK and newMotorState isn't ATTACK
+		 * 		->	currentMotorState ATTACK is a special case. It is generally left in NoisyToolMotorSoundFinite::updateCoordinates
+		 * 			HOWEVER, if propagate is false, this method was triggered by harvesting (i.e. updateHarvestState), so we DO continue in this method
+		 * 			and change currentMotorState, so the harvest sound runs along the motor busy sound, and not the motor attack sound
+		 */
 		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ATTACK))&&newMotorState!=ATTACK)
 			return false;
 
@@ -137,7 +156,8 @@ public class NoisyToolSoundGroup
 				break;
 			case ATTACK:
 				if(propagate)
-					updateHarvestState(null, false); // todo: check if this is really necessary. Not that it hurts.
+					// this SHOULD already be updated implicitly by stopping harvesting (because you can't harvest while attacking), but better safe than sorry
+					updateHarvestState(null, false);
 				play(new NoisyToolMotorSoundFinite(noisyToolItem.getAttackSound(noisyToolStack).value(), newMotorState, ATTACK_DURATION));
 				break;
 		}
@@ -149,6 +169,12 @@ public class NoisyToolSoundGroup
 		return updateHarvestState(newTargetPos, true);
 	}
 
+	/**
+	 * @param newTargetPos
+	 * @param propagate    true if updating the HarvestState should propagate to switchMotorState
+	 *                     Do take care that calls to updateHarvestState from here don't create loops (i.e. set propagate to false in the call)
+	 * @return
+	 */
 	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{
 		groupLastTickHelper = noisyToolHolder.level().getGameTime();
@@ -192,13 +218,19 @@ public class NoisyToolSoundGroup
 		{
 			super(sound);
 
-			this.x = noisyToolHolder.getX();
-			this.y = noisyToolHolder.getY()+0.5d; //todo: get tool coordinates?
-			this.z = noisyToolHolder.getZ();
+			updateCoordinates();
 			this.state = state;
-			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
+		/**
+		 * This is just a very dumb, but quick and easy approximation of the tool position. Which is fine 99.9% of the time.
+		 * Notably it is even less accurate during diving or elytra flight, basically anytime where the player is not upright.
+		 * Also might mess with mods that mess with player scale/positioning?
+		 * It's possible to get the actual tool coordinates from the renderer,
+		 * but that would require a bunch of extra handling and tracking for generally very little gain.
+		 * Plus it might just be aggravating in first person. Or super awesome.
+		 * I'll leave it as a TODO.
+		 */
 		protected void updateCoordinates()
 		{
 			this.x = noisyToolHolder.getX();
@@ -274,7 +306,6 @@ public class NoisyToolSoundGroup
 			this.y = targetBlockPos.getY()+0.5d;
 			this.z = targetBlockPos.getZ()+0.5d;
 			this.looping = true;
-			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
 		@Override

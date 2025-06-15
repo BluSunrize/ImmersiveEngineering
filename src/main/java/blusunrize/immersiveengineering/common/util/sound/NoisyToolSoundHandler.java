@@ -21,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -59,7 +58,7 @@ public class NoisyToolSoundHandler
 	/**
 	 * For the given entity and slot: creates or returns an existing sound group, or null, if there should be none.
 	 * Turns off sound groups that are obsolete and removes them from the mapping.
-	 * This should generally be the only point where NoisyToolSoundGroups are accessed through.
+	 * This should generally be the only point through which NoisyToolSoundGroups are accessed.
 	 *
 	 * @param entity
 	 * @param slot
@@ -150,7 +149,7 @@ public class NoisyToolSoundHandler
 		if(INoisyTool.isAbleNoisyTool(ev.getItemStack()))
 		{
 			LivingEntity noisyToolHolder = ev.getEntity();
-			if(noisyToolHolder instanceof Player player&&player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
+			if(noisyToolHolder instanceof Player player&&player.isCreative()) // skip for creative players, because remote creative players don't send stop/abort on block break
 			{
 				return;
 			}
@@ -179,7 +178,7 @@ public class NoisyToolSoundHandler
 	@SubscribeEvent
 	public static void serverSideAttackCheck(LivingIncomingDamageEvent ev)
 	{
-		// ev.getSource() is never null according to intelliJ: "Method 'getSource' inherits container annotation, thus 'non-null'"
+		// no null check for ev.getSource, because ev.getSource() is never null according to intelliJ: "Method 'getSource' inherits container annotation, thus 'non-null'"
 		// All I see are final fields and no annotations, but should be the same thing.
 		// if stuff burns some day down the line because that changes, here's a place to check, I guess
 		if(ev.getSource().getEntity() instanceof LivingEntity noisyToolHolder&&INoisyTool.isAbleNoisyTool(noisyToolHolder.getItemBySlot(EquipmentSlot.MAINHAND)))
