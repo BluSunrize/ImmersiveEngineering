@@ -1,689 +1,392 @@
 {
   "multipart": [
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_post"
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_post"
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_post"
+        }
+      ],
       "when": {
         "up": "true"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side",
-        "uvlock": true,
-        "y": 90
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side",
+          "uvlock": true,
+          "y": 90
+        }
+      ],
       "when": {
         "east": "low"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
+          "uvlock": true,
+          "y": 90
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
+          "uvlock": true,
+          "y": 90
+        }
+      ],
       "when": {
         "east": "tall"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side",
-        "uvlock": true
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side",
+          "uvlock": true
+        }
+      ],
       "when": {
         "north": "low"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
-        "uvlock": true
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
+          "uvlock": true
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
+          "uvlock": true
+        }
+      ],
       "when": {
         "north": "tall"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side",
-        "uvlock": true,
-        "y": 180
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side",
+          "uvlock": true,
+          "y": 180
+        }
+      ],
       "when": {
         "south": "low"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
+          "uvlock": true,
+          "y": 180
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
+          "uvlock": true,
+          "y": 180
+        }
+      ],
       "when": {
         "south": "tall"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side",
-        "uvlock": true,
-        "y": 270
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side",
+          "uvlock": true,
+          "y": 270
+        }
+      ],
       "when": {
         "west": "low"
       }
     },
     {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_post"
-      },
-      "when": {
-        "up": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side",
-        "uvlock": true
-      },
-      "when": {
-        "north": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
-        "uvlock": true
-      },
-      "when": {
-        "north": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
-        "uvlock": true,
-        "y": 180
-      },
-      "when": {
-        "south": "tall"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side",
-        "uvlock": true,
-        "y": 270
-      },
-      "when": {
-        "west": "low"
-      }
-    },
-    {
-      "apply": {
-        "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
-        "uvlock": true,
-        "y": 270
-      },
+      "apply": [
+        {
+          "model": "immersiveengineering:block/wall_slag_brick0_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick1_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick2_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick3_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick4_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick5_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick6_side_tall",
+          "uvlock": true,
+          "y": 270
+        },
+        {
+          "model": "immersiveengineering:block/wall_slag_brick7_side_tall",
+          "uvlock": true,
+          "y": 270
+        }
+      ],
       "when": {
         "west": "tall"
       }
