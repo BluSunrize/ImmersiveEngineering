@@ -189,6 +189,7 @@ minecraft {
 }
 
 repositories {
+    mavenCentral()
     maven { // JEI & BlockModelSplitter
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
@@ -206,11 +207,24 @@ repositories {
             includeModule("org.squiddev", "Cobalt")
         }
     }
+    maven {
+        name = "Valkyrien Skies Internal"
+        url = 'https://maven.valkyrienskies.org'
+    }
+
 }
 
 dependencies {
 //    minecraft "net.neoforged:forge:${version_minecraft}-${version_forge}"
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
+
+    compileOnly("org.valkyrienskies:valkyrienskies-120-forge:2.5.0-beta.1+a13faa3390") {
+//        transitive = false
+    }
+    compileOnly("org.valkyrienskies.core:api:1.1.0+2a62e6a823")
+    compileOnly("org.valkyrienskies.core:api-game:1.1.0+2a62e6a823")
+    compileOnly("org.valkyrienskies.core:util:1.1.0+2a62e6a823")
+//    compileOnly("org.valkyrienskies.core:impl:1.1.0+2a62e6a823")
 
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${version_jei}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${version_jei}")

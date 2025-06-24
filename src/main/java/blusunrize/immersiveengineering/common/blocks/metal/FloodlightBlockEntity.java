@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.ValkeryienSkiesUtils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import net.minecraft.core.BlockPos;
@@ -86,10 +87,13 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			turnCooldown--;
 		boolean activeBeforeTick = getIsActive();
 		boolean enabled;
+		BlockPos realPosition = ValkeryienSkiesUtils.getInstance().getRealWorldBlockPosition(getLevel(), getBlockPos());
+
 		if(shouldUpdate)
 		{
 			lightsToBePlaced.clear();
-			updateFakeLights(true, activeBeforeTick);
+
+			updateFakeLights(realPosition, true, activeBeforeTick);
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 			shouldUpdate = false;
@@ -116,7 +120,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		if(activeAfterTick!=activeBeforeTick||level.getGameTime()%512==((getBlockPos().getX()^getBlockPos().getZ())&511))
 		{
 			this.markContainingBlockForUpdate(null);
-			updateFakeLights(true, activeAfterTick);
+			updateFakeLights( realPosition,true, activeAfterTick);
 			checkLight();
 		}
 		if(!activeAfterTick)
@@ -151,8 +155,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 
-	public void updateFakeLights(boolean deleteOld, boolean genNew)
+	public void updateFakeLights(BlockPos center, boolean deleteOld, boolean genNew)
 	{
+
 		Iterator<BlockPos> it = this.fakeLights.iterator();
 		ArrayList<BlockPos> tempRemove = new ArrayList<BlockPos>();
 		while(it.hasNext())
@@ -235,23 +240,23 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			for(int ray = 0; ray < rays.length; ray++)
 			{
 				int offset = ray==0?0: ray < 4?3: 1;
-				placeLightAlongVector(rays[ray], offset, tempRemove);
+				placeLightAlongVector(center, rays[ray], offset, tempRemove);
 			}
 		}
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
 
-	public void placeLightAlongVector(Vec3 vec, int offset, ArrayList<BlockPos> checklist)
+	public void placeLightAlongVector(BlockPos center, Vec3 vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vec3 light = Vec3.atCenterOf(getBlockPos()).add(0, 0.25, 0);
+		Vec3 light = Vec3.atCenterOf(center).add(0, 0.25, 0);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
-		ignore.add(getBlockPos());
+		ignore.add(center);
 		BlockPos hit = Utils.rayTraceForFirst(vec.add(light), light.add(vec.x*range, vec.y*range, vec.z*range), level, ignore);
 		double maxDistance = hit!=null?Vec3.atCenterOf(hit).add(0, 0.25, 0).distanceToSqr(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
-			BlockPos target = getBlockPos().offset((int)Math.round(vec.x*i), (int)Math.round(vec.y*i), (int)Math.round(vec.z*i));
+			BlockPos target = center.offset((int)Math.round(vec.x*i), (int)Math.round(vec.y*i), (int)Math.round(vec.z*i));
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
@@ -259,7 +264,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
-			if(!target.equals(getBlockPos())&&level.isEmptyBlock(target))
+			if(!target.equals(center)&&level.isEmptyBlock(target))
 			{
 				if(!checklist.remove(target))
 					lightsToBePlaced.add(target);

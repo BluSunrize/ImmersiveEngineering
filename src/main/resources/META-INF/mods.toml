@@ -37,3 +37,10 @@ credits = "All the great other Git Contributors, and the nerds on IRC!"
   versionRange="[${jei_version},)"
   ordering="NONE"
   side="BOTH"
+
+[[dependencies.immersiveengineering]]
+  modId="valkyrienskies"
+  mandatory=false
+  versionRange="[*]"
+  ordering="NONE"
+  side="BOTH"
