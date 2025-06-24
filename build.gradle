@@ -190,6 +190,12 @@ minecraft {
 
 repositories {
     mavenCentral()
+
+    maven {
+        name = "SpongePowered"
+        url = "https://repo.spongepowered.org/maven/"
+    }
+
     maven { // JEI & BlockModelSplitter
         name 'Jared maven'
         url 'https://maven.blamejared.com/'

@@ -41,6 +41,6 @@ credits = "All the great other Git Contributors, and the nerds on IRC!"
 [[dependencies.immersiveengineering]]
   modId="valkyrienskies"
   mandatory=false
-  versionRange="[*]"
+  versionRange="[2.3.0-beta.7,)"
   ordering="NONE"
   side="BOTH"
