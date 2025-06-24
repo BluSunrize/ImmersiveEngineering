@@ -75,6 +75,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	public final ComputerControlState computerControl = new ComputerControlState();
 	public int turnCooldown = 0;
 
+	@Nullable
+	private BlockPos lastBlockPosUpdate;
+
 	public FloodlightBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FLOODLIGHT.get(), pos, state);
@@ -88,6 +91,14 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		boolean activeBeforeTick = getIsActive();
 		boolean enabled;
 		BlockPos realPosition = ValkeryienSkiesUtils.getInstance().getRealWorldBlockPosition(getLevel(), getBlockPos());
+
+		if (lastBlockPosUpdate == null) lastBlockPosUpdate = realPosition;
+
+		// Useful if VS2 ship has moved significantly
+		// if last position moved greater than 5 blocks, update
+		if (lastBlockPosUpdate != realPosition && lastBlockPosUpdate.distSqr(realPosition) > 5) {
+			shouldUpdate = true;
+		}
 
 		if(shouldUpdate)
 		{
@@ -157,6 +168,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 
 	public void updateFakeLights(BlockPos center, boolean deleteOld, boolean genNew)
 	{
+		lastBlockPosUpdate = center;
 
 		Iterator<BlockPos> it = this.fakeLights.iterator();
 		ArrayList<BlockPos> tempRemove = new ArrayList<BlockPos>();
@@ -184,6 +196,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 					/*Intermediate*/new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1),
 					/*Diagonal*/new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1)};
 			Matrix4 mat = new Matrix4();
+
+			// TODO: Rotate based on VS2 ship orientation
+
 			if(getFacing()==Direction.DOWN)
 				mat.scale(1, -1, 1);
 			else if(getFacing()!=Direction.UP)
