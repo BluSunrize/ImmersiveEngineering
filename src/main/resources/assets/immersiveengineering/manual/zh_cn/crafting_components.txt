@@ -1,0 +1,15 @@
+制作组件
+核心部件
+许多机械与工具由不同的子组件构成。以下页面将详细介绍一些你常用的组件。
+简单组件可在普通 §2 工作台 §r 制作，而复杂组件则需借助 <link;engineers_workbench; 工程师装配台> 完成。<np>
+<&basic_engineering>§2 基础工程块 §r 是众多机械设备的主要建造材料，构成了大多数单体机械的核心框架，尤其在运输和能量存储设备中不可或缺。<np>
+<&mech_components>§2 铁质 与 §2 钢制机械零件 §r 是大小机械不可或缺的部分。<br>
+由于这些组件的制作频率较高，建议为其绘制 <link;blueprints; 蓝图> 。<np>
+<&component_blueprint>
+绘制蓝图的说明详见 <link;blueprints; 此处> 。<br>
+在 <link;engineers_workbench; 工程师装配台> 中使用蓝图，可降低简单组件的制作成本。<br>
+后续页面将说明，蓝图对于更复杂的组件制作尤为关键。<np>
+<&elec_components>§2 电子元件 §r 比机械组件更为复杂且使用频率较低，但对 <link;item_batcher; 物品分拣器> 、<link;turrets; 炮塔 > 等具备高级控制功能的设备而言必不可少。<np>
+<&light_bulbs>§2 白炽灯泡 §r 由碳化竹丝或纸制灯丝制成，通电后可发光发热，主要用于制作 <link;engineered_lighting; 灯笼> 。<np>
+<&tubes>§2 真空管 §r 是另一种使用频率较低的组件，这种昂贵的材料用于 <link;engineers_circuit_workbench; 逻辑电路> 及更复杂的电子设备。<np>
+<&pcb>§2 电路底板 §r 是一种绝缘铜板，可焊接各类组件，用于制作 <link;engineers_circuit_workbench; 逻辑电路> 。

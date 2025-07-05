@@ -1,0 +1,7 @@
+皮肤
+红蓝黄紫的工业美学
+皮肤是可在世界中探索获取或通过村民交易获得的物品。它们本身无特殊功能，但可装备于 <link;revolver;左轮手枪>、<link;mining_drill;采矿机械钻 >、<link;chemical_thrower;化学喷射器 >、<link;heavy_plated_shield;重型盾牌 >、<link;railgun;轨道炮 >及<link;accumulator_backpack;蓄电池背包>等装备（可能还有更多待发现物品），用于改变装备外观。
+使用方式：将装备放入<link;engineers_workbench;工程师装配台>，在对应插槽安装皮肤即可；
+拓展应用：右键点击矿车、旗帜或 <link;balloon;气球> 也可直接应用皮肤。<np>
+<&grab_bag>皮肤奖励袋内含随机皮肤，可从箱子、村民交易或首领掉落中获取。奖励袋内皮肤品质不低于奖励袋本身稀有度，且开启时更易获得未拥有的皮肤。此外，高阶奖励袋可拆解为两个低阶奖励袋，虽降低获取稀有皮肤的概率，但能增加开箱次数。
+查看全系列皮肤外观、设计原型及详细信息，请点击 <link;shader_list;此处> 。

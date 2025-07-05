@@ -1,0 +1,9 @@
+工程师蓝图
+重反绘图桌
+
+以下页面展示了所有可通过常规方式合成的工程师蓝图。其他专业蓝图可能需要从村民处获取或在探索世界时发现。
+
+所有这些蓝图（包括专业蓝图）均可用于<link;engineers_workbench;工程师装配台>中，以制造其记载的物品。
+<&molds_components>
+<&banners_signs>
+<&projectiles>
