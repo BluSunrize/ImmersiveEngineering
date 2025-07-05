@@ -1,0 +1,6 @@
+工业大麻
+工程领域的万能作物
+<&items> 工业大麻是一种用途极为广泛的植物，在工程行业中不可或缺。其种子可用于制作<link;industrial_fluids;植物油;Plant Oil>，植物油是合成 <link;industrial_fluids; 生物柴油> 的重要原料；而大麻纤维则能织成结实耐用的 §2 坚韧布料 §r 。种子可通过收割高草等方式获取。
+<&fabric_recipe> 坚韧布料由大麻纤维编织而成，具有出色的韧性。经过防水处理后，可制成 <link;this; 人造皮革 > ；未经处理的坚韧布料，可用于制作 <link;kinetic_generators; 改良风车 > 的风车帆、 <link;balloon; 气球 > 、 <link;hempcrete; 汉麻混凝土 > 以及 <link;this; 气垫 > 。
+<&cushion_recipe> 气垫由坚韧布料制成并充气，能够有效吸收冲击力，使人从高处落下时免受伤害。与粘液块不同的是，它不会让撞击物体反弹。
+<&ersatz_leather> 人造皮革通过将坚韧布料浸泡在植物油或蜂蜡中制成，经过防水处理后，可替代普通动物皮革，用于制造 <link;conveyor_belts; 传送带 > 等物品。

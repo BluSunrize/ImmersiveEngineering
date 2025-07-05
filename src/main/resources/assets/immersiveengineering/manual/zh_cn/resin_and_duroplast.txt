@@ -1,0 +1,8 @@
+树脂与工程塑胶 
+工业奇迹的基石
+<&resin><link;industrial_fluids; 酚醛树脂>是生产塑料制品的关键原料。其生产需分两步进行：首先，以§2银板§r为催化剂，将<link;industrial_fluids;乙醇> 氧化生成前驱体<link;industrial_fluids;乙醛> ;随后，将乙醛与<link;industrial_fluids;杂酚油>混合反应。这两步均可在<link;refinery;§o§n 精炼厂§r>内完成。
+<&duroplast>工程塑胶由<link;resin_and_duroplast;酚醛树脂>合成而来，这种新型材料具有硬度高、不燃、绝缘的特性，是电气工程中理想的绝缘材料。此外，树脂易于塑形的特点使其能被加工成板材、方块等多种形态。
+<&duroplast_sheet> 在 <link;bottling_machine;灌装机>中，将树脂注入合适的<link;metal_press;模具>通过机器施加高温高压，促使树脂硬化，从而制成工程塑胶板。这些板材常用于制造 <link;crafting_components; 高级电子元件> 和 <link;crafting_components; 电路底板>，发挥绝缘作用。
+<&duroplast_block>工程塑胶块不仅可用于建筑和装饰，更重要的是，在制作<link;basic_wiring;导线接线器与继电器>时，它能替代§2陶土§r，有效减少黏土的使用量。
+<&fiberboard>纤维板 由压缩<link;sawmill;锯末>与树脂混合压制而成，兼具木材特性，可在多数配方中替代木板，是回收废料的绝佳途径。
+<&empty_shell> 此外，树脂还可用于制造 <link;revolver_cartridges; 左轮手枪子弹>的弹壳，大幅降低成本，便于批量生产。

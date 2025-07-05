@@ -1,0 +1,24 @@
+工业流体
+鼓谷中的液态能源
+
+<&creosote_oil>§l杂酚油§r 是煤通过破坏性热解转化为 <link;coke_and_graphite;焦炭> 时生成的黏稠流体，可用于制造 <link;treated_wood;防腐木材>，也能在 <link;diesel_generator;柴油发电机> 中燃烧供能。<np>
+
+<&redstone_acid>§l红石酸§r 由酸性盐红石溶于水制成，虽其精确性质连资深工程师都未能完全破解，但作为电解质的性能极为优越。<np>
+
+<&redstone_acid_mixer>该酸液对金属有轻微腐蚀性，是 <link;accumulators;蓄电池> 的理想电解质。大规模生产时，在 <link;mixer;搅拌机> 中用1份 §2红石粉§r 与四分之一桶水混合即可制得。<np>
+
+<&redstone_acid_copper>若注入 <link;chemical_thrower;化学喷射器> 或 <link;bottling_machine;灌装机>，可氧化铜块，每氧化1个铜块消耗八分之一桶红石酸。<np>
+
+<&plant_oil_ethanol>§l植物油§r 和 §l乙醇§r 是植物基燃料，主要用于合成 <link;industrial_fluids;生物柴油>。乙醇还可作为 <link;industrial_fluids;乙醛> 的合成前体，植物油则能润滑大型工具轴承。<np>
+
+<&biodiesel>§l生物柴油§r 是工业工程师的核心动力源，在 <link;refinery;精炼厂> 中通过 <link;industrial_fluids;植物油与乙醇> 合成，在<link;diesel_generator;柴油发电机>中燃烧可产生巨大电力。<np>
+
+<&high_power_biodiesel>在精炼厂中按95:5的比例与 <link;industrial_fluids;力量药水> 混合，可制得 §l高十六烷值生物柴油§r，燃烧时间延长25%！<np>
+
+<&resin_acetaldehyde>§l酚醛树脂§r 和 §l乙醛§r 是 <link;resin_and_duroplast;工程塑胶> 的主要成分，相关生产配方可在 <link;resin_and_duroplast;后续章节> 中查阅。<np>
+
+<&herbicide>§l除草剂§r 对植物具有毒性，装入 <link;chemical_thrower;化学喷射器> 后以细雾形式扩散，可使接触的植物枯萎死亡。<np>
+
+<&herbicide_mixing>该流体会使树木落叶、摧毁花卉庄稼、剥离草皮，还会使农田脱水荒芜。制作时，在搅拌机中用半桶 <link;fermenter;乙醇> 与 §2铜粉§r、§2硫粉§r 混合即可。<np>
+
+<&potion>§l药水§r 可通过桶收集，并利用搅拌机批量生产，无需大量 §l烈焰粉§r 即可高效制造增益效果。

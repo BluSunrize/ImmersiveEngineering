@@ -1,0 +1,9 @@
+焦煤与石墨
+煤炭衍生制品
+<&coke> 焦煤是一种与木炭类似的纯净碳化物，可通过 <link;coke_oven; 焦炉 > 加工煤炭制得。<br>
+它是炼钢过程中的关键原料，无论是 <link;crude_blast_furnace; 简易高炉> 还是 <link;arc_furnace; 先进电弧炉 > 均会用到，而且其作为熔炉燃料的性能优于普通煤炭。
+<&graphite> 高定向热解石墨（HOP Graphite）是一种复杂的石墨同素异形体，用于特殊工程建造。<br>
+将八份焦煤粉末放入 <link;squeezer; 工业挤压机> 中压缩，即可制得高定向热解石墨粉。
+后续可通过 <link;bottling_machine; 灌装机 > 将其加工成其他形态，具体操作见下页说明。
+<&shaping> 石墨板是组装 <link;accumulators; 高压蓄电池 > 的必备材料；而石墨粉可加工成电极，是 <link;arc_furnace; 电弧炉 > 运行的关键部件。<br>
+两者的制作方法均为：将石墨粉与对应模具放置在灌装机的传送带上，机器会对粉末进行压实，浸入 <link;industrial_fluids; 杂酚油> 并烘焙成型。
