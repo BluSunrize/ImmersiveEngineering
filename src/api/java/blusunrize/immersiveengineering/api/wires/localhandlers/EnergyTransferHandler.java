@@ -170,10 +170,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sources.put(cp, energyIIC);
 				if(energyIIC instanceof LimitingEnergyConnector limiting)
 					for(Connection c : localNet.getConnections(cp))
-					{
 						limits.put(c, Arrays.asList(limiting.getPowerLimit(), limiting.getPowerLimit()));
-						System.out.println(limiting.getPowerLimit());
-					}
 			}
 		}
 		for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
