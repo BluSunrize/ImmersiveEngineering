@@ -121,7 +121,6 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		transferPaths.clear();
 		sourceSinkMapInitialized = false;
 		limits.clear();
-		;
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
@@ -155,7 +154,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void updateSourcesAndSinks()
 	{
 		if(sourceSinkMapInitialized)
+		{
+			resetLimits();
 			return;
+		}
 		sourceSinkMapInitialized = true;
 		for(ConnectionPoint cp : localNet.getConnectionPoints())
 		{
@@ -168,7 +170,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sources.put(cp, energyIIC);
 				if(energyIIC instanceof LimitingEnergyConnector limiting)
 					for(Connection c : localNet.getConnections(cp))
+					{
 						limits.put(c, Arrays.asList(limiting.getPowerLimit(), limiting.getPowerLimit()));
+						System.out.println(limiting.getPowerLimit());
+					}
 			}
 		}
 		for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
@@ -225,56 +230,80 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void transferPower()
 	{
+		// Ensure we have the most up to date map of the networks
 		updateSourcesAndSinks();
-		resetLimits();
+		// We iterate by output connectors
 		for(SinkPathsFromSource sourceData : transferPaths)
 		{
+			// Get data about the source for future use
 			ConnectionPoint sourceCp = sourceData.sourceCP();
 			EnergyConnector source = sourceData.sourceConnector();
+			// Get available energy and continue if this source has nothing to provide
 			int available = source.getAvailableEnergy();
 			if(available <= 0)
 				continue;
+			// Set up information to keep throughout the iteration of sinks
 			double maxSum = 0;
-			record OutputData(double amount, Path path, EnergyConnector output)
-			{
-			}
+			record OutputData(double amount, Path path, EnergyConnector output) { }
 			List<OutputData> maxOut = new ArrayList<>(sourceData.paths().size());
+			// Iterate sinks to find out how much we can transfer from this source
 			for(SinkPath sinkEntry : sourceData.paths())
 			{
+				// Get the maximum energy we can receive at the sink, and continue if this is zero
+				EnergyConnector sink = sinkEntry.sinkConnector();
+				int baseRequested = sink.getRequestedEnergy();
+				if(baseRequested <= 0)
+					continue;
+				// Get the limit of the transformers & other limiters we're passing through
 				double limit = Double.MAX_VALUE;
 				Connection conn = null;
 				for(Connection c : sinkEntry.pathTo().conns)
+					// We iterate through our connections, find limits, and then ensure we take the lowest limit
 					if(limits.containsKey(c))
 					{
-						limit = limits.get(c).get(1);
-						conn = c;
+						double limitTemp = Math.min(limits.get(c).get(1), limit);
+						if (limitTemp < limit) {
+							conn = c;
+							limit = limitTemp;
+						}
 					}
-				EnergyConnector sink = sinkEntry.sinkConnector();
-				int requested = (int)Math.min(sink.getRequestedEnergy(), limit*(1-sinkEntry.pathTo().loss));
+				// Limit the power throughput to the limit that would flow through the transformer/other limiter
+				int requested = (int)Math.min(baseRequested, limit*(1-sinkEntry.pathTo().loss));
+				// Continue if we can't output the power
 				if(requested <= 0)
 					continue;
+				// Get the energy required to be taken from the source (draw and loss)
 				double requiredAtSource = Math.min(requested/(1-sinkEntry.pathTo().loss), available);
+				// Set the current value for the limit on this connection
+				// Limit will be the amount we expect to take out; either the full requested or the expected amount left to take
 				if(conn!=null)
-					limits.put(conn, Arrays.asList(limits.get(conn).get(0), limit-requiredAtSource));
+					limits.put(conn, Arrays.asList(limits.get(conn).getFirst(), limit-Math.min(requiredAtSource, Math.max(available-maxSum, 0))));
+				// Create a new output data for the output, and add to the total sum we expect to take out of this connector
 				maxOut.add(new OutputData(requiredAtSource, sinkEntry.pathTo(), sink));
 				maxSum += requiredAtSource;
 			}
+			// If we are not transferring any power, continue
 			if(maxSum==0)
 				continue;
+			// To split power, we do by factor of the maximum we're allowed to consume
 			double allowedFactor = Math.min(1, available/maxSum);
+			// Iterate through all outputs, and split power evenly between them based on fraction of power we may draw
 			for(OutputData entry : maxOut)
 			{
 				Path path = entry.path();
 				double atSource = allowedFactor*entry.amount();
 				double availableFactor = 1;
 				ConnectionPoint currentPoint = sourceCp;
+				// Iterate over the connections in this path to build the expected loss from this segment
 				for(Connection c : path.conns)
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
 					// We use exponential loss here so there is still some power at arbitrarily far distances
 					availableFactor *= (1-getBasicLoss(c));
 					double availableAtPoint = atSource*availableFactor;
+					// Add the transferred amount to ensure we know which wires may burn up
 					transferredNextTick.addTo(c, availableAtPoint);
+					// Proc events based on wire through-transfer
 					if(!currentPoint.equals(path.end))
 					{
 						IImmersiveConnectable iic = localNet.getConnector(currentPoint);
@@ -282,8 +311,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 							((EnergyConnector)iic).onEnergyPassedThrough(availableAtPoint);
 					}
 				}
+				// Insert energy into the sink once we have iterated the path to the sink and processed such
 				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
 			}
+			// Extract the consumed energy from the source once we have completed insertion
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
 			else
@@ -324,7 +355,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void resetLimits()
 	{
 		if(limits.isEmpty()) return;
-		limits.replaceAll((p, v) -> Arrays.asList(limits.get(p).get(0), limits.get(p).get(0)));
+		limits.replaceAll((connection, limit) -> Arrays.asList(this.limits.get(connection).getFirst(), this.limits.get(connection).getFirst()));
 	}
 
 	public static class Path
