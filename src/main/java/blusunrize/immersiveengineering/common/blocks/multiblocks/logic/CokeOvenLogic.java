@@ -83,6 +83,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 			{
 				state.process = 0;
 				state.processMax = 0;
+				active = false;
 			}
 			else
 			{
