@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:lily_pad"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:lily_pad"
+  },
+  "results": [
+    {
+      "id": "minecraft:lily_pad"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:water_bucket"
+  },
+  "time": 480
+}

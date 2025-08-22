@@ -101,6 +101,41 @@ public class ClocheRecipes extends IERecipeProvider
 				.setTime(480)
 				.setRender(new RenderFunctionGeneric(Blocks.FERN))
 				.build(out, toRL("cloche/"+Blocks.FERN.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.CRIMSON_ROOTS)
+				.seed(Blocks.CRIMSON_ROOTS)
+				.soil(Blocks.CRIMSON_NYLIUM)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.CRIMSON_ROOTS))
+				.build(out, toRL("cloche/"+Blocks.CRIMSON_ROOTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.WARPED_ROOTS)
+				.seed(Blocks.WARPED_ROOTS)
+				.soil(Blocks.WARPED_NYLIUM)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.WARPED_ROOTS))
+				.build(out, toRL("cloche/"+Blocks.WARPED_ROOTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.NETHER_SPROUTS)
+				.seed(Blocks.NETHER_SPROUTS)
+				.soil(Blocks.WARPED_NYLIUM)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.NETHER_SPROUTS))
+				.build(out, toRL("cloche/"+Blocks.NETHER_SPROUTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.SMALL_DRIPLEAF)
+				.seed(Blocks.SMALL_DRIPLEAF)
+				.soil(Blocks.CLAY)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.SMALL_DRIPLEAF))
+				.build(out, toRL("cloche/"+Blocks.SMALL_DRIPLEAF.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.LILY_PAD)
+				.seed(Blocks.LILY_PAD)
+				.soil(Items.WATER_BUCKET)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.LILY_PAD))
+				.build(out, toRL("cloche/"+Blocks.LILY_PAD.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flowers(RecipeOutput out)

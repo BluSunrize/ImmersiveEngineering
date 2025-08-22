@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:warped_roots"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:warped_roots"
+  },
+  "results": [
+    {
+      "id": "minecraft:warped_roots"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:warped_nylium"
+  },
+  "time": 480
+}
