@@ -1,6 +1,4 @@
-// 1.21.1	2025-08-17T22:03:21.0249732	Tags for minecraft:item mod id immersiveengineering
-0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/item/back.json
-929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/item/head.json
+// 1.21.1	2025-08-22T00:25:13.314121789	Tags for minecraft:item mod id immersiveengineering
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/c/tags/item/armors.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/c/tags/item/charcoal.json
 0b4e9eb2e57b7d0790ad2a0344733be5de39a297 data/c/tags/item/clay.json
@@ -49,6 +47,7 @@ f2e3544ce176352f85129bd1a956e3c32f7213d6 data/c/tags/item/nuggets/copper.json
 6caa44724480042a9f115326034f7ac497d41f1b data/c/tags/item/nuggets/silver.json
 ff70749ed7436c3421de143e996e3c5161af1d82 data/c/tags/item/nuggets/steel.json
 688bfc4df0c1d2bfa47d34a2eac474ea7b4cfbda data/c/tags/item/nuggets/uranium.json
+03803ad3e358573f495ef5a2b28fff69483d9903 data/c/tags/item/ore_rates/singular.json
 3becf86568f5aa10f6ff0e9239d6ede2f8c5f935 data/c/tags/item/ores.json
 996364607181408578d2a18b0cd5941fe3251ffd data/c/tags/item/ores/aluminum.json
 2d5302798c26775d656807ac1d209b4b7430ff17 data/c/tags/item/ores/lead.json
@@ -57,7 +56,6 @@ ff70749ed7436c3421de143e996e3c5161af1d82 data/c/tags/item/nuggets/steel.json
 e10e19eb1ecd0d4fbd2270995a9c4b14c981af49 data/c/tags/item/ores/uranium.json
 ad7cc89e6b8ad6b0c7c3544c0abd3446c612060c data/c/tags/item/ores_in_ground/deepslate.json
 81467f7c9399b301ac496bf424b8c8b807db752a data/c/tags/item/ores_in_ground/stone.json
-03803ad3e358573f495ef5a2b28fff69483d9903 data/c/tags/item/ore_rates/singular.json
 886e5e1db1abef8583882d996f8600275f839c37 data/c/tags/item/paper.json
 6c90224504c035fa3ba51c685e8d3697beaf0e3c data/c/tags/item/plates.json
 acf6b113ec54a56762cde07b98764c3b8ae28754 data/c/tags/item/plates/aluminum.json
@@ -89,6 +87,7 @@ a8288ef96b46a0f3026247e045d3666b6047e685 data/c/tags/item/rods/wooden.json
 de1d550cd16eb974c4908a0707d28c459d7100cc data/c/tags/item/sawblades.json
 e1fcb72ddbe4430266625044432e9752bb0890e6 data/c/tags/item/seeds.json
 e1fcb72ddbe4430266625044432e9752bb0890e6 data/c/tags/item/seeds/hemp.json
+f8407d8b86459d08f321ad472e23df8b11f04807 data/c/tags/item/sheetmetal_slabs.json
 4f51622b2cf8e79bcdca3bc5d754190f594f78d7 data/c/tags/item/sheetmetals.json
 685fe54ad50bcb90d1857662c38ad1e2e89bb8a6 data/c/tags/item/sheetmetals/aluminum.json
 208b8916c3964147d79703c1eb7096e8775aa78f data/c/tags/item/sheetmetals/constantan.json
@@ -101,7 +100,6 @@ ff543a6161432e4e8dd2bd8775ab99af16c0315c data/c/tags/item/sheetmetals/nickel.jso
 bc8cb8d4f41333ae547eb75f529beb92a7a62dd9 data/c/tags/item/sheetmetals/silver.json
 44df194bae79ecbc6ba642f28825d7d55f640865 data/c/tags/item/sheetmetals/steel.json
 517af5879eee0eaacb6ec77424a19790f680f6bd data/c/tags/item/sheetmetals/uranium.json
-f8407d8b86459d08f321ad472e23df8b11f04807 data/c/tags/item/sheetmetal_slabs.json
 0e4aefbc2ed6059d8a6577044f12f658c39b57d1 data/c/tags/item/slag.json
 93b98051677cde47b4687bf783a257a1868432cb data/c/tags/item/storage_blocks.json
 a252494dc3a9a5b9aab17e82ae7ff504ca84a099 data/c/tags/item/storage_blocks/aluminum.json
@@ -127,23 +125,29 @@ f5470081131755f2ca6efe914c57a261c517eec5 data/c/tags/item/wires/copper.json
 ef8563aa2ee1f32b7bea78d511d14c4de2fa7f9f data/c/tags/item/wires/electrum.json
 9b11ddba67b507e14e22e33521204309ef1e6dfe data/c/tags/item/wires/lead.json
 090c3aab10acd9836ba1976243fc7ce381120a1a data/c/tags/item/wires/steel.json
+0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/item/back.json
+929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/item/head.json
 085238f24aca214ce9eb3f57ab02370467990f33 data/immersiveengineering/tags/item/blocks/copper.json
 d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/item/circuits/logic.json
 1fe9d2f525aae99bcd22b42ce0a5601f493e62b6 data/immersiveengineering/tags/item/circuits/pcb.json
 5897a2d4d6824897b4f01a84fe17138834346835 data/immersiveengineering/tags/item/circuits/solder.json
 1244a238b6a335816b5f32e9a3e4448ac2e48dac data/immersiveengineering/tags/item/connector_insulator.json
-9f68aab51771ffcf2d804182251d3e06913ef5bc data/immersiveengineering/tags/item/cut_blocks/copper.json
+d9321b6b82c8417e325b6119892d9b3c296db8bb data/immersiveengineering/tags/item/cut_blocks/copper.json
+d7ac24837f69f46b52d2c7c893c9183a43abf559 data/immersiveengineering/tags/item/cut_bulbs/copper.json
+eead159568467477b62e9f2314af15d122a3f48f data/immersiveengineering/tags/item/cut_doors/copper.json
+41097dc822cc68e5b0e9530e54080fcd3d6f4ec2 data/immersiveengineering/tags/item/cut_grates/copper.json
 3e4fc91069da2d49ed9c3bd132c947b9879bdd0c data/immersiveengineering/tags/item/cut_slabs/copper.json
 240d783ca901747689edbff6ec068e1ebafd3dc6 data/immersiveengineering/tags/item/cut_stairs/copper.json
+759fae2e6c137458e65ac556666a27231832447e data/immersiveengineering/tags/item/cut_trapdoors/copper.json
 35290fc4e6542abc96c7e17e8127984e175cabba data/immersiveengineering/tags/item/observer_material.json
 6c0dde6d4ee345ac357d2c738281761c579e09e9 data/immersiveengineering/tags/item/recycling/ignored_components.json
 9b803eb2eff5a43c330d3d61a1467efc24e7d2af data/immersiveengineering/tags/item/repairs_automaton.json
-586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/item/scaffoldings/aluminum.json
-8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/item/scaffoldings/steel.json
 c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/item/scaffolding_slabs/aluminum.json
 56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/item/scaffolding_slabs/steel.json
 b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/item/scaffolding_stairs/aluminum.json
 58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/item/scaffolding_stairs/steel.json
+586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/item/scaffoldings/aluminum.json
+8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/item/scaffoldings/steel.json
 861687a874d14255d783b8023333a15b43860a85 data/immersiveengineering/tags/item/toolbox/tools.json
 ba8541c1dcff08a470290e6d940fd73f07a791ad data/immersiveengineering/tags/item/toolbox/wiring.json
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/item/tools/hammers.json
@@ -157,8 +161,8 @@ f981438643de6f70029b9950180e9f2f987f773b data/minecraft/tags/item/chest_armor.js
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/item/cluster_max_harvestables.json
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/item/coals.json
 c442b7d04f34628fbc7be64ecfe622b236e62f12 data/minecraft/tags/item/doors.json
-0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/item/fences.json
 afc31b5afe5324de1c6097c0f400298aba7add70 data/minecraft/tags/item/fence_gates.json
+0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/item/fences.json
 967f0fefffd7c44709dcec36be6266f2396204b5 data/minecraft/tags/item/foot_armor.json
 118cb253f115fdd528bb0b1ae110fb3b3e480170 data/minecraft/tags/item/head_armor.json
 96897870ad0c4522070bcffe62f75fbf24bcf02c data/minecraft/tags/item/hoes.json

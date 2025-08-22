@@ -65,11 +65,15 @@ public class IETags
 	public static final TagKey<Item> charCoal = createItemWrapper(cLoc("charcoal"));
 	public static final TagKey<Item> paper = createItemWrapper(cLoc("paper"));
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
+	// Vanilla Copper
 	public static final TagKey<Block> copperBlocks = createBlockTag(ieLoc("blocks/copper"));
 	public static final TagKey<Block> cutCopperBlocks = createBlockTag(ieLoc("cut_blocks/copper"));
-
 	public static final TagKey<Block> cutCopperStairs = createBlockTag(ieLoc("cut_stairs/copper"));
 	public static final TagKey<Block> cutCopperSlabs = createBlockTag(ieLoc("cut_slabs/copper"));
+	public static final TagKey<Block> copperBulbs = createBlockTag(ieLoc("cut_bulbs/copper"));
+	public static final TagKey<Block> copperGrates = createBlockTag(ieLoc("cut_grates/copper"));
+	public static final TagKey<Block> copperDoors = createBlockTag(ieLoc("cut_doors/copper"));
+	public static final TagKey<Block> copperTrapdoors = createBlockTag(ieLoc("cut_trapdoors/copper"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(ieLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(ieLoc("treated_wood_slab"));

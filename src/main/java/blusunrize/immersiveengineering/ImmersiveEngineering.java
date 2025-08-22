@@ -126,6 +126,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IEApi.prefixToIngotMap.put("cut_blocks", new Integer[]{9, 4});
 		IEApi.prefixToIngotMap.put("cut_stairs", new Integer[]{9, 4});
+		IEApi.prefixToIngotMap.put("cut_grates", new Integer[]{9, 4});
 		IEApi.prefixToIngotMap.put("cut_slabs", new Integer[]{9, 8});
 
 		/* ARC FURNACE RECYCLING */
@@ -153,9 +154,15 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffolding_stairs/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffolding_slabs/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("fences/");
+		// This is all for IE-special tags to get copper. I don't expect these to get used all that much, but adding pseudo-item tags otherwise is highly annoying
+		// There's also the off-chance we catch other useful blocks under these. Just, in general, Mojang makes doing anything with copper really annoying with all the variants
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_blocks/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_stairs/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_slabs/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_bulbs/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_grates/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_doors/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_trapdoors/");
 
 		// Decoration blocks & Sheetmetal
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
