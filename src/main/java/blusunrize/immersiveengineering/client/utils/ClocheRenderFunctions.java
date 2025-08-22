@@ -12,6 +12,8 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -53,6 +55,8 @@ public class ClocheRenderFunctions
 
 		register("doubleflower", RenderFunctionDoubleFlower.CODEC);
 		register("doublecrop", RenderFunctionDoubleCrop.CODEC);
+		register("tippedvine", RenderFunctionTippedVine.CODEC);
+		register("quadflower", RenderFunctionQuadFlower.CODEC);
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
 
@@ -361,4 +365,97 @@ public class ClocheRenderFunctions
 		}
 	}
 
+	public static class RenderFunctionTippedVine implements ClocheRenderFunction
+	{
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionTippedVine> CODEC = DualCompositeMapCodecs.composite(
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("stem"), r -> r.stem,
+				DualCodecs.registryEntry(BuiltInRegistries.BLOCK).fieldOf("tip"), r -> r.tip,
+				DualCodecs.BOOL.fieldOf("hasBerries"), r -> r.hasBerries,
+				DualCodecs.BOOL.fieldOf("upsideDown"), r -> r.upsideDown,
+				RenderFunctionTippedVine::new
+		);
+
+		final Block stem;
+		final Block tip;
+		final boolean hasBerries;
+		final boolean upsideDown;
+
+		public RenderFunctionTippedVine(Block stem, Block tip, boolean hasBerries, boolean upsideDown)
+		{
+			this.stem = stem;
+			this.tip = tip;
+			this.hasBerries = hasBerries;
+			this.upsideDown = upsideDown;
+		}
+
+		@Override
+		public float getScale(ItemStack seed, float growth)
+		{
+			return 0.6875f;
+		}
+
+		@Override
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
+		{
+			if(upsideDown)
+			{
+				Transformation bottom = new Transformation(new Vector3f(0, growth, 0), null, new Vector3f(1, -1, 1), null);
+				Transformation top = new Transformation(new Vector3f(0, growth+1, 0), null, new Vector3f(1, -1, 1), null);
+				return ImmutableList.of(
+						Pair.of(hasBerries&&growth > 0.9375?this.stem.defaultBlockState().setValue(CaveVinesBlock.BERRIES, true): this.stem.defaultBlockState(), bottom),
+						Pair.of(hasBerries&&growth > 0.875?this.tip.defaultBlockState().setValue(CaveVinesBlock.BERRIES, true): this.tip.defaultBlockState(), top),
+						Pair.of(WoodenDecoration.TREATED_FENCE.defaultBlockState(), new Transformation(null)),
+						Pair.of(WoodenDecoration.TREATED_FENCE.defaultBlockState(), new Transformation(new Vector3f(0, 1, 0), null, null, null))
+				);
+
+			}
+			else
+			{
+				Transformation bottom = new Transformation(new Vector3f(0, growth-1, 0), null, null, null);
+				Transformation top = new Transformation(new Vector3f(0, growth, 0), null, null, null);
+				return ImmutableList.of(
+						Pair.of(hasBerries&&growth > 0.9375?this.stem.defaultBlockState().setValue(CaveVinesBlock.BERRIES, true): this.stem.defaultBlockState(), bottom),
+						Pair.of(hasBerries&&growth > 0.875?this.tip.defaultBlockState().setValue(CaveVinesBlock.BERRIES, true): this.tip.defaultBlockState(), top));
+			}
+		}
+
+
+		@Override
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
+	}
+
+	public static class RenderFunctionQuadFlower implements ClocheRenderFunction
+	{
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionQuadFlower> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionQuadFlower::new);
+
+		final Block cropBlock;
+
+		public RenderFunctionQuadFlower(Block cropBlock)
+		{
+			this.cropBlock = cropBlock;
+		}
+
+		@Override
+		public float getScale(ItemStack seed, float growth)
+		{
+			return 0.875f;
+		}
+
+		@Override
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
+		{
+			int age = Math.min(4, (int)(4*growth+1));
+			BlockState state = this.cropBlock.defaultBlockState().setValue(PinkPetalsBlock.AMOUNT, age);
+			return ImmutableList.of(Pair.of(state, new Transformation(null)));
+		}
+
+		@Override
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
+	}
 }

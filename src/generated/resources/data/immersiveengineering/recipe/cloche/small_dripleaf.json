@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:small_dripleaf"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:small_dripleaf"
+  },
+  "results": [
+    {
+      "id": "minecraft:small_dripleaf"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:clay"
+  },
+  "time": 480
+}

@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:cloche",
+  "fluid": {
+    "fluid": "minecraft:lava"
+  },
+  "input": {
+    "item": "minecraft:weeping_vines"
+  },
+  "render": {
+    "type": "immersiveengineering:tippedvine",
+    "hasBerries": false,
+    "stem": "minecraft:weeping_vines_plant",
+    "tip": "minecraft:weeping_vines",
+    "upsideDown": true
+  },
+  "results": [
+    {
+      "id": "minecraft:weeping_vines"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:crimson_nylium"
+  },
+  "time": 480
+}

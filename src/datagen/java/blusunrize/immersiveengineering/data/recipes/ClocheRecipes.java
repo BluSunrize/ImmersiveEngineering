@@ -101,6 +101,60 @@ public class ClocheRecipes extends IERecipeProvider
 				.setTime(480)
 				.setRender(new RenderFunctionGeneric(Blocks.FERN))
 				.build(out, toRL("cloche/"+Blocks.FERN.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.SMALL_DRIPLEAF)
+				.seed(Blocks.SMALL_DRIPLEAF)
+				.soil(Blocks.CLAY)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.SMALL_DRIPLEAF))
+				.build(out, toRL("cloche/"+Blocks.SMALL_DRIPLEAF.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.LILY_PAD)
+				.seed(Blocks.LILY_PAD)
+				.soil(Items.WATER_BUCKET)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.LILY_PAD))
+				.build(out, toRL("cloche/"+Blocks.LILY_PAD.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.CRIMSON_ROOTS)
+				.seed(Blocks.CRIMSON_ROOTS)
+				.soil(Blocks.CRIMSON_NYLIUM)
+				.setTime(480)
+				.setRequiredFluid(Fluids.LAVA)
+				.setRender(new RenderFunctionGeneric(Blocks.CRIMSON_ROOTS))
+				.build(out, toRL("cloche/"+Blocks.CRIMSON_ROOTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.WARPED_ROOTS)
+				.seed(Blocks.WARPED_ROOTS)
+				.soil(Blocks.WARPED_NYLIUM)
+				.setTime(480)
+				.setRequiredFluid(Fluids.LAVA)
+				.setRender(new RenderFunctionGeneric(Blocks.WARPED_ROOTS))
+				.build(out, toRL("cloche/"+Blocks.WARPED_ROOTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.NETHER_SPROUTS)
+				.seed(Blocks.NETHER_SPROUTS)
+				.soil(Blocks.WARPED_NYLIUM)
+				.setTime(480)
+				.setRequiredFluid(Fluids.LAVA)
+				.setRender(new RenderFunctionGeneric(Blocks.NETHER_SPROUTS))
+				.build(out, toRL("cloche/"+Blocks.NETHER_SPROUTS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.TWISTING_VINES)
+				.seed(Blocks.TWISTING_VINES)
+				.soil(Items.WARPED_NYLIUM)
+				.setTime(480)
+				.setRequiredFluid(Fluids.LAVA)
+				.setRender(new RenderFunctionTippedVine(Blocks.TWISTING_VINES_PLANT, Blocks.TWISTING_VINES, false, false))
+				.build(out, toRL("cloche/"+Blocks.TWISTING_VINES.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.WEEPING_VINES)
+				.seed(Blocks.WEEPING_VINES)
+				.soil(Items.CRIMSON_NYLIUM)
+				.setTime(480)
+				.setRequiredFluid(Fluids.LAVA)
+				.setRender(new RenderFunctionTippedVine(Blocks.WEEPING_VINES_PLANT, Blocks.WEEPING_VINES, false, true))
+				.build(out, toRL("cloche/"+Blocks.WEEPING_VINES.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flowers(RecipeOutput out)
@@ -122,6 +176,13 @@ public class ClocheRecipes extends IERecipeProvider
 		doubleFlower(out, Blocks.ROSE_BUSH);
 		doubleFlower(out, Blocks.PEONY);
 		flower(out, Blocks.WITHER_ROSE, Blocks.SOUL_SOIL);
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.PINK_PETALS)
+				.seed(Blocks.PINK_PETALS)
+				.soil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionQuadFlower(Blocks.PINK_PETALS))
+				.build(out, toRL("cloche/"+Blocks.PINK_PETALS.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flower(RecipeOutput out, Block flowerBlock, ItemLike soil)
@@ -314,7 +375,7 @@ public class ClocheRecipes extends IERecipeProvider
 				.seed(Items.GLOW_BERRIES)
 				.soil(Blocks.MOSS_BLOCK)
 				.setTime(640)
-				.setRender(new RenderFunctionCrop(Blocks.CAVE_VINES))
+				.setRender(new RenderFunctionTippedVine(Blocks.CAVE_VINES_PLANT, Blocks.CAVE_VINES, true, true))
 				.build(out, toRL("cloche/glow_berries"));
 	}
 }

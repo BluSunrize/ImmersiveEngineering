@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "fluid": {
+    "fluid": "minecraft:lava"
+  },
+  "input": {
+    "item": "minecraft:crimson_roots"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:crimson_roots"
+  },
+  "results": [
+    {
+      "id": "minecraft:crimson_roots"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:crimson_nylium"
+  },
+  "time": 480
+}

@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "fluid": {
+    "fluid": "minecraft:lava"
+  },
+  "input": {
+    "item": "minecraft:nether_sprouts"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:nether_sprouts"
+  },
+  "results": [
+    {
+      "id": "minecraft:nether_sprouts"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:warped_nylium"
+  },
+  "time": 480
+}
