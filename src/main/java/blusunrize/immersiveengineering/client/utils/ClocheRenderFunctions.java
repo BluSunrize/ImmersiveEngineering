@@ -56,6 +56,7 @@ public class ClocheRenderFunctions
 		register("doubleflower", RenderFunctionDoubleFlower.CODEC);
 		register("doublecrop", RenderFunctionDoubleCrop.CODEC);
 		register("tippedvine", RenderFunctionTippedVine.CODEC);
+		register("quadflower", RenderFunctionQuadFlower.CODEC);
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
 
@@ -418,6 +419,38 @@ public class ClocheRenderFunctions
 			}
 		}
 
+
+		@Override
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
+	}
+
+	public static class RenderFunctionQuadFlower implements ClocheRenderFunction
+	{
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionQuadFlower> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionQuadFlower::new);
+
+		final Block cropBlock;
+
+		public RenderFunctionQuadFlower(Block cropBlock)
+		{
+			this.cropBlock = cropBlock;
+		}
+
+		@Override
+		public float getScale(ItemStack seed, float growth)
+		{
+			return 0.875f;
+		}
+
+		@Override
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
+		{
+			int age = Math.min(4, (int)(4*growth+1));
+			BlockState state = this.cropBlock.defaultBlockState().setValue(PinkPetalsBlock.AMOUNT, age);
+			return ImmutableList.of(Pair.of(state, new Transformation(null)));
+		}
 
 		@Override
 		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()

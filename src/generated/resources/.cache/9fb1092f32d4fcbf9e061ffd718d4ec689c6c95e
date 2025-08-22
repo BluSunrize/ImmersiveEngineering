@@ -1,4 +1,4 @@
-// 1.21.1	2025-08-22T15:18:30.674869957	Recipes
+// 1.21.1	2025-08-22T15:28:18.774345364	Recipes
 e46a17053b96b7062a3dbf804ed3e25c134fc397 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick.json
 6a92fb93f1478200a7237b19770f94285cc3d955 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_from_slab.json
 bba88ea9b8e42c09c4e5df2344ccef6ad7ed4b8d data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_to_slab.json
@@ -873,6 +873,7 @@ a8890dace1f7d946f7d1721af22d50f358844205 data/immersiveengineering/recipe/cloche
 6a35bb5b3251b360ae411e027873f2a4582e14fa data/immersiveengineering/recipe/cloche/orange_tulip.json
 858d499511a93bc3d910a2536639c9c54221a312 data/immersiveengineering/recipe/cloche/oxeye_daisy.json
 3a9a3e67fd6245f69c2cc1f1c4f764c087aadc13 data/immersiveengineering/recipe/cloche/peony.json
+f69018cb76aafdd234960f1fb741207e8b80db5e data/immersiveengineering/recipe/cloche/pink_petals.json
 a54aa69c6c25ceedd959c3ee0882797b840cfb9a data/immersiveengineering/recipe/cloche/pink_tulip.json
 4f977498ec0de758e1dfc80cecc0e2ca98c2aa7a data/immersiveengineering/recipe/cloche/pitcher_plant.json
 8679f7b12af90256895f0b909af11b94bacca564 data/immersiveengineering/recipe/cloche/poppy.json

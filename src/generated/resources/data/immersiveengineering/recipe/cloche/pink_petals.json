@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:pink_petals"
+  },
+  "render": {
+    "type": "immersiveengineering:quadflower",
+    "block": "minecraft:pink_petals"
+  },
+  "results": [
+    {
+      "id": "minecraft:pink_petals"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

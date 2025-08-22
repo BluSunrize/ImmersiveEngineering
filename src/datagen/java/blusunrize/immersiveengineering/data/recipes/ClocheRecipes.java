@@ -176,6 +176,13 @@ public class ClocheRecipes extends IERecipeProvider
 		doubleFlower(out, Blocks.ROSE_BUSH);
 		doubleFlower(out, Blocks.PEONY);
 		flower(out, Blocks.WITHER_ROSE, Blocks.SOUL_SOIL);
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.PINK_PETALS)
+				.seed(Blocks.PINK_PETALS)
+				.soil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionQuadFlower(Blocks.PINK_PETALS))
+				.build(out, toRL("cloche/"+Blocks.PINK_PETALS.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flower(RecipeOutput out, Block flowerBlock, ItemLike soil)
