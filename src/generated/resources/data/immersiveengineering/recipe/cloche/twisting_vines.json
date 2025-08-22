@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:twisting_vines"
+  },
+  "render": {
+    "type": "immersiveengineering:tippedvine",
+    "hasBerries": false,
+    "stem": "minecraft:twisting_vines",
+    "tip": "minecraft:twisting_vines_plant",
+    "upsideDown": false
+  },
+  "results": [
+    {
+      "id": "minecraft:twisting_vines"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:warped_nylium"
+  },
+  "time": 480
+}

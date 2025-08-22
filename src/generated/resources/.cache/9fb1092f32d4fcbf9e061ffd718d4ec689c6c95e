@@ -1,4 +1,4 @@
-// 1.21.1	2025-08-22T11:22:50.076550756	Recipes
+// 1.21.1	2025-08-22T15:01:29.964786314	Recipes
 e46a17053b96b7062a3dbf804ed3e25c134fc397 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick.json
 6a92fb93f1478200a7237b19770f94285cc3d955 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_from_slab.json
 bba88ea9b8e42c09c4e5df2344ccef6ad7ed4b8d data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_to_slab.json
@@ -861,7 +861,7 @@ c6ae606f6a85560e264392729bc601361e8c7fe2 data/immersiveengineering/recipe/cloche
 572c027a93a8fa0b66edff39e19a5d42cac46389 data/immersiveengineering/recipe/cloche/crimson_roots.json
 0e3fae7166c3230c7712eb4067a7b8171e424040 data/immersiveengineering/recipe/cloche/dandelion.json
 cf394abb29f63d1e37a57bdf8142f5b71fc24be4 data/immersiveengineering/recipe/cloche/fern.json
-19447691d996ebe818f6510d7503e5e21249fb44 data/immersiveengineering/recipe/cloche/glow_berries.json
+44b5538f132ae51b1e55e8de9f1b6b9327250d64 data/immersiveengineering/recipe/cloche/glow_berries.json
 7c2df2076c0628f90cff02bc545d3f40d51a6bdc data/immersiveengineering/recipe/cloche/hemp.json
 fd9f0b37d927300a5fb3c83212148f72c150bcc7 data/immersiveengineering/recipe/cloche/lilac.json
 4fda3747bd6a86a2b9b3233928533d47634c9d45 data/immersiveengineering/recipe/cloche/lily_of_the_valley.json
@@ -887,8 +887,10 @@ e04257e0400797180b4220ff7ad6fa7af9b449de data/immersiveengineering/recipe/cloche
 86c21d21359486ce96873ab61321b993b7b4c039 data/immersiveengineering/recipe/cloche/sunflower.json
 67c7f60d810ab7b3062eb2a3b0dcca6ff983f928 data/immersiveengineering/recipe/cloche/sweet_berries.json
 3f99d1c5ab5ddc54555d26a9a842ae08e3908bb8 data/immersiveengineering/recipe/cloche/torchflower.json
+e67e56a429890b5e89dd1fc329cb5246905e613f data/immersiveengineering/recipe/cloche/twisting_vines.json
 9edc1a4c381eb97a760bf6455b62b20d56ea66e4 data/immersiveengineering/recipe/cloche/warped_fungus.json
 f24a0773abf9c0faf8ae1dd58a867e60cf55c8a5 data/immersiveengineering/recipe/cloche/warped_roots.json
+89cb3e1447f5bcd07e97be8bc53d3a264d7c3f15 data/immersiveengineering/recipe/cloche/weeping_vines.json
 25789183b42071ff20b163366aaac22bd746f27e data/immersiveengineering/recipe/cloche/wheat.json
 563d77f104039b931fdb9d8b826eeeb6d4870cec data/immersiveengineering/recipe/cloche/white_tulip.json
 9420146c4ffffad559cfdc6977192f6c6c1de06f data/immersiveengineering/recipe/cloche/wither_rose.json

@@ -136,6 +136,20 @@ public class ClocheRecipes extends IERecipeProvider
 				.setTime(480)
 				.setRender(new RenderFunctionGeneric(Blocks.LILY_PAD))
 				.build(out, toRL("cloche/"+Blocks.LILY_PAD.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.TWISTING_VINES)
+				.seed(Blocks.TWISTING_VINES)
+				.soil(Items.WARPED_NYLIUM)
+				.setTime(480)
+				.setRender(new RenderFunctionTippedVine(Blocks.TWISTING_VINES, Blocks.TWISTING_VINES_PLANT, false, false))
+				.build(out, toRL("cloche/"+Blocks.TWISTING_VINES.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.WEEPING_VINES)
+				.seed(Blocks.WEEPING_VINES)
+				.soil(Items.CRIMSON_NYLIUM)
+				.setTime(480)
+				.setRender(new RenderFunctionTippedVine(Blocks.WEEPING_VINES, Blocks.WEEPING_VINES_PLANT, false, true))
+				.build(out, toRL("cloche/"+Blocks.WEEPING_VINES.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flowers(RecipeOutput out)
@@ -349,7 +363,7 @@ public class ClocheRecipes extends IERecipeProvider
 				.seed(Items.GLOW_BERRIES)
 				.soil(Blocks.MOSS_BLOCK)
 				.setTime(640)
-				.setRender(new RenderFunctionCrop(Blocks.CAVE_VINES))
+				.setRender(new RenderFunctionTippedVine(Blocks.CAVE_VINES_PLANT, Blocks.CAVE_VINES, true, true))
 				.build(out, toRL("cloche/glow_berries"));
 	}
 }
