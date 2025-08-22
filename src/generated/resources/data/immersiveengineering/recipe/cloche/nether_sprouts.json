@@ -1,5 +1,8 @@
 {
   "type": "immersiveengineering:cloche",
+  "fluid": {
+    "fluid": "minecraft:lava"
+  },
   "input": {
     "item": "minecraft:nether_sprouts"
   },

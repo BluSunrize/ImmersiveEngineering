@@ -1,13 +1,16 @@
 {
   "type": "immersiveengineering:cloche",
+  "fluid": {
+    "fluid": "minecraft:lava"
+  },
   "input": {
     "item": "minecraft:weeping_vines"
   },
   "render": {
     "type": "immersiveengineering:tippedvine",
     "hasBerries": false,
-    "stem": "minecraft:weeping_vines",
-    "tip": "minecraft:weeping_vines_plant",
+    "stem": "minecraft:weeping_vines_plant",
+    "tip": "minecraft:weeping_vines",
     "upsideDown": true
   },
   "results": [
