@@ -148,6 +148,7 @@ public class IEBlockTags extends BlockTagsProvider
 		{
 			tag(IETags.treatedWood).add(WoodenDecoration.TREATED_WOOD.get(style).get());
 			tag(IETags.treatedWoodSlab).add(IEBlocks.TO_SLAB.get(IEBlocks.WoodenDecoration.TREATED_WOOD.get(style).getId()).get());
+			tag(IETags.treatedWoodStair).add(IEBlocks.TO_STAIRS.get(IEBlocks.WoodenDecoration.TREATED_WOOD.get(style).getId()).get());
 		}
 		for(MetalScaffoldingType t : MetalScaffoldingType.values())
 		{

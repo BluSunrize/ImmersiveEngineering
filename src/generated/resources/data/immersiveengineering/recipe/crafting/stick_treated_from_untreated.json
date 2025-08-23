@@ -8,7 +8,7 @@
       "tag": "c:creosote"
     },
     "w": {
-      "tag": "immersiveengineering:untreated_wooden_planks"
+      "tag": "c:rods/untreated_wood"
     }
   },
   "pattern": [
@@ -18,6 +18,6 @@
   ],
   "result": {
     "count": 8,
-    "id": "immersiveengineering:treated_wood_horizontal"
+    "id": "immersiveengineering:stick_treated"
   }
 }

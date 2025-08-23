@@ -1,0 +1,9 @@
+{
+  "remove": [
+    "immersiveengineering:treated_fence"
+  ],
+  "values": [
+    "#minecraft:wooden_fences",
+    "#c:fences/wooden"
+  ]
+}

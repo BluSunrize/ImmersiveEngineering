@@ -1,0 +1,8 @@
+{
+  "remove": [
+    "#immersiveengineering:treated_wood_slab"
+  ],
+  "values": [
+    "#minecraft:wooden_slabs"
+  ]
+}

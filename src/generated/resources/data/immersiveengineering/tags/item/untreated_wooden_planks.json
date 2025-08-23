@@ -1,0 +1,8 @@
+{
+  "remove": [
+    "#immersiveengineering:treated_wood"
+  ],
+  "values": [
+    "#minecraft:planks"
+  ]
+}

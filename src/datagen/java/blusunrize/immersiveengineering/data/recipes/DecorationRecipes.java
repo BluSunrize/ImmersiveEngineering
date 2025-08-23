@@ -35,7 +35,6 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -88,6 +87,60 @@ public class DecorationRecipes extends IERecipeProvider
 
 	private void woodenDecoration(RecipeOutput out)
 	{
+		// Treated item crafting itself
+		shapedMisc(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), 8)
+				.pattern("www")
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.untreatedWoodenPlanks)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL)))
+				);
+		shapedMisc(IEBlocks.TO_SLAB.get(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL).getId()), 8)
+				.pattern("www")
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.untreatedWoodenSlabs)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(IEBlocks.TO_SLAB.get(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL).getId()))+"_from_untreated")
+				);
+		shapedMisc(IEBlocks.TO_STAIRS.get(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL).getId()), 8)
+				.pattern("www")
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.untreatedWoodenStairs)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(IEBlocks.TO_STAIRS.get(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL).getId()))+"_from_untreated")
+				);
+		shapedMisc(WoodenDecoration.TREATED_FENCE, 5)
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.untreatedWoodenFences)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(WoodenDecoration.TREATED_FENCE)+"_from_untreated")
+				);
+		shapedMisc(WoodenDecoration.TREATED_FENCE_GATE, 2)
+				.pattern("wbw")
+				.define('w', IETags.untreatedWoodenGates)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(WoodenDecoration.TREATED_FENCE_GATE)+"_from_untreated")
+				);
+		// Craft within treated styles
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			addStairs(WoodenDecoration.TREATED_WOOD.get(style), out);
 
@@ -100,6 +153,7 @@ public class DecorationRecipes extends IERecipeProvider
 					.unlockedBy("has_"+toPath(WoodenDecoration.TREATED_WOOD.get(from)), has(WoodenDecoration.TREATED_WOOD.get(from)))
 					.save(out, toRL(toPath(WoodenDecoration.TREATED_WOOD.get(to))+"_from_"+from.toString().toLowerCase(Locale.US)));
 		}
+		// Craft specific treated blocks
 		shapedMisc(WoodenDecoration.TREATED_SCAFFOLDING, 6)
 				.pattern("iii")
 				.pattern(" s ")
@@ -136,18 +190,6 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', Blocks.STONE_BRICKS)
 				.unlockedBy("has_"+toPath(WoodenDecoration.TREATED_FENCE), has(WoodenDecoration.TREATED_FENCE))
 				.save(out, toRL(toPath(WoodenDecoration.TREATED_POST)));
-
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), 8)
-				.pattern("www")
-				.pattern("wbw")
-				.pattern("www")
-				.define('w', ItemTags.PLANKS)
-				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
-				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
-				.save(
-						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
-						toRL(toPath(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL)))
-				);
 
 		shapedMisc(WoodenDecoration.SAWDUST, 9)
 				.pattern("sss")

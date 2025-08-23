@@ -8,16 +8,15 @@
       "tag": "c:creosote"
     },
     "w": {
-      "tag": "immersiveengineering:untreated_wooden_planks"
+      "tag": "immersiveengineering:untreated_wooden_fences"
     }
   },
   "pattern": [
-    "www",
     "wbw",
     "www"
   ],
   "result": {
-    "count": 8,
-    "id": "immersiveengineering:treated_wood_horizontal"
+    "count": 5,
+    "id": "immersiveengineering:treated_fence"
   }
 }

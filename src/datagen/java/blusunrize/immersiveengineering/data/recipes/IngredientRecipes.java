@@ -52,6 +52,17 @@ public class IngredientRecipes extends IERecipeProvider
 				.group("sticks")
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(Ingredients.STICK_TREATED)));
+		shapedMisc(Ingredients.STICK_TREATED, 8)
+				.pattern("www")
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.untreatedStick)
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
+				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
+				.save(
+						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
+						toRL(toPath(Ingredients.STICK_TREATED)+"_from_untreated")
+				);
 		shapedMisc(Ingredients.STICK_IRON, 4)
 				.pattern("i")
 				.pattern("i")

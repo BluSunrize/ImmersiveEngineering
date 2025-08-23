@@ -73,6 +73,7 @@ public class IETags
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(ieLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(ieLoc("treated_wood_slab"));
+	public static final TagKey<Block> treatedWoodStair = createBlockTag(ieLoc("treated_wood_stair"));
 	public static final TagKey<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
 	public static final TagKey<Block> scaffoldingSteel = createBlockTag(ieLoc("scaffoldings/steel"));
 	public static final TagKey<Block> scaffoldingAlu = createBlockTag(ieLoc("scaffoldings/aluminum"));
@@ -85,6 +86,7 @@ public class IETags
 	public static final TagKey<Block> fencesSteel = createBlockTag(cLoc("fences/steel"));
 	public static final TagKey<Block> fencesAlu = createBlockTag(cLoc("fences/aluminum"));
 	//IE Items
+	public static final TagKey<Item> untreatedStick = createItemWrapper(getRod("untreated_wood"));
 	public static final TagKey<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
 	public static final TagKey<Item> ironRod = createItemWrapper(getRod("iron"));
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
@@ -114,6 +116,12 @@ public class IETags
 	public static final TagKey<Item> plasticPlate = createItemWrapper(getPlate("plastic"));
 	public static final TagKey<Item> sawblades = createItemWrapper(cLoc("sawblades"));
 	//Utility tags
+	// IE Untreated Woods
+	public static final TagKey<Item> untreatedWoodenPlanks = createItemWrapper(ieLoc("untreated_wooden_planks"));
+	public static final TagKey<Item> untreatedWoodenSlabs = createItemWrapper(ieLoc("untreated_wooden_slabs"));
+	public static final TagKey<Item> untreatedWoodenStairs = createItemWrapper(ieLoc("untreated_wooden_stairs"));
+	public static final TagKey<Item> untreatedWoodenFences = createItemWrapper(ieLoc("untreated_wooden_fences"));
+	public static final TagKey<Item> untreatedWoodenGates = createItemWrapper(ieLoc("untreated_wooden_gates"));
 	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(ieLoc("forbidden_in_crates"));
 	public static final TagKey<Item> circuitPCB = createItemWrapper(ieLoc("circuits/pcb"));
 	public static final TagKey<Item> circuitLogic = createItemWrapper(ieLoc("circuits/logic"));

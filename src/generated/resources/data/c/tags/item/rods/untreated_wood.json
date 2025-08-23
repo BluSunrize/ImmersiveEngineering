@@ -1,0 +1,8 @@
+{
+  "remove": [
+    "#c:rods/treated_wood"
+  ],
+  "values": [
+    "#c:rods/wooden"
+  ]
+}
