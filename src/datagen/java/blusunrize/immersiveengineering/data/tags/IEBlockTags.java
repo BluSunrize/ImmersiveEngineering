@@ -93,6 +93,23 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(MetalDecoration.STEEL_FENCE.get());
 		tag(IETags.fencesAlu)
 				.add(MetalDecoration.ALU_FENCE.get());
+		// untreated tags
+		tag(IETags.untreatedWoodenPlanks)
+				.addTag(BlockTags.PLANKS)
+				.remove(IETags.treatedWood);
+		tag(IETags.untreatedWoodenSlabs)
+				.addTag(BlockTags.WOODEN_SLABS)
+				.remove(IETags.treatedWoodSlab);
+		tag(IETags.untreatedWoodenStairs)
+				.addTag(BlockTags.WOODEN_STAIRS)
+				.remove(IETags.treatedWoodStair);
+		tag(IETags.untreatedWoodenFences)
+				.addTag(BlockTags.WOODEN_FENCES)
+				.addTag(Tags.Blocks.FENCES_WOODEN)
+				.remove(WoodenDecoration.TREATED_FENCE.get());
+		tag(IETags.untreatedWoodenGates)
+				.addTag(Tags.Blocks.FENCE_GATES_WOODEN)
+				.remove(WoodenDecoration.TREATED_FENCE_GATE.get());
 		tag(IETags.clayBlock)
 				.add(Blocks.CLAY);
 		tag(IETags.glowstoneBlock)
@@ -148,6 +165,7 @@ public class IEBlockTags extends BlockTagsProvider
 		{
 			tag(IETags.treatedWood).add(WoodenDecoration.TREATED_WOOD.get(style).get());
 			tag(IETags.treatedWoodSlab).add(IEBlocks.TO_SLAB.get(IEBlocks.WoodenDecoration.TREATED_WOOD.get(style).getId()).get());
+			tag(IETags.treatedWoodStair).add(IEBlocks.TO_STAIRS.get(IEBlocks.WoodenDecoration.TREATED_WOOD.get(style).getId()).get());
 		}
 		for(MetalScaffoldingType t : MetalScaffoldingType.values())
 		{

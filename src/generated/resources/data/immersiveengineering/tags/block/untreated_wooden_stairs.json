@@ -1,0 +1,8 @@
+{
+  "remove": [
+    "#immersiveengineering:treated_wood_stair"
+  ],
+  "values": [
+    "#minecraft:wooden_stairs"
+  ]
+}

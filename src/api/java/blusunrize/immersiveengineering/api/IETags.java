@@ -70,9 +70,16 @@ public class IETags
 
 	public static final TagKey<Block> cutCopperStairs = createBlockTag(ieLoc("cut_stairs/copper"));
 	public static final TagKey<Block> cutCopperSlabs = createBlockTag(ieLoc("cut_slabs/copper"));
+	// IE Untreated Woods
+	public static final TagKey<Block> untreatedWoodenPlanks = createBlockTag(ieLoc("untreated_wooden_planks"));
+	public static final TagKey<Block> untreatedWoodenSlabs = createBlockTag(ieLoc("untreated_wooden_slabs"));
+	public static final TagKey<Block> untreatedWoodenStairs = createBlockTag(ieLoc("untreated_wooden_stairs"));
+	public static final TagKey<Block> untreatedWoodenFences = createBlockTag(ieLoc("untreated_wooden_fences"));
+	public static final TagKey<Block> untreatedWoodenGates = createBlockTag(ieLoc("untreated_wooden_gates"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(ieLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(ieLoc("treated_wood_slab"));
+	public static final TagKey<Block> treatedWoodStair = createBlockTag(ieLoc("treated_wood_stair"));
 	public static final TagKey<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
 	public static final TagKey<Block> scaffoldingSteel = createBlockTag(ieLoc("scaffoldings/steel"));
 	public static final TagKey<Block> scaffoldingAlu = createBlockTag(ieLoc("scaffoldings/aluminum"));
@@ -85,6 +92,7 @@ public class IETags
 	public static final TagKey<Block> fencesSteel = createBlockTag(cLoc("fences/steel"));
 	public static final TagKey<Block> fencesAlu = createBlockTag(cLoc("fences/aluminum"));
 	//IE Items
+	public static final TagKey<Item> untreatedStick = createItemWrapper(getRod("untreated_wood"));
 	public static final TagKey<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
 	public static final TagKey<Item> ironRod = createItemWrapper(getRod("iron"));
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
