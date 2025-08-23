@@ -16,11 +16,10 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BasicConnectorBlock;
 import blusunrize.immersiveengineering.common.items.WireCoilItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
+import blusunrize.immersiveengineering.common.register.IEItems.Metals;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 public class IEItemTags extends ItemTagsProvider
@@ -50,9 +50,27 @@ public class IEItemTags extends ItemTagsProvider
 	}
 
 	@Override
-	protected void addTags(Provider p_256380_)
+	protected void addTags(@Nonnull Provider holderLookupProvider)
 	{
 		IETags.forAllBlocktags(this::copy);
+		// untreated tags
+		tag(IETags.untreatedWoodenPlanks)
+				.addTag(ItemTags.PLANKS)
+				.remove(IETags.getItemTag(IETags.treatedWood));
+		tag(IETags.untreatedWoodenSlabs)
+				.addTag(ItemTags.WOODEN_SLABS)
+				.remove(IETags.getItemTag(IETags.treatedWoodSlab));
+		tag(IETags.untreatedWoodenStairs)
+				.addTag(ItemTags.WOODEN_STAIRS)
+				.remove(IETags.getItemTag(IETags.treatedWoodStair));
+		tag(IETags.untreatedWoodenFences)
+				.addTag(ItemTags.WOODEN_FENCES)
+				.addTag(Tags.Items.FENCES_WOODEN)
+				.remove(WoodenDecoration.TREATED_FENCE.get().asItem());
+		tag(IETags.untreatedWoodenGates)
+				.addTag(Tags.Items.FENCE_GATES_WOODEN)
+				.remove(WoodenDecoration.TREATED_FENCE_GATE.get().asItem());
+		// metals tags
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);

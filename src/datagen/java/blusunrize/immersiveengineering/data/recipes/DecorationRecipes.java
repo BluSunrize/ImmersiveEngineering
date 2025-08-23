@@ -92,7 +92,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("www")
 				.pattern("wbw")
 				.pattern("www")
-				.define('w', IETags.getItemTag(IETags.untreatedWoodenPlanks))
+				.define('w', IETags.untreatedWoodenPlanks)
 				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(
@@ -103,7 +103,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("www")
 				.pattern("wbw")
 				.pattern("www")
-				.define('w', IETags.getItemTag(IETags.untreatedWoodenSlabs))
+				.define('w', IETags.untreatedWoodenSlabs)
 				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(
@@ -114,7 +114,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("www")
 				.pattern("wbw")
 				.pattern("www")
-				.define('w', IETags.getItemTag(IETags.untreatedWoodenStairs))
+				.define('w', IETags.untreatedWoodenStairs)
 				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(
@@ -124,7 +124,7 @@ public class DecorationRecipes extends IERecipeProvider
 		shapedMisc(WoodenDecoration.TREATED_FENCE, 5)
 				.pattern("wbw")
 				.pattern("www")
-				.define('w', IETags.getItemTag(IETags.untreatedWoodenFences))
+				.define('w', IETags.untreatedWoodenFences)
 				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(
@@ -133,7 +133,7 @@ public class DecorationRecipes extends IERecipeProvider
 				);
 		shapedMisc(WoodenDecoration.TREATED_FENCE_GATE, 2)
 				.pattern("wbw")
-				.define('w', IETags.getItemTag(IETags.untreatedWoodenGates))
+				.define('w', IETags.untreatedWoodenGates)
 				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(

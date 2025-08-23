@@ -70,12 +70,6 @@ public class IETags
 
 	public static final TagKey<Block> cutCopperStairs = createBlockTag(ieLoc("cut_stairs/copper"));
 	public static final TagKey<Block> cutCopperSlabs = createBlockTag(ieLoc("cut_slabs/copper"));
-	// IE Untreated Woods
-	public static final TagKey<Block> untreatedWoodenPlanks = createBlockTag(ieLoc("untreated_wooden_planks"));
-	public static final TagKey<Block> untreatedWoodenSlabs = createBlockTag(ieLoc("untreated_wooden_slabs"));
-	public static final TagKey<Block> untreatedWoodenStairs = createBlockTag(ieLoc("untreated_wooden_stairs"));
-	public static final TagKey<Block> untreatedWoodenFences = createBlockTag(ieLoc("untreated_wooden_fences"));
-	public static final TagKey<Block> untreatedWoodenGates = createBlockTag(ieLoc("untreated_wooden_gates"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(ieLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(ieLoc("treated_wood_slab"));
@@ -122,6 +116,12 @@ public class IETags
 	public static final TagKey<Item> plasticPlate = createItemWrapper(getPlate("plastic"));
 	public static final TagKey<Item> sawblades = createItemWrapper(cLoc("sawblades"));
 	//Utility tags
+	// IE Untreated Woods
+	public static final TagKey<Item> untreatedWoodenPlanks = createItemWrapper(ieLoc("untreated_wooden_planks"));
+	public static final TagKey<Item> untreatedWoodenSlabs = createItemWrapper(ieLoc("untreated_wooden_slabs"));
+	public static final TagKey<Item> untreatedWoodenStairs = createItemWrapper(ieLoc("untreated_wooden_stairs"));
+	public static final TagKey<Item> untreatedWoodenFences = createItemWrapper(ieLoc("untreated_wooden_fences"));
+	public static final TagKey<Item> untreatedWoodenGates = createItemWrapper(ieLoc("untreated_wooden_gates"));
 	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(ieLoc("forbidden_in_crates"));
 	public static final TagKey<Item> circuitPCB = createItemWrapper(ieLoc("circuits/pcb"));
 	public static final TagKey<Item> circuitLogic = createItemWrapper(ieLoc("circuits/logic"));

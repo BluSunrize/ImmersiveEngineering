@@ -93,23 +93,6 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(MetalDecoration.STEEL_FENCE.get());
 		tag(IETags.fencesAlu)
 				.add(MetalDecoration.ALU_FENCE.get());
-		// untreated tags
-		tag(IETags.untreatedWoodenPlanks)
-				.addTag(BlockTags.PLANKS)
-				.remove(IETags.treatedWood);
-		tag(IETags.untreatedWoodenSlabs)
-				.addTag(BlockTags.WOODEN_SLABS)
-				.remove(IETags.treatedWoodSlab);
-		tag(IETags.untreatedWoodenStairs)
-				.addTag(BlockTags.WOODEN_STAIRS)
-				.remove(IETags.treatedWoodStair);
-		tag(IETags.untreatedWoodenFences)
-				.addTag(BlockTags.WOODEN_FENCES)
-				.addTag(Tags.Blocks.FENCES_WOODEN)
-				.remove(WoodenDecoration.TREATED_FENCE.get());
-		tag(IETags.untreatedWoodenGates)
-				.addTag(Tags.Blocks.FENCE_GATES_WOODEN)
-				.remove(WoodenDecoration.TREATED_FENCE_GATE.get());
 		tag(IETags.clayBlock)
 				.add(Blocks.CLAY);
 		tag(IETags.glowstoneBlock)

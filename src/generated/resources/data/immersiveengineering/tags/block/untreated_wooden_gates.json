@@ -1,8 +1,0 @@
-{
-  "remove": [
-    "immersiveengineering:treated_fence_gate"
-  ],
-  "values": [
-    "#c:fence_gates/wooden"
-  ]
-}
