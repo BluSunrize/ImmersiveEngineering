@@ -39,7 +39,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -310,8 +309,8 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 						rawLevel.addFreshEntity(ei);
 					}
 				rawLevel.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, absolutePos, Block.getId(blockstate));
-				if(items.size() > 0)
-					return items.get(0);
+				if(!items.isEmpty())
+					return items.getFirst();
 			}
 		}
 		return ItemStack.EMPTY;
@@ -323,14 +322,13 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			int targetDown, IMultiblockLevel level
 	)
 	{
-		if(mineralVein.isDepleted())
-			return false;
+		boolean guaranteedSpoil = mineralVein.isDepleted();
 		ItemStack ore = mineralMix.getRandomOre(ApiUtils.RANDOM);
 		if(ore.isEmpty())
-			return false;
+			guaranteedSpoil = true;
 		// if random number of 0-1 is smaller than the fail chance of the specific mineral
 		// or if random number of 0-1 is smaller than the distance based fail chance of the vein
-		if(ApiUtils.RANDOM.nextFloat() < mineralMix.failChance||ApiUtils.RANDOM.nextFloat() < mineralVein.getFailChance(wheelPos))
+		if(guaranteedSpoil||ApiUtils.RANDOM.nextFloat() < mineralMix.failChance||ApiUtils.RANDOM.nextFloat() < mineralVein.getFailChance(wheelPos))
 			wheel.digStacks.set(targetDown, mineralMix.getRandomSpoil(ApiUtils.RANDOM));
 		else
 			wheel.digStacks.set(targetDown, ore);
