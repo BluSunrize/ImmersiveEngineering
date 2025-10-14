@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
@@ -52,7 +53,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 
 	public List<MachineInterfaceConfig<?>> configurations = new ArrayList<>();
 
-	private final int[] outputs = new int[DyeColor.values().length];
+	private final int[] outputs = new int[SignalColors.COUNT];
 
 	public DyeColor inputColor = DyeColor.WHITE;
 	private byte inputSignalStrength = 0;
@@ -157,8 +158,9 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		@Override
 		public void updateInput(byte[] signals, Direction side)
 		{
-			for(DyeColor dye : DyeColor.values())
-				signals[dye.getId()] = (byte)outputs[dye.getId()];
+			SignalColors.colors().forEach(dye ->
+				signals[dye.getId()] = (byte)outputs[dye.getId()]
+			);
 		}
 	};
 

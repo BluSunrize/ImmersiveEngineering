@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui.elements;
 
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -29,7 +30,7 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 		super(
 				x, y, 8, 8,
 				Component.nullToEmpty(name),
-				DyeColor.values(), color, allSame(DyeColor.values(), GuiButtonCheckbox.TEXTURE), handler, tooltip
+				SignalColors.colorsArray(), color, allSame(SignalColors.colorsArray(), GuiButtonCheckbox.TEXTURE), handler, tooltip
 		);
 	}
 
@@ -41,7 +42,7 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 		super(
 				x, y, w, h,
 				Component.empty(),
-				DyeColor.values(), color, allSame(DyeColor.values(), texture), handler, tooltip
+				SignalColors.colorsArray(), color, allSame(SignalColors.colorsArray(), texture), handler, tooltip
 		);
 	}
 

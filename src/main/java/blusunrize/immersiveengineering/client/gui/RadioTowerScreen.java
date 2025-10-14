@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
@@ -135,8 +136,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 				this::sendFrequencyToServer
 		));
 
-		for(final DyeColor color : DyeColor.values())
-		{
+		SignalColors.colors().forEach(color -> {
 			final int ordinal = color.ordinal();
 			this.addRenderableWidget(new SaveButton(
 					getGuiLeft()+12+(ordinal%8)*20,
@@ -158,7 +158,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 						}
 					}
 			));
-		}
+		});
 	}
 
 	private void sendFrequencyToServer(int frq)

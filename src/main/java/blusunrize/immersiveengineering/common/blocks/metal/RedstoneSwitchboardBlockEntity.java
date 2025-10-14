@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
@@ -120,8 +121,9 @@ public class RedstoneSwitchboardBlockEntity extends ImmersiveConnectableBlockEnt
 	{
 		if(cp.index()==RIGHT_INDEX)
 		{
-			for(DyeColor dye : DyeColor.values())
-				signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], this.output[dye.getId()]);
+			SignalColors.colors().forEach(dye ->
+					signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], this.output[dye.getId()])
+			);
 			this.rsDirty = false;
 		}
 	}
