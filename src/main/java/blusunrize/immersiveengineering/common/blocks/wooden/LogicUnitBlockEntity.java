@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuit
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
@@ -53,15 +54,14 @@ import java.util.stream.Stream;
 public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInventory, IBlockEntityDrop,
 		IInteractionObjectIE<LogicUnitBlockEntity>, IStateBasedDirectional, ILogicCircuitHandler
 {
-	private final static int SIZE_COLORS = DyeColor.values().length;
-	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
+	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SignalColors.COUNT;
 	public static final int NUM_SLOTS = 10;
 
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 	private final Map<Direction, boolean[]> inputs = new EnumMap<>(Direction.class);
 	private final boolean[] registers = new boolean[SIZE_REGISTERS];
-	private final boolean[] outputs = new boolean[SIZE_COLORS];
+	private final boolean[] outputs = new boolean[SignalColors.COUNT];
 
 	public LogicUnitBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -164,7 +164,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 
 	private void updateOutputs()
 	{
-		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
+		boolean[] outPre = Arrays.copyOf(outputs, SignalColors.COUNT);
 		Arrays.fill(registers, false);
 		Arrays.fill(outputs, false);
 		getInstructions().forEachOrdered(instruction -> instruction.apply(this));
@@ -194,9 +194,9 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 				@Override
 				public void onChange(byte[] externalInputs, Direction side)
 				{
-					boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
-					boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
-					for(int i = 0; i < SIZE_COLORS; i++)
+					boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SignalColors.COUNT]);
+					boolean[] preInput = Arrays.copyOf(sideInputs, SignalColors.COUNT);
+					for(int i = 0; i < SignalColors.COUNT; i++)
 						sideInputs[i] = externalInputs[i] > 0;
 					// if the input changed, update and run circuits
 					if(!Arrays.equals(preInput, sideInputs))
@@ -210,9 +210,10 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 				@Override
 				public void updateInput(byte[] signals, Direction side)
 				{
-					for(DyeColor dye : DyeColor.values())
+					SignalColors.colors().forEach(dye -> {
 						if(outputs[dye.getId()])
 							signals[dye.getId()] = (byte)15;
+					});
 				}
 			};
 			redstoneCaps.put(f, forSide);
@@ -228,9 +229,9 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	}
 
 	private final ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(() -> {
-		boolean[] ret = new boolean[SIZE_COLORS];
+		boolean[] ret = new boolean[SignalColors.COUNT];
 		for(boolean[] side : this.inputs.values())
-			for(int i = 0; i < SIZE_COLORS; ++i)
+			for(int i = 0; i < SignalColors.COUNT; ++i)
 				ret[i] |= side[i];
 		return ret;
 	});
@@ -238,17 +239,17 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	@Override
 	public boolean getLogicCircuitRegister(LogicCircuitRegister register)
 	{
-		if(register.ordinal() < SIZE_COLORS)
+		if(register.ordinal() < SignalColors.COUNT)
 			return combinedInputs.get()[register.ordinal()];
-		return this.registers[register.ordinal()-SIZE_COLORS];
+		return this.registers[register.ordinal()-SignalColors.COUNT];
 	}
 
 	@Override
 	public void setLogicCircuitRegister(LogicCircuitRegister register, boolean state)
 	{
-		if(register.ordinal() < SIZE_COLORS)
+		if(register.ordinal() < SignalColors.COUNT)
 			this.outputs[register.ordinal()] = state;
 		else
-			this.registers[register.ordinal()-SIZE_COLORS] = state;
+			this.registers[register.ordinal()-SignalColors.COUNT] = state;
 	}
 }

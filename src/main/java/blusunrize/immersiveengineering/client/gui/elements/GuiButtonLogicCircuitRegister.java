@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
+import blusunrize.immersiveengineering.api.utils.SignalColors;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -83,11 +84,10 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 
 	static
 	{
-		for(DyeColor dye : DyeColor.values())
-		{
+		SignalColors.colors().forEach(dye -> {
 			String transl = I18n.get("color.minecraft."+dye.getName()).toLowerCase(Locale.ROOT);
 			SPLIT_BY_INITIAL.get(transl.charAt(0)).add(dye.getId());
-		}
+		});
 	}
 
 	@Override

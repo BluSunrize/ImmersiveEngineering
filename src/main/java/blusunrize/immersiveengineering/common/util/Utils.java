@@ -128,9 +128,9 @@ public class Utils
 		if(stack.isEmpty())
 			return null;
 		if(stack.is(Tags.Items.DYES))
-			for(Entry<TagKey<Item>, DyeColor> entry : DYES_BY_TAG.entrySet())
-				if(stack.is(entry.getKey()))
-					return entry.getValue();
+			for(DyeColor color : DyeColor.values())
+				if(stack.is(color.getTag()))
+					return color;
 		return null;
 	}
 
