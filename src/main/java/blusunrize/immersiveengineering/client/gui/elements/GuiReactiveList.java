@@ -46,7 +46,7 @@ public class GuiReactiveList<E> extends Button
 	private int maxOffset;
 
 	private int targetEntry = -1;
-	private int hoverTimer = 0;
+	private float hoverTimer = 0;
 
 	public GuiReactiveList(int x, int y, int w, int h, IIEPressable<? extends GuiReactiveList> handler, Supplier<List<E>> entries, Function<E, String> toStringFunction)
 	{
@@ -151,7 +151,7 @@ public class GuiReactiveList<E> extends Button
 					hoverTimer = 0;
 				}
 				else
-					hoverTimer++;
+					hoverTimer += 0.5f * partialTicks;
 				col = this.textColorHovered;
 			}
 			if(j > entries.size()-1)
@@ -162,7 +162,7 @@ public class GuiReactiveList<E> extends Button
 			{
 				if(selectionHover&&hoverTimer > 20)
 				{
-					int textOffset = (hoverTimer/10)%(s.length());
+					int textOffset = (int) ((hoverTimer/10)%(s.length()));
 					s = s.substring(textOffset)+" "+s.substring(0, textOffset);
 				}
 				s = fr.plainSubstrByWidth(s, strWidth);
