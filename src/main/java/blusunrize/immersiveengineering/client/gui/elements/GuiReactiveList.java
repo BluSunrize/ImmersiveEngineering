@@ -46,7 +46,7 @@ public class GuiReactiveList<E> extends Button
 	private int maxOffset;
 
 	private int targetEntry = -1;
-	private int hoverTimer = 0;
+	private HoverTimer hoverTimer = new HoverTimer();
 
 	public GuiReactiveList(int x, int y, int w, int h, IIEPressable<? extends GuiReactiveList> handler, Supplier<List<E>> entries, Function<E, String> toStringFunction)
 	{
@@ -148,10 +148,8 @@ public class GuiReactiveList<E> extends Button
 				if(targetEntry!=j)
 				{
 					targetEntry = j;
-					hoverTimer = 0;
+					hoverTimer.start();
 				}
-				else
-					hoverTimer++;
 				col = this.textColorHovered;
 			}
 			if(j > entries.size()-1)
@@ -160,9 +158,9 @@ public class GuiReactiveList<E> extends Button
 			int overLength = s.length()-fr.plainSubstrByWidth(s, strWidth).length();
 			if(overLength > 0)//String is too long
 			{
-				if(selectionHover&&hoverTimer > 20)
+				if(selectionHover&&hoverTimer.timePassedMillis() >= 1000L)
 				{
-					int textOffset = (hoverTimer/10)%(s.length());
+					int textOffset = (int)(((hoverTimer.timePassedMillis()-1000L)/150L)%(s.length()));
 					s = s.substring(textOffset)+" "+s.substring(0, textOffset);
 				}
 				s = fr.plainSubstrByWidth(s, strWidth);
@@ -177,7 +175,6 @@ public class GuiReactiveList<E> extends Button
 		if(!hasTarget)
 		{
 			targetEntry = -1;
-			hoverTimer = 0;
 		}
 	}
 
@@ -213,5 +210,24 @@ public class GuiReactiveList<E> extends Button
 			}
 		super.mouseClicked(mx, my, key);
 		return selectedOption!=-1;
+	}
+	
+	private static class HoverTimer
+	{
+		private long start = -1L;
+		
+		public void start()
+		{
+			this.start = System.currentTimeMillis();
+		}
+		
+		/** Time passed since {@link #start()} was called */
+		public long timePassedMillis()
+		{
+			if(this.start == -1L)
+				return 0L;
+			
+			return System.currentTimeMillis() - this.start;
+		}
 	}
 }
