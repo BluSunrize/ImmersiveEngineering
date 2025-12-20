@@ -1,7 +1,6 @@
-// 1.21.1	2025-08-17T22:03:21.0249732	Tags for minecraft:item mod id immersiveengineering
-0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/item/back.json
-929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/item/head.json
+// 1.21.1	2025-12-20T14:26:34.908222682	Tags for minecraft:item mod id immersiveengineering
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/c/tags/item/armors.json
+340d15cfa813e398124d9f0ebf23890960e29a24 data/c/tags/item/buckets.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/c/tags/item/charcoal.json
 0b4e9eb2e57b7d0790ad2a0344733be5de39a297 data/c/tags/item/clay.json
 721903046c1e90c28d2fede7814f04994baaf913 data/c/tags/item/coal_coke.json
@@ -22,10 +21,13 @@ c6df60e733119068b5c8d4e30ea2375c9ce2285c data/c/tags/item/dusts/steel.json
 1f72a857a899c1503e5500cfe698119950e0a1e6 data/c/tags/item/dusts/sulfur.json
 2c530c0c5f49ab8605659bb6af4f9ccfa07fccd8 data/c/tags/item/dusts/uranium.json
 e37fe9d52c56579fee854aba2229814dbbed0f71 data/c/tags/item/dusts/wood.json
-3948f26f38fc9c083873f434aa877f05f1b8e6f4 data/c/tags/item/fabric_hemp.json
+3948f26f38fc9c083873f434aa877f05f1b8e6f4 data/c/tags/item/fabric.json
+3948f26f38fc9c083873f434aa877f05f1b8e6f4 data/c/tags/item/fabric/hemp.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/c/tags/item/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/c/tags/item/fences/steel.json
-2142a61b9270c745352c9075368e8a23cf247539 data/c/tags/item/fiber_hemp.json
+30e01009e07852fe56dcdff06256fc7afef17ecc data/c/tags/item/fertilizers.json
+2142a61b9270c745352c9075368e8a23cf247539 data/c/tags/item/fibers.json
+2142a61b9270c745352c9075368e8a23cf247539 data/c/tags/item/fibers/hemp.json
 798333dba3595d9304d05418ce04a44f69a7d6c1 data/c/tags/item/gravels.json
 79d0222cd130a63e073ce0c08fc3c62f30bcbf3b data/c/tags/item/ingots.json
 99853b54b717df7267eb4b1bb67b87a3ea136078 data/c/tags/item/ingots/aluminum.json
@@ -49,6 +51,7 @@ f2e3544ce176352f85129bd1a956e3c32f7213d6 data/c/tags/item/nuggets/copper.json
 6caa44724480042a9f115326034f7ac497d41f1b data/c/tags/item/nuggets/silver.json
 ff70749ed7436c3421de143e996e3c5161af1d82 data/c/tags/item/nuggets/steel.json
 688bfc4df0c1d2bfa47d34a2eac474ea7b4cfbda data/c/tags/item/nuggets/uranium.json
+03803ad3e358573f495ef5a2b28fff69483d9903 data/c/tags/item/ore_rates/singular.json
 3becf86568f5aa10f6ff0e9239d6ede2f8c5f935 data/c/tags/item/ores.json
 996364607181408578d2a18b0cd5941fe3251ffd data/c/tags/item/ores/aluminum.json
 2d5302798c26775d656807ac1d209b4b7430ff17 data/c/tags/item/ores/lead.json
@@ -57,9 +60,8 @@ ff70749ed7436c3421de143e996e3c5161af1d82 data/c/tags/item/nuggets/steel.json
 e10e19eb1ecd0d4fbd2270995a9c4b14c981af49 data/c/tags/item/ores/uranium.json
 ad7cc89e6b8ad6b0c7c3544c0abd3446c612060c data/c/tags/item/ores_in_ground/deepslate.json
 81467f7c9399b301ac496bf424b8c8b807db752a data/c/tags/item/ores_in_ground/stone.json
-03803ad3e358573f495ef5a2b28fff69483d9903 data/c/tags/item/ore_rates/singular.json
 886e5e1db1abef8583882d996f8600275f839c37 data/c/tags/item/paper.json
-6c90224504c035fa3ba51c685e8d3697beaf0e3c data/c/tags/item/plates.json
+8e2d788160638c7b199ff4919acc17c8a149a823 data/c/tags/item/plates.json
 acf6b113ec54a56762cde07b98764c3b8ae28754 data/c/tags/item/plates/aluminum.json
 4070924cacbdf8cd04656525b43f3dbe1b43e009 data/c/tags/item/plates/constantan.json
 11e0c19988f5ccec4ec8cf52044a04c360b51dc3 data/c/tags/item/plates/copper.json
@@ -89,6 +91,7 @@ a8288ef96b46a0f3026247e045d3666b6047e685 data/c/tags/item/rods/wooden.json
 de1d550cd16eb974c4908a0707d28c459d7100cc data/c/tags/item/sawblades.json
 e1fcb72ddbe4430266625044432e9752bb0890e6 data/c/tags/item/seeds.json
 e1fcb72ddbe4430266625044432e9752bb0890e6 data/c/tags/item/seeds/hemp.json
+f8407d8b86459d08f321ad472e23df8b11f04807 data/c/tags/item/sheetmetal_slabs.json
 4f51622b2cf8e79bcdca3bc5d754190f594f78d7 data/c/tags/item/sheetmetals.json
 685fe54ad50bcb90d1857662c38ad1e2e89bb8a6 data/c/tags/item/sheetmetals/aluminum.json
 208b8916c3964147d79703c1eb7096e8775aa78f data/c/tags/item/sheetmetals/constantan.json
@@ -101,7 +104,6 @@ ff543a6161432e4e8dd2bd8775ab99af16c0315c data/c/tags/item/sheetmetals/nickel.jso
 bc8cb8d4f41333ae547eb75f529beb92a7a62dd9 data/c/tags/item/sheetmetals/silver.json
 44df194bae79ecbc6ba642f28825d7d55f640865 data/c/tags/item/sheetmetals/steel.json
 517af5879eee0eaacb6ec77424a19790f680f6bd data/c/tags/item/sheetmetals/uranium.json
-f8407d8b86459d08f321ad472e23df8b11f04807 data/c/tags/item/sheetmetal_slabs.json
 0e4aefbc2ed6059d8a6577044f12f658c39b57d1 data/c/tags/item/slag.json
 93b98051677cde47b4687bf783a257a1868432cb data/c/tags/item/storage_blocks.json
 a252494dc3a9a5b9aab17e82ae7ff504ca84a099 data/c/tags/item/storage_blocks/aluminum.json
@@ -120,13 +122,18 @@ b55e74dc34f8adea30d4dc91d50f91f426aa114b data/c/tags/item/storage_blocks/raw_sil
 511af3b19f7d8b92766975510260be68380ca969 data/c/tags/item/storage_blocks/silver.json
 57fdca4c0f5f6529987aa3d07d4a4f48a424e016 data/c/tags/item/storage_blocks/steel.json
 e563b87b316084581f07d20d80466bc0014fce68 data/c/tags/item/storage_blocks/uranium.json
+2c8e58b2d5e52b2c6f167d42dd7dee98979b8f8b data/c/tags/item/tools/melee_weapon.json
+36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/c/tags/item/tools/mining_tool.json
 5a096087432197ae05b19032b8d150b528ad1b9b data/c/tags/item/tools/shield.json
+83549890fc68beac7e5d4b70fb47988d6880181a data/c/tags/item/villager_job_sites.json
 6334b5da68c30fee016b64a38b56425c4b91934e data/c/tags/item/wires.json
 d3c3d0392a8b14657114131cdfb49303d4c5b7b8 data/c/tags/item/wires/aluminum.json
 f5470081131755f2ca6efe914c57a261c517eec5 data/c/tags/item/wires/copper.json
 ef8563aa2ee1f32b7bea78d511d14c4de2fa7f9f data/c/tags/item/wires/electrum.json
 9b11ddba67b507e14e22e33521204309ef1e6dfe data/c/tags/item/wires/lead.json
 090c3aab10acd9836ba1976243fc7ce381120a1a data/c/tags/item/wires/steel.json
+0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/item/back.json
+929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/item/head.json
 085238f24aca214ce9eb3f57ab02370467990f33 data/immersiveengineering/tags/item/blocks/copper.json
 d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/item/circuits/logic.json
 1fe9d2f525aae99bcd22b42ce0a5601f493e62b6 data/immersiveengineering/tags/item/circuits/pcb.json
@@ -138,12 +145,12 @@ d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/item/cir
 35290fc4e6542abc96c7e17e8127984e175cabba data/immersiveengineering/tags/item/observer_material.json
 6c0dde6d4ee345ac357d2c738281761c579e09e9 data/immersiveengineering/tags/item/recycling/ignored_components.json
 9b803eb2eff5a43c330d3d61a1467efc24e7d2af data/immersiveengineering/tags/item/repairs_automaton.json
-586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/item/scaffoldings/aluminum.json
-8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/item/scaffoldings/steel.json
 c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/item/scaffolding_slabs/aluminum.json
 56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/item/scaffolding_slabs/steel.json
 b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/item/scaffolding_stairs/aluminum.json
 58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/item/scaffolding_stairs/steel.json
+586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/item/scaffoldings/aluminum.json
+8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/item/scaffoldings/steel.json
 861687a874d14255d783b8023333a15b43860a85 data/immersiveengineering/tags/item/toolbox/tools.json
 ba8541c1dcff08a470290e6d940fd73f07a791ad data/immersiveengineering/tags/item/toolbox/wiring.json
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/item/tools/hammers.json
@@ -157,8 +164,8 @@ f981438643de6f70029b9950180e9f2f987f773b data/minecraft/tags/item/chest_armor.js
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/item/cluster_max_harvestables.json
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/item/coals.json
 c442b7d04f34628fbc7be64ecfe622b236e62f12 data/minecraft/tags/item/doors.json
-0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/item/fences.json
 afc31b5afe5324de1c6097c0f400298aba7add70 data/minecraft/tags/item/fence_gates.json
+0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/item/fences.json
 967f0fefffd7c44709dcec36be6266f2396204b5 data/minecraft/tags/item/foot_armor.json
 118cb253f115fdd528bb0b1ae110fb3b3e480170 data/minecraft/tags/item/head_armor.json
 96897870ad0c4522070bcffe62f75fbf24bcf02c data/minecraft/tags/item/hoes.json

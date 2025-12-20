@@ -11,6 +11,7 @@
     "#c:plates/steel",
     "#c:plates/iron",
     "#c:plates/gold",
-    "#c:plates/hop_graphite"
+    "#c:plates/hop_graphite",
+    "immersiveengineering:plate_duroplast"
   ]
 }

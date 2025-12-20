@@ -1,0 +1,14 @@
+{
+  "values": [
+    "immersiveengineering:potion_bucket",
+    "immersiveengineering:acetaldehyde_bucket",
+    "immersiveengineering:concrete_bucket",
+    "immersiveengineering:biodiesel_bucket",
+    "immersiveengineering:creosote_bucket",
+    "immersiveengineering:ethanol_bucket",
+    "immersiveengineering:herbicide_bucket",
+    "immersiveengineering:high_power_biodiesel_bucket",
+    "immersiveengineering:phenolic_resin_bucket",
+    "immersiveengineering:redstone_acid_bucket"
+  ]
+}

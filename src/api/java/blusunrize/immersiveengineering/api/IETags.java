@@ -93,8 +93,10 @@ public class IETags
 	public static final TagKey<Item> netheriteRod = createItemWrapper(getRod("netherite"));
 	public static final TagKey<Item> netheriteNugget = createItemWrapper(getNugget("netherite"));
 	public static final TagKey<Item> seedsHemp = createItemWrapper(cLoc("seeds/hemp"));
-	public static final TagKey<Item> fiberHemp = createItemWrapper(cLoc("fiber_hemp"));
-	public static final TagKey<Item> fabricHemp = createItemWrapper(cLoc("fabric_hemp"));
+	public static final TagKey<Item> fibers = createItemWrapper(cLoc("fibers"));
+	public static final TagKey<Item> fiberHemp = createItemWrapper(cLoc("fibers/hemp"));
+	public static final TagKey<Item> fabric = createItemWrapper(cLoc("fabric"));
+	public static final TagKey<Item> fabricHemp = createItemWrapper(cLoc("fabric/hemp"));
 	public static final TagKey<Item> coalCoke = createItemWrapper(cLoc("coal_coke"));
 	public static final TagKey<Item> slag = createItemWrapper(cLoc("slag"));
 	public static final TagKey<Item> coalCokeDust = createItemWrapper(getDust("coal_coke"));

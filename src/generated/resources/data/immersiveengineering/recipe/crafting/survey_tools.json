@@ -11,7 +11,7 @@
         "item": "minecraft:writable_book"
       },
       "f": {
-        "tag": "c:fabric_hemp"
+        "tag": "c:fabric/hemp"
       },
       "h": {
         "item": "immersiveengineering:hammer"

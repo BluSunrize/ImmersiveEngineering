@@ -3,13 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:fiber_hemp"
+      "tag": "c:fibers/hemp"
     },
     {
-      "tag": "c:fiber_hemp"
+      "tag": "c:fibers/hemp"
     },
     {
-      "tag": "c:fiber_hemp"
+      "tag": "c:fibers/hemp"
     }
   ],
   "result": {
