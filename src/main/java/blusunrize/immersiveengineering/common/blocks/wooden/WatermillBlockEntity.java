@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -284,7 +285,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	 */
 	public Vec3 getTorque(boolean zAxis, boolean overshot)
 	{
+		// Get torque value from the wheel position
 		Vec3 torqueVec = overshot?getOvershotTorque(zAxis): getBreastshotTorque(zAxis);
+		// Clean up torque vector to remove small additions from cross-flowing water
+		torqueVec = zAxis ? torqueVec.multiply(0, 0, 1) : torqueVec.multiply(1, 0, 0);
+		// Add resistances to the torque value & return
 		torqueVec = torqueVec.add(getResistanceTorque(torqueVec, zAxis));
 		return torqueVec;
 	}
@@ -299,9 +304,9 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	 */
 	private boolean getOvershot(boolean zAxis)
 	{
-		boolean overshot = false;
+		boolean overshot;
 		//Top adjacent side positions
-		overshot = !level.getFluidState(getBlockPos().offset(-(zAxis?1: 0), +3, -(zAxis?0: 1))).isEmpty()||overshot;
+		overshot = !level.getFluidState(getBlockPos().offset(-(zAxis?1: 0), +3, -(zAxis?0: 1))).isEmpty();
 		overshot = !level.getFluidState(getBlockPos().offset(0, +3, 0)).isEmpty()||overshot;
 		overshot = !level.getFluidState(getBlockPos().offset(+(zAxis?1: 0), +3, +(zAxis?0: 1))).isEmpty()||overshot;
 		//Top corner positions
@@ -358,7 +363,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	/**
-	 * Calculates the viscosity-related torque that comes from having source blocks of fluid in the way of the waterwheel.
+	 * Calculates the viscosity-related torque that comes from having source blocks of fluid in the way of the waterwheel,
+	 * and the weight-related torque from having water blocks in the upwards-rotating buckets of the wheel
 	 * Resistance torque will be negative if torque from the stream flow is positive, and is scaled by output torque.
 	 *
 	 * @param torque the pre-viscosity torque produced by the wheel
@@ -369,11 +375,23 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 
 		Vec3 resistanceTorque = new Vec3(0, 0, 0);
-		if(Math.abs(torque.length()) < 0.1f) return resistanceTorque;
-		for(Vec3 position : zAxis?offsetsZ: offsetsX)
+		if(torque.length() < 0.1f) return resistanceTorque;
+		for(Vec3 position : zAxis?offsetsZ:offsetsX)
 		{
+			// Fluid at the location
 			Vec3i tmp = new Vec3i((int)position.x(), (int)position.y(), (int)position.z());
-			double resistance = level.getFluidState(getBlockPos().offset(tmp)).isSourceOfType(level.getFluidState(getBlockPos().offset(tmp)).getType())?(2+(0.1*torque.length())): 0;
+			FluidState fluid = level.getFluidState(getBlockPos().offset(tmp));
+			// Viscosity-related torque
+			double resistance = fluid.isSourceOfType(level.getFluidState(getBlockPos().offset(tmp)).getType())?(2+(0.1*torque.length())): 0;
+			// Weight-related torque, checked only if we're not at the top or bottom
+			if (Math.abs(position.y) < 3) {
+				// Check only on the side that's flowing upwards; position x/z will never be filled at the same time,
+				// then add the negative "weight" (by coordinate height from top of wheel) of the block of water; give
+				// benefit to smaller heights as the buckets would lift the same amount regardless
+				if(((torque.x < 0||torque.z > 0)?1:-1)*(position.x+position.z) > 0 && !fluid.isEmpty())
+					resistance -= (position.y - 3) * 2;
+			}
+			// Add resistance to resistance torque, scaled appropriately
 			resistanceTorque = zAxis?resistanceTorque.add(0, 0, torque.z() > 0?-resistance: resistance): resistanceTorque.add(torque.x() > 0?-resistance: resistance, 0, 0);
 		}
 		return (resistanceTorque.length() > torque.length())?torque.scale(-0.9): resistanceTorque;
