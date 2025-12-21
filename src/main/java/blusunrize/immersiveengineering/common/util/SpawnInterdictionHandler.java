@@ -18,9 +18,10 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,8 +30,10 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
-import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck.Result;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.village.VillageSiegeEvent;
 
 import java.util.*;
 
@@ -43,7 +46,7 @@ public class SpawnInterdictionHandler
 	public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event)
 	{
 		LivingEntity living = event.getEntityLiving();
-		if(shouldCancel(living)||living.getEffect(IEPotions.STUNNED)!=null)
+		if(shouldCancel(null, living.getType(), living.blockPosition(), living.level())||living.getEffect(IEPotions.STUNNED)!=null)
 			event.setCanceled(true);
 		else if(checkForLeadedBlocks(event, living))
 			event.setCanceled(true);
@@ -74,12 +77,65 @@ public class SpawnInterdictionHandler
 	}
 
 	@SubscribeEvent
-	public static void onEntitySpawnCheck(FinalizeSpawnEvent event)
+	public static void onVillageSiegeSpawnCheck(VillageSiegeEvent event)
 	{
-		if(event.isSpawnCancelled()||event.getSpawner()!=null)
-			return;
-		if(shouldCancel(event.getEntity()))
-			event.setSpawnCancelled(true);
+		event.setCanceled(isInterdictedPosition(event.getAttemptedSpawnPos(), event.getLevel()));
+	}
+
+	@SubscribeEvent
+	public static void onEntitySpawnCheck(SpawnPlacementCheck event)
+	{
+		if(shouldCancel(event.getSpawnType(), event.getEntityType(), event.getPos(), event.getLevel().getLevel()))
+			event.setResult(Result.FAIL);
+	}
+
+	/**
+	 * Mob spawn types are as followed:
+	 * Natural - standard spawning
+	 * Jockey - chicken jockey, etc
+	 * Triggered - warden, skeleton horses
+	 * Reinforcement - zombie summoning reinforcements
+	 * Chunk Generation - spawning of mobs from worldgen (which may be in range, but is unlikely)
+	 * We do not block Event because it can contain raids, and blocking those causes issues (see #6321)
+	 * Event would include Zombie Sieges, thus why we have a check to block sieges in range directly.
+	 * We do not block Conversion because converting villagers is not "spawning" & it causes issues (see #6344)
+	 * We do not block Patrol because light would have no result on that, they can spawn in daylight
+	 * We do not block spawners (either type) because that restricts the utility of spawners in bases with lanterns
+	 * We do not block other types because they are intentional spawns
+	 */
+	private static final List<MobSpawnType> BLOCKED_TYPES = List.of(MobSpawnType.NATURAL, MobSpawnType.JOCKEY, MobSpawnType.TRIGGERED, MobSpawnType.REINFORCEMENT, MobSpawnType.CHUNK_GENERATION);
+
+	private static boolean shouldCancel(MobSpawnType spawnType, EntityType<?> type, BlockPos pos, Level level)
+	{
+		if(!BLOCKED_TYPES.contains(spawnType) || type.getCategory()!=MobCategory.MONSTER)
+			return false;
+		return isInterdictedPosition(new Vec3(pos.getX(), pos.getY(), pos.getZ()), level);
+	}
+
+	private static boolean isInterdictedPosition(Vec3 pos, Level level)
+	{
+		synchronized(interdictionTiles)
+		{
+			if(!interdictionTiles.containsKey(level.dimension()))
+				return false;
+			Iterator<ISpawnInterdiction> it = interdictionTiles.get(level.dimension()).iterator();
+			while(it.hasNext())
+			{
+				ISpawnInterdiction interdictor = it.next();
+				if(interdictor instanceof BlockEntity interdictorTE)
+				{
+					if(interdictorTE.isRemoved()||interdictorTE.getLevel()==null)
+						it.remove();
+					else if(SafeChunkUtils.isChunkSafe(interdictorTE.getLevel(), interdictorTE.getBlockPos()))
+					{
+						Vec3 tilePos = Vec3.atCenterOf(interdictorTE.getBlockPos());
+						if(tilePos.distanceToSqr(pos) <= interdictor.getInterdictionRangeSquared())
+							return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	@SubscribeEvent
@@ -91,35 +147,6 @@ public class SpawnInterdictionHandler
 		{
 			interdictionTiles.remove(realLevel.dimension());
 		}
-	}
-
-	private static boolean shouldCancel(Entity entity)
-	{
-		if(entity.getType().getCategory()!=MobCategory.MONSTER)
-			return false;
-		ResourceKey<Level> dimension = entity.level().dimension();
-		synchronized(interdictionTiles)
-		{
-			if(!interdictionTiles.containsKey(dimension))
-				return false;
-			Iterator<ISpawnInterdiction> it = interdictionTiles.get(dimension).iterator();
-			while(it.hasNext())
-			{
-				ISpawnInterdiction interdictor = it.next();
-				if(interdictor instanceof BlockEntity interdictorTE)
-				{
-					if(interdictorTE.isRemoved()||interdictorTE.getLevel()==null)
-						it.remove();
-					else if(SafeChunkUtils.isChunkSafe(interdictorTE.getLevel(), interdictorTE.getBlockPos()))
-					{
-						Vec3 tilePos = Vec3.atCenterOf(interdictorTE.getBlockPos());
-						if(tilePos.distanceToSqr(entity.position()) <= interdictor.getInterdictionRangeSquared())
-							return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	public static <T extends BlockEntity & ISpawnInterdiction>
