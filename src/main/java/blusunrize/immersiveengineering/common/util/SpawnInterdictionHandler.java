@@ -96,6 +96,7 @@ public class SpawnInterdictionHandler
 	 * Triggered - warden, skeleton horses
 	 * Reinforcement - zombie summoning reinforcements
 	 * Chunk Generation - spawning of mobs from worldgen (which may be in range, but is unlikely)
+	 * Structure - things like Pillagers spawning in their outposts; you can take over one by lighting it now
 	 * We do not block Event because it can contain raids, and blocking those causes issues (see #6321)
 	 * Event would include Zombie Sieges, thus why we have a check to block sieges in range directly.
 	 * We do not block Conversion because converting villagers is not "spawning" & it causes issues (see #6344)
@@ -103,7 +104,7 @@ public class SpawnInterdictionHandler
 	 * We do not block spawners (either type) because that restricts the utility of spawners in bases with lanterns
 	 * We do not block other types because they are intentional spawns
 	 */
-	private static final List<MobSpawnType> BLOCKED_TYPES = List.of(MobSpawnType.NATURAL, MobSpawnType.JOCKEY, MobSpawnType.TRIGGERED, MobSpawnType.REINFORCEMENT, MobSpawnType.CHUNK_GENERATION);
+	private static final List<MobSpawnType> BLOCKED_TYPES = List.of(MobSpawnType.NATURAL, MobSpawnType.JOCKEY, MobSpawnType.TRIGGERED, MobSpawnType.REINFORCEMENT, MobSpawnType.CHUNK_GENERATION, MobSpawnType.STRUCTURE);
 
 	private static boolean shouldCancel(MobSpawnType spawnType, EntityType<?> type, BlockPos pos, Level level)
 	{
