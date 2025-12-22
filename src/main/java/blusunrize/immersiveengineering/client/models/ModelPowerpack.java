@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
@@ -266,14 +267,24 @@ public class ModelPowerpack
 		DyeColor baseCol = DyeColor.WHITE;
 		if(banner.getItem() instanceof BlockItem&&((BlockItem)banner.getItem()).getBlock() instanceof AbstractBannerBlock bannerBlock)
 			baseCol = bannerBlock.getColor();
+		Color4 baseColor = Color4.from(baseCol);
+
 		List<Layer> patternList = banner.get(DataComponents.BANNER_PATTERNS).layers();
-		BannerKey key = new BannerKey(baseCol, patternList!=null?patternList.toString(): "");
+		BannerKey key = new BannerKey(baseCol, patternList.toString());
 		List<BannerLayer> cached = bannerCache.getIfPresent(key);
 		if(cached!=null)
 			return cached;
 
 		List<BakedQuad> quads = bakedModel.getQuads(null, null, ApiUtils.RANDOM_SOURCE);
 		cached = new ArrayList<>(quads.size()*patternList.size());
+		// add banner base
+
+		cached.add(new BannerLayer(
+				mbs -> Sheets.SHIELD_BASE.buffer(mbs, RenderType::entityCutoutNoCullZOffset),
+				baseColor.r(), baseColor.g(), baseColor.b(),
+				quads
+		));
+		// add banner patterns
 		for(int i = 0; i < 17&&i < patternList.size(); ++i)
 		{
 			Layer layer = patternList.get(i);
