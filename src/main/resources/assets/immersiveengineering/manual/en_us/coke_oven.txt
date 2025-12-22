@@ -3,7 +3,7 @@ Purity in Pyrolysis
 <&recipe>The Coke Oven is the first important machine on the engineer's journey.<br>
 The brick oven heats up fuels in a low-oxygen environment, pyrolyzing them into a more carbon-rich version, such as §2Coal Coke§r, or §2Charcoal§r.<np>
 A byproduct of this process is <link;industrial_fluids;Creosote Oil;creosote_oil>, which is used as a <link;treated_wood;preservative for wood>. This preserved wood serves as a basic construction material all throughout.<br>
-The coking process is §oslow§r, but works in batches, allowing up to §216 pieces of coal§r or §28 wooden logs§r to be processed at the same time.
+The coking process is §oslow§r, but works in batches, allowing up to §216 pieces of coal§r or §28 wooden logs§r to be processed at once.<br>
 As such, it's recommended to build multiple ovens and stock them with enough fuel to be efficient.<br>
 The Coke Oven can be automated to facilitate a more industrial scale of fuel and oil production.<br>
 Items can be inserted and extracted by use of hoppers or <link;conveyor_belts;conveyor belts;conveyor_extract_recipe>.<br>

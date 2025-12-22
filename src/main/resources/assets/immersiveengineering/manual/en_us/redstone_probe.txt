@@ -15,6 +15,6 @@ A comparator at the electrodes at the top will send a signal reflecting the inte
 §lSqueezer: §rOutputs a signal relative to the fill of the inventory.
 §lFermenter: §rOutputs a signal relative to the fill of the inventory.
 §lMixer: §rOutputs a signal relative to the fill of the inventory.<np>
-§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.<br>
+§lExcavator: §rOutputs a signal relative to the remaining ore in all accessible veins.<br>
 <br>
 For more detailed analysis of the various multiblocks, their inventories, energy- and fluid storages, consider using the <link;machine_interface;Machine Interface> instead.

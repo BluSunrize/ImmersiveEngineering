@@ -1,6 +1,6 @@
 Crude Blast Furnace
 Simple Steel
-<&block>The Crude Blast Furnace is used to increase the carbon contents in iron, turning it into TD LINK STEEL.<br>
+<&block>The Crude Blast Furnace is used to increase the carbon contents in iron, turning it into <link;basic_metal_products;steel;alloys>.<br>
  To achieve this, only pure, high-carbon fuels may be used for the furnace, such as <link;coke_oven;coal coke and charcoal>.<np>
 <&outputs>Along with steel, the furnace will also create <link;industrial_byproducts;slag;slag>, which you must remove or the furnace will cease to function.<br>
 While it is technically a waste product, there are various ways to recycle it, such as <link;slag_products;brick construction> or <link;concrete;concrete>.<np>
