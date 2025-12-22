@@ -110,6 +110,13 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(Blocks.CUT_COPPER_SLAB, Blocks.EXPOSED_CUT_COPPER_SLAB, Blocks.WEATHERED_CUT_COPPER_SLAB, Blocks.OXIDIZED_CUT_COPPER_SLAB)
 				.add(Blocks.WAXED_CUT_COPPER_SLAB, Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB, Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB);
 
+		tag(Tags.Blocks.VILLAGER_JOB_SITES)
+				.add(Cloth.SHADER_BANNER.get(), Cloth.SHADER_BANNER_WALL.get())
+				.add(WoodenDevices.CIRCUIT_TABLE.get())
+				.add(WoodenDevices.WORKBENCH.get())
+				.add(WoodenDevices.CRAFTING_TABLE.get())
+				.add(WoodenDevices.TURNTABLE.get());
+
 		for(BlockEntry<MetalLadderBlock> b : MetalDecoration.METAL_LADDER.values())
 			tag(BlockTags.CLIMBABLE).add(b.get());
 		for(EnumMetals metal : EnumMetals.values())

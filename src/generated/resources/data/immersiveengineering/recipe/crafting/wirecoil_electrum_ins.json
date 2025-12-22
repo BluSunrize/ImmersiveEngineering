@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "c:fabric_hemp"
+      "tag": "c:fabric/hemp"
     },
     "m": {
-      "tag": "c:fabric_hemp"
+      "tag": "c:fabric/hemp"
     },
     "s": {
       "item": "immersiveengineering:wirecoil_electrum"
