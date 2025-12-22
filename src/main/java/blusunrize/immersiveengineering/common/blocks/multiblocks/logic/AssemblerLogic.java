@@ -384,7 +384,6 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 					new MachineCheckImplementation<>(tanks[0], MIF_CONDITION_TANKS[0]),
 					new MachineCheckImplementation<>(tanks[1], MIF_CONDITION_TANKS[1]),
 					new MachineCheckImplementation<>(tanks[2], MIF_CONDITION_TANKS[2]),
-					new MachineCheckImplementation<>(output, MachineInterfaceHandler.BASIC_ITEM_OUT),
 					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY)
 			};
 		}
