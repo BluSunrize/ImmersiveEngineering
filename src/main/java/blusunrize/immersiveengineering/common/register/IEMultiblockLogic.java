@@ -156,7 +156,7 @@ public class IEMultiblockLogic
 	public static final MultiblockRegistration<ExcavatorLogic.State> EXCAVATOR = metal(new ExcavatorLogic(), "excavator")
 			.structure(() -> IEMultiblocks.EXCAVATOR)
 			.redstone(s -> s.rsState, ExcavatorLogic.REDSTONE_POS)
-			.comparator(new ComparatorManager<>(ExcavatorLogic::computeComparatorValue))
+			.comparator(ExcavatorLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<SawmillLogic.State> SAWMILL = metal(new SawmillLogic(), "sawmill")

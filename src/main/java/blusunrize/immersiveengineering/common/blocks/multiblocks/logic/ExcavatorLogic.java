@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -355,6 +356,11 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
+	public static ComparatorManager<ExcavatorLogic.State> makeComparator()
+	{
+		return new ComparatorManager<>(ExcavatorLogic::computeComparatorValue, REDSTONE_POS);
+	}
+
 	public static int computeComparatorValue(State state, IMultiblockLevel level)
 	{
 		if(getWheel(level)==null)
@@ -373,7 +379,8 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			totalDepletion += pair.getFirst().getDepletion();
 		totalDepletion /= veins.size();
 		float remain = (ExcavatorHandler.mineralVeinYield-totalDepletion)/(float)ExcavatorHandler.mineralVeinYield;
-		return Mth.ceil(Math.max(remain, 0)*15);
+		double redstFrac = Math.max(remain, 0)*15;
+		return Mth.ceil(redstFrac);
 	}
 
 	@Override
