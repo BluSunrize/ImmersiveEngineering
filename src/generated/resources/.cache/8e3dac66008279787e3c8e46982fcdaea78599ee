@@ -1,4 +1,4 @@
-// 1.21.1	2025-12-20T14:26:34.908222682	Tags for minecraft:item mod id immersiveengineering
+// 1.21.1	2025-12-21T19:53:41.507020143	Tags for minecraft:item mod id immersiveengineering
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/c/tags/item/armors.json
 340d15cfa813e398124d9f0ebf23890960e29a24 data/c/tags/item/buckets.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/c/tags/item/charcoal.json
@@ -21,6 +21,7 @@ c6df60e733119068b5c8d4e30ea2375c9ce2285c data/c/tags/item/dusts/steel.json
 1f72a857a899c1503e5500cfe698119950e0a1e6 data/c/tags/item/dusts/sulfur.json
 2c530c0c5f49ab8605659bb6af4f9ccfa07fccd8 data/c/tags/item/dusts/uranium.json
 e37fe9d52c56579fee854aba2229814dbbed0f71 data/c/tags/item/dusts/wood.json
+8c5f1086b6e3effe2bdd2b440fd7146112a2a5a9 data/c/tags/item/enchantables.json
 3948f26f38fc9c083873f434aa877f05f1b8e6f4 data/c/tags/item/fabric.json
 3948f26f38fc9c083873f434aa877f05f1b8e6f4 data/c/tags/item/fabric/hemp.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/c/tags/item/fences/aluminum.json
@@ -164,6 +165,14 @@ f981438643de6f70029b9950180e9f2f987f773b data/minecraft/tags/item/chest_armor.js
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/item/cluster_max_harvestables.json
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/item/coals.json
 c442b7d04f34628fbc7be64ecfe622b236e62f12 data/minecraft/tags/item/doors.json
+0ab50e6462e4aa2248d8cd280f62d8e3e8ba77c7 data/minecraft/tags/item/enchantable/armor.json
+b263a1a5b7a6960f99cb4e6de34c68fc5279a893 data/minecraft/tags/item/enchantable/chest_armor.json
+8c5f1086b6e3effe2bdd2b440fd7146112a2a5a9 data/minecraft/tags/item/enchantable/durability.json
+0ab50e6462e4aa2248d8cd280f62d8e3e8ba77c7 data/minecraft/tags/item/enchantable/equippable.json
+5cb277969829cafae7ea5564eb44d2d9b6afa219 data/minecraft/tags/item/enchantable/foot_armor.json
+0de0c371db2a1e2ed03569a21409ed2c422312c2 data/minecraft/tags/item/enchantable/head_armor.json
+83924abfbcf500edb9d636b1cd7b0c5bd2ff5684 data/minecraft/tags/item/enchantable/leg_armor.json
+8c5f1086b6e3effe2bdd2b440fd7146112a2a5a9 data/minecraft/tags/item/enchantable/vanishing.json
 afc31b5afe5324de1c6097c0f400298aba7add70 data/minecraft/tags/item/fence_gates.json
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/item/fences.json
 967f0fefffd7c44709dcec36be6266f2396204b5 data/minecraft/tags/item/foot_armor.json

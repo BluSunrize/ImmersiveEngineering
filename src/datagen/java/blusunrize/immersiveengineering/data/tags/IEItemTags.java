@@ -173,6 +173,13 @@ public class IEItemTags extends ItemTagsProvider
 		tag(Tags.Items.MELEE_WEAPON_TOOLS).add(Tools.STEEL_AXE.get(), Tools.STEEL_SWORD.get());
 		tag(Tags.Items.TOOLS_SHIELD).add(Misc.SHIELD.get());
 
+		tag(Tags.Items.ENCHANTABLES)
+				.add(Tools.HAMMER.get(), Tools.WIRECUTTER.get());
+		tag(ItemTags.DURABILITY_ENCHANTABLE)
+				.add(Tools.HAMMER.get(), Tools.WIRECUTTER.get());
+		tag(ItemTags.VANISHING_ENCHANTABLE)
+				.add(Tools.HAMMER.get(), Tools.WIRECUTTER.get());
+
 		for(var slot : ArmorItem.Type.values())
 			if(slot!=Type.BODY)
 			{
@@ -180,6 +187,11 @@ public class IEItemTags extends ItemTagsProvider
 						.add(Tools.STEEL_ARMOR.get(slot).asItem())
 						.add(Misc.FARADAY_SUIT.get(slot).asItem());
 				tag(ItemTags.TRIMMABLE_ARMOR).add(Tools.STEEL_ARMOR.get(slot).asItem());
+				tag(Tags.Items.ENCHANTABLES).remove(Misc.FARADAY_SUIT.get(slot).asItem());
+				tag(ItemTags.ARMOR_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(slot).asItem());
+				tag(ItemTags.DURABILITY_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(slot).asItem());
+				tag(ItemTags.VANISHING_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(slot).asItem());
+				tag(ItemTags.EQUIPPABLE_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(slot).asItem());
 			}
 		tag(ItemTags.HEAD_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.HELMET).asItem())
@@ -193,6 +205,10 @@ public class IEItemTags extends ItemTagsProvider
 		tag(ItemTags.FOOT_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.BOOTS).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.BOOTS).asItem());
+		tag(ItemTags.HEAD_ARMOR_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET).asItem());
+		tag(ItemTags.CHEST_ARMOR_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(ArmorItem.Type.CHESTPLATE).asItem());
+		tag(ItemTags.LEG_ARMOR_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(ArmorItem.Type.LEGGINGS).asItem());
+		tag(ItemTags.FOOT_ARMOR_ENCHANTABLE).remove(Misc.FARADAY_SUIT.get(ArmorItem.Type.BOOTS).asItem());
 
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting
