@@ -4,4 +4,5 @@ Hole In The Wall Tavern
 With the careful application of terracotta insulation, a solid conduit can be constructed inside of these materials to conduct power.<br>
 The Feedthrough Insulator allows two connectors to be merged across one meter walls, and cannot connect more than one wire per connector.<br>
 They can be created with any "normal" solid block in the middle, by right-clicking either of two connectors with an Engineer's Hammer.<br>
+Power throughput is limited to the maximum wire throughput, as they do not need to connect to machines.<br>
 Non-structural connectors can be used to create feedthrough insulators for the corresponding wire type.
