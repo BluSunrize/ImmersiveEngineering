@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
@@ -156,7 +155,7 @@ public class IEMultiblockLogic
 	public static final MultiblockRegistration<ExcavatorLogic.State> EXCAVATOR = metal(new ExcavatorLogic(), "excavator")
 			.structure(() -> IEMultiblocks.EXCAVATOR)
 			.redstone(s -> s.rsState, ExcavatorLogic.REDSTONE_POS)
-			.comparator(new ComparatorManager<>(ExcavatorLogic::computeComparatorValue))
+			.comparator(ExcavatorLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<SawmillLogic.State> SAWMILL = metal(new SawmillLogic(), "sawmill")
@@ -180,6 +179,7 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<ChunkLoaderLogic.State> CHUNK_LOADER = metal(new ChunkLoaderLogic(), "chunk_loader")
 			.structure(() -> IEMultiblocks.CHUNK_LOADER)
+			.comparator(ChunkLoaderLogic.makeComparator())
 			.redstone(s -> s.rsState, ChunkLoaderLogic.REDSTONE_POS)
 			.gui(IEMenuTypes.CHUNK_LOADER)
 			.build();
