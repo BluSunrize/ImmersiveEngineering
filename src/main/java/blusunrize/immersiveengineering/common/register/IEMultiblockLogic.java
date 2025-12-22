@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
@@ -180,6 +179,7 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<ChunkLoaderLogic.State> CHUNK_LOADER = metal(new ChunkLoaderLogic(), "chunk_loader")
 			.structure(() -> IEMultiblocks.CHUNK_LOADER)
+			.comparator(ChunkLoaderLogic.makeComparator())
 			.redstone(s -> s.rsState, ChunkLoaderLogic.REDSTONE_POS)
 			.gui(IEMenuTypes.CHUNK_LOADER)
 			.build();

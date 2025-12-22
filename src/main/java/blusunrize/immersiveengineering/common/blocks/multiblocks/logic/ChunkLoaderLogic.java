@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -23,10 +24,14 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.ChunkLoaderMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ChunkLoaderLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ChunkLoaderShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
@@ -50,6 +55,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -76,7 +82,7 @@ public class ChunkLoaderLogic
 	public static final int ENERGY_CAPACITY = 32000;
 
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(2, 1, 1, RelativeBlockFace.LEFT);
-	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(1, 1, 2);
 	private static final CapabilityPosition INPUT_POS = new CapabilityPosition(0, 1, 1, RelativeBlockFace.RIGHT);
 
 	@Override
@@ -160,6 +166,7 @@ public class ChunkLoaderLogic
 	{
 		register.registerAt(ItemHandler.BLOCK, INPUT_POS, state -> state.input);
 		register.registerAt(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -174,6 +181,13 @@ public class ChunkLoaderLogic
 		return ChunkLoaderShapes.SHAPE_GETTER;
 	}
 
+	public static ComparatorManager<ChunkLoaderLogic.State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(
+				state -> Utils.calcRedstoneFromInventory(1, state.inventory), REDSTONE_POS
+		);
+	}
+
 	public static class State implements IMultiblockState
 	{
 		public final SlotwiseItemHandler inventory;
@@ -183,6 +197,7 @@ public class ChunkLoaderLogic
 		public boolean renderAsActive;
 
 		private final IItemHandler input;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -191,6 +206,11 @@ public class ChunkLoaderLogic
 					ctx.getMarkDirtyRunnable()
 			);
 			this.input = new WrappingItemHandler(inventory, true, false);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.renderAsActive, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(input, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override
