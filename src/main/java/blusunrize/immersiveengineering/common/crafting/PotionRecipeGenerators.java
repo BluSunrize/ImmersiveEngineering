@@ -81,6 +81,11 @@ public class PotionRecipeGenerators
 		};
 
 		PotionHelper.applyToAllPotionRecipes((out, in, reagent) -> {
+			if(out.unwrapKey().isEmpty())
+			{
+				IELogger.logger.warn("Skipping potion without registry key in bottling/bullet recipe generation");
+				return;
+			}
 			if(!bottleRecipes.containsKey(out))
 				bottleRecipes.put(out, toBottleRecipe.apply(out));
 			if(!bulletRecipes.containsKey(out))
@@ -89,10 +94,9 @@ public class PotionRecipeGenerators
 		bottleRecipes.put(Potions.WATER, toBottleRecipe.apply(Potions.WATER));
 		IELogger.logger.info(
 				"Recipes for potions: "+bottleRecipes.keySet().stream()
-						.map(h -> h.unwrapKey().orElseThrow().location().toString())
+						.map(h -> h.unwrapKey().map(k -> k.location().toString()).orElse("unknown"))
 						.collect(Collectors.joining(", "))
 		);
-		;
 
 		List<BottlingMachineRecipe> ret = new ArrayList<>(
 				bottleRecipes.values().stream()
@@ -107,7 +111,13 @@ public class PotionRecipeGenerators
 			Holder<Potion> output, Holder<Potion> input, IngredientWithSize reagent, Map<Potion, List<MixerRecipe>> all
 	)
 	{
-		ResourceLocation outputID = output.unwrapKey().orElseThrow().location();
+		var outputKey = output.unwrapKey();
+		if(outputKey.isEmpty())
+		{
+			IELogger.logger.warn("Skipping potion without registry key in mixer recipe generation");
+			return;
+		}
+		ResourceLocation outputID = outputKey.get().location();
 		if(!BLACKLIST.contains(outputID.toString()))
 		{
 			List<MixerRecipe> existing = all.computeIfAbsent(output.value(), p -> new ArrayList<>());
