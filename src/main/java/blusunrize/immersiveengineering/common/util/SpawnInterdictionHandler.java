@@ -108,7 +108,7 @@ public class SpawnInterdictionHandler
 
 	private static boolean shouldCancel(MobSpawnType spawnType, EntityType<?> type, BlockPos pos, Level level)
 	{
-		if(!BLOCKED_TYPES.contains(spawnType) || type.getCategory()!=MobCategory.MONSTER)
+		if((spawnType != null && !BLOCKED_TYPES.contains(spawnType)) || type.getCategory()!=MobCategory.MONSTER)
 			return false;
 		return isInterdictedPosition(new Vec3(pos.getX(), pos.getY(), pos.getZ()), level);
 	}
