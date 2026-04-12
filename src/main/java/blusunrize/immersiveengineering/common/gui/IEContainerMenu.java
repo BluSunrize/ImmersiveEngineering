@@ -144,7 +144,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 				if(!this.moveItemStackTo(itemstack1, ownSlotCount, this.slots.size(), true))
 					return ItemStack.EMPTY;
 			}
-			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, ownSlotCount))
+			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, ownSlotCount, false))
 				return ItemStack.EMPTY;
 
 			if(itemstack1.isEmpty())
@@ -156,24 +156,56 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 		return itemstack;
 	}
 
-	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex)
+	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex, boolean reverseDirection)
 	{
-		return moveItemStackToWithMayPlace(slots, this::moveItemStackTo, pStack, pStartIndex, pEndIndex);
+		return moveItemStackToWithMayPlace(slots, this::moveItemStackTo, pStack, pStartIndex, pEndIndex, reverseDirection);
 	}
 
+	/**
+	 * This function moves the ItemStack pStack to the target container index.
+	 * Unlike the regular AbstractContainerMenu::moveItemStackTo it will check mayPlace even when finding existing
+	 * stacks of the same item, so players can't place items into the ghost item slot this way.
+	 *
+	 * @param pStack      The ItemStack being moved
+	 * @param pStartIndex the start index of the targeted container slots
+	 * @param pEndIndex   the end index of the targeted container slots (excluded)
+	 * @return
+	 */
 	public static boolean moveItemStackToWithMayPlace(
-			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex
+			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex, boolean reverseDirection
 	)
 	{
+
+		int i;
+		final byte step;
+		Predicate<Integer> continueLoop;
+		if(reverseDirection)
+		{
+			i = pEndIndex-1;
+			step = -1;
+			continueLoop = (loop_i) -> loop_i >= pStartIndex;
+		}
+		else
+		{
+			i = pStartIndex;
+			step = 1;
+			continueLoop = (loop_i) -> loop_i < pEndIndex;
+		}
+
 		boolean inAllowedRange = true;
 		int allowedStart = pStartIndex;
-		// TODO understand
-		for(int i = pStartIndex; i < pEndIndex; i++)
+
+		/* check if there are disallowed slots in the given range.
+		 * if a disallowed slot is encountered, use super.moveItemStackTo from the last allowedStart index
+		 * up until that slot (might result in a 0 range, which is fine and handled)
+		 * then, continue looking through the rest of the indices and see if another allowed slot is encountered,
+		 * to start a new range of allowed slots, which will be moved with super.moveItemStackTo */
+		while(continueLoop.test(i))
 		{
 			boolean mayplace = slots.get(i).mayPlace(pStack);
 			if(inAllowedRange&&!mayplace)
 			{
-				if(move.moveItemStackTo(pStack, allowedStart, i, false))
+				if(move.moveItemStackTo(pStack, allowedStart, i, reverseDirection))
 					return true;
 				inAllowedRange = false;
 			}
@@ -182,8 +214,10 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 				allowedStart = i;
 				inAllowedRange = true;
 			}
+			i += step;
 		}
-		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, false);
+
+		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, reverseDirection);
 	}
 
 	/**
@@ -192,9 +226,9 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	 * immediately before the matching slot.
 	 * This logic is currently used by the storage shelf.
 	 *
-	 * @param stack the stack to be inserted
+	 * @param stack      the stack to be inserted
 	 * @param startIndex the first slot to check
-	 * @param endIndex the final slot to check
+	 * @param endIndex   the final slot to check
 	 * @return true if the stack was fully consumed
 	 */
 	public boolean moveToMatchingSlotOrAdjacent(ItemStack stack, int startIndex, int endIndex)
@@ -348,7 +382,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	}
 
 	public record MultiblockMenuContext<S extends IMultiblockState>(IMultiblockContext<S> mbContext,
-																	BlockPos clickedPos)
+	                                                                BlockPos clickedPos)
 	{
 	}
 

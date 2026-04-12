@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
 import net.minecraft.world.entity.player.Inventory;
@@ -173,14 +174,18 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 		ItemStack stackInSlot = slotObject.getItem();
 		resultStack = stackInSlot.copy();
 
-		if(slot < ownSlotCount)
+		boolean moveDirectionToPlayer = slot < ownSlotCount;
+		if(moveDirectionToPlayer)
 		{
-			if(!this.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
+			/* Player slots can take a simple moveItemStackTo */
+			if(!super.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
+//			if(!this.moveItemStackToWithMayPlace(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
 				return ItemStack.EMPTY;
 		}
 		else if(!stackInSlot.isEmpty())
 		{
 			boolean singleSlot = ownSlotCount==1;
+
 			if(stackInSlot.getItem() instanceof EngineersBlueprintItem
 					||(stackInSlot.getItem() instanceof IUpgradeableTool uTool&&uTool.canModify(stackInSlot))
 					||(stackInSlot.getItem() instanceof IConfigurableTool cTool&&cTool.canConfigure(stackInSlot)))
@@ -196,16 +201,37 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 			}
 		}
 
-		slotObject.setChanged();
-		// TODO hack
-		slotObject.set(stackInSlot);
+		if(stackInSlot.isEmpty())
+		{
+			slotObject.setByPlayer(ItemStack.EMPTY);
+		}
+		else
+		{
+			slotObject.setChanged();
+		}
 
-		// TODO that looks weird as well
-		if(stackInSlot.getCount()==resultStack.getCount())
-			resultStack = ItemStack.EMPTY;
-		slotObject.onTake(player, resultStack);
-		if(slotObject.hasItem())
-			player.drop(slotObject.getItem(), false);
+		/* handle movement from crafting slots to player */
+		boolean isCrafting = slotObject instanceof BlueprintOutput;
+		if(!isCrafting)
+		{
+			resultStack = stackInSlot; /* resultStack must contain the remainder for regular quick moves */
+		}
+		/* handle movement from crafting slots to player */
+		else if(moveDirectionToPlayer) // moveDirection probably always is true, but checking doesn't hurt
+		{
+			/* if the slot still has items , it couldn't deposit them all in the player's inventory.
+			 * drop the remainder into the world */
+			if(slotObject.hasItem())
+			{
+				player.drop(slotObject.getItem(), false);
+			}
+			/* this triggers consuming the crafting components, but also resets the workbench crafting
+			 * ghost-item to the original stack size. if this stops being the case, this needs an extra
+			 * slotObject.set(resultsStack), or the ghost-item amount might differ from the intended
+			 * crafting quantity */
+			slotObject.onTake(player, resultStack);
+		}
+
 		return resultStack;
 	}
 
@@ -214,7 +240,8 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 	{
 		// TODO I think super::moveItemStackTo just assumes it can mutate the stacks in slots and it will propagate
 		//  correctly?
-		return IEContainerMenu.moveItemStackToWithMayPlace(slots, super::moveItemStackTo, stack, startIndex, endIndex);
+		//  Answer: Yes. And this does fail for certain IItemHandler implementations (e.g., ComponentItemHandler).
+		return IEContainerMenu.moveItemStackToWithMayPlace(slots, super::moveItemStackTo, stack, startIndex, endIndex, reverseDirection);
 	}
 
 	@Override

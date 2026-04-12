@@ -69,22 +69,22 @@ public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 	{
 		super(ctx);
 		ownSlotCount = 0;
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 48, 24));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 30, 42));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 48, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 48, 24));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 30, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 48, 42));
 
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 75, 24));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 93, 24));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 111, 24));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 75, 42));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 93, 42));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 111, 42));
-		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 129, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 75, 24));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 93, 24));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 111, 24));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 75, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 93, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 111, 42));
+		addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 129, 42));
 
 		for(int j = 0; j < 6; j++)
-			addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 35+j*18, 77));
+			addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 35+j*18, 77));
 		for(int j = 0; j < 7; j++)
-			addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 26+j*18, 112));
+			addSlot(new IESlot.ISIContainerCallback(this, inv, ownSlotCount++, 26+j*18, 112));
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

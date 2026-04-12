@@ -11,14 +11,20 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
+import blusunrize.immersiveengineering.common.gui.UpgradeableToolItemHandler;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public abstract class UpgradeableToolItem extends InternalStorageItem implements IUpgradeableTool
 {
@@ -28,6 +34,17 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	{
 		super(props, slotCount);
 		this.upgradeType = upgradeType;
+	}
+
+	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
+	{
+		registrar.register(ItemHandler.ITEM, UpgradeableToolItem::makeInternalItemHandler);
+	}
+
+	public static IItemHandlerModifiable makeInternalItemHandler(ItemStack stack)
+	{
+		InternalStorageItem item = (InternalStorageItem)stack.getItem();
+		return new UpgradeableToolItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.getSlotCount());
 	}
 
 	@Override
@@ -61,7 +78,7 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	@Override
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
-		if(w.isClientSide)
+		if(EffectiveSide.get().isClient())
 			return;
 		clearUpgrades(stack);
 		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
@@ -78,7 +95,15 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 				}
 			}
 			stack.set(IEDataComponents.UPGRADE_DATA, upgrades);
-			finishUpgradeRecalculation(stack, w.registryAccess());
+			try
+			{
+				MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+				assert server!=null;
+				finishUpgradeRecalculation(stack, server.registryAccess());
+			} catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
