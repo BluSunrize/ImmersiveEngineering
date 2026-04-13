@@ -37,6 +37,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntBinaryOperator;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
@@ -169,31 +170,39 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	 * @param pStack      The ItemStack being moved
 	 * @param pStartIndex the start index of the targeted container slots
 	 * @param pEndIndex   the end index of the targeted container slots (excluded)
-	 * @return
+	 * @return true, if any movement has taken place, false, otherwise
 	 */
 	public static boolean moveItemStackToWithMayPlace(
 			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex, boolean reverseDirection
 	)
 	{
-
+		/* Bunch of extra handling for reverseDirection */
 		int i;
 		final byte step;
 		Predicate<Integer> continueLoop;
+		IntBinaryOperator innerMoveStart;
+		IntBinaryOperator innerMoveEnd;
 		if(reverseDirection)
 		{
 			i = pEndIndex-1;
 			step = -1;
-			continueLoop = (loop_i) -> loop_i >= pStartIndex;
+			continueLoop = (a) -> a >= pStartIndex;
+			innerMoveStart = (a, b) -> b;
+			/* +1, because the range is exclusive and unlike i for reverseDirection == false,
+			 * allowedStart does not increment at the end of the loop body */
+			innerMoveEnd = (a, b) -> a+1;
 		}
 		else
 		{
 			i = pStartIndex;
 			step = 1;
-			continueLoop = (loop_i) -> loop_i < pEndIndex;
+			continueLoop = (a) -> a < pEndIndex;
+			innerMoveStart = (a, b) -> a;
+			innerMoveEnd = (a, b) -> b;
 		}
-
-		boolean inAllowedRange = true;
-		int allowedStart = pStartIndex;
+		boolean inAllowedRange = false;
+		int allowedStart = i;
+		boolean returnValue = false;
 
 		/* check if there are disallowed slots in the given range.
 		 * if a disallowed slot is encountered, use super.moveItemStackTo from the last allowedStart index
@@ -205,8 +214,13 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 			boolean mayplace = slots.get(i).mayPlace(pStack);
 			if(inAllowedRange&&!mayplace)
 			{
-				if(move.moveItemStackTo(pStack, allowedStart, i, reverseDirection))
-					return true;
+				if(move.moveItemStackTo(pStack, innerMoveStart.applyAsInt(allowedStart, i), innerMoveEnd.applyAsInt(allowedStart, i), reverseDirection))
+				{
+					/* only return if the stack is empty, if not, continue trying to find other allowed ranges to place the remainder */
+					if (pStack.isEmpty())
+						return true;
+					returnValue = true;
+				}
 				inAllowedRange = false;
 			}
 			else if(!inAllowedRange&&mayplace)
@@ -217,7 +231,8 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 			i += step;
 		}
 
-		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, reverseDirection);
+		returnValue |= inAllowedRange&&move.moveItemStackTo(pStack, innerMoveStart.applyAsInt(allowedStart, i), innerMoveEnd.applyAsInt(allowedStart, i), reverseDirection);
+		return returnValue;
 	}
 
 	/**

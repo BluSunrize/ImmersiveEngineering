@@ -179,7 +179,6 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 		{
 			/* Player slots can take a simple moveItemStackTo */
 			if(!super.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
-//			if(!this.moveItemStackToWithMayPlace(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
 				return ItemStack.EMPTY;
 		}
 		else if(!stackInSlot.isEmpty())
