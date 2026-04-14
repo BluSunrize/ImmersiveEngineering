@@ -106,7 +106,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	@Override
 	public Component getDisplayName()
 	{
-		return name!=null?name: Component.translatable("item.immersiveengineering.toolbox.name");
+		return name!=null?name: Component.translatable("item.immersiveengineering.toolbox");
 	}
 
 	@Override
