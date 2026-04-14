@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
-import blusunrize.immersiveengineering.common.gui.UpgradeableToolItemHandler;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.RegistryAccess;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -44,7 +44,7 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	public static IItemHandlerModifiable makeInternalItemHandler(ItemStack stack)
 	{
 		InternalStorageItem item = (InternalStorageItem)stack.getItem();
-		return new UpgradeableToolItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.getSlotCount());
+		return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.getSlotCount());
 	}
 
 	@Override

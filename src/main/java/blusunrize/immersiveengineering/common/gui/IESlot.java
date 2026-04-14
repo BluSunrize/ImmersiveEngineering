@@ -296,13 +296,6 @@ public abstract class IESlot extends Slot
 			return 64;
 		}
 
-//		@Nonnull
-//		@Override
-//		public ItemStack getItem()
-//		{
-//			return upgradeableTool.getUpgradeAfterRemoval(toolStack, super.getItem());
-//		}
-
 		@Override
 		public void onTake(Player thePlayer, ItemStack stack)
 		{
@@ -311,19 +304,19 @@ public abstract class IESlot extends Slot
 			super.onTake(thePlayer, stack);
 		}
 
-//		@Override
-//		public void setChanged()
-//		{
-//			super.setChanged();
-//			if(!world.isClientSide)
-//			{
-//				upgradeableTool.recalculateUpgrades(toolStack, world, getPlayer.get());
-//				if(container instanceof ModWorkbenchContainer)
-//					((ModWorkbenchContainer)container).rebindSlots();
-//				else if(container instanceof MaintenanceKitContainer)
-//					((MaintenanceKitContainer)container).updateSlots();
-//			}
-//		}
+		@Override
+		protected void setStackCopy(ItemStack stack)
+		{
+			super.setStackCopy(stack);
+			if(!world.isClientSide)
+			{
+				upgradeableTool.recalculateUpgrades(toolStack, world, getPlayer.get());
+				if(container instanceof ModWorkbenchContainer)
+					((ModWorkbenchContainer)container).rebindSlots();
+				else if(container instanceof MaintenanceKitContainer)
+					((MaintenanceKitContainer)container).updateSlots();
+			}
+		}
 	}
 
 	public static class Shader extends IESlot
