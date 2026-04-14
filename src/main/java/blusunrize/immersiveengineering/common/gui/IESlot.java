@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerCopySlot;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -253,7 +254,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Upgrades extends SlotItemHandlerIE
+	public static class Upgrades extends ISISlotItemHandlerIE
 	{
 		final ItemStack toolStack;
 		private final IUpgradeableTool upgradeableTool;
@@ -264,7 +265,7 @@ public abstract class IESlot extends Slot
 		private final Supplier<Player> getPlayer;
 
 		public Upgrades(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y, String type, ItemStack toolStack,
-						boolean preventDoubles, Level world, Supplier<Player> getPlayer)
+		                boolean preventDoubles, Level world, Supplier<Player> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
@@ -295,13 +296,6 @@ public abstract class IESlot extends Slot
 			return 64;
 		}
 
-		@Nonnull
-		@Override
-		public ItemStack getItem()
-		{
-			return upgradeableTool.getUpgradeAfterRemoval(toolStack, super.getItem());
-		}
-
 		@Override
 		public void onTake(Player thePlayer, ItemStack stack)
 		{
@@ -311,9 +305,9 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public void setChanged()
+		protected void setStackCopy(ItemStack stack)
 		{
-			super.setChanged();
+			super.setStackCopy(stack);
 			if(!world.isClientSide)
 			{
 				upgradeableTool.recalculateUpgrades(toolStack, world, getPlayer.get());
@@ -726,6 +720,29 @@ public abstract class IESlot extends Slot
 		}
 	}
 
+	public static class ISIContainerCallback extends ISISlotItemHandlerIE
+	{
+		ICallbackContainer container;
+
+		public ISIContainerCallback(ICallbackContainer container, IItemHandler inv, int id, int x, int y)
+		{
+			super(inv, id, x, y);
+			this.container = container;
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack itemStack)
+		{
+			return this.container.canInsert(itemStack, getSlotIndex(), this);
+		}
+
+		@Override
+		public boolean mayPickup(Player player)
+		{
+			return this.container.canTake(this.getItem(), getSlotIndex(), this);
+		}
+	}
+
 	public static class LogicCircuit extends SlotItemHandlerIE
 	{
 		public LogicCircuit(IItemHandler inv, int id, int x, int y)
@@ -757,6 +774,31 @@ public abstract class IESlot extends Slot
 		public int getMaxStackSize(@NotNull ItemStack stack)
 		{
 			return Math.min(Math.min(this.getMaxStackSize(), stack.getMaxStackSize()), super.getMaxStackSize(stack));
+		}
+	}
+
+	/**
+	 * This is for use with Inventory Storage Items (ISI), since inventory items use ComponentItemHandler, which returns copies of the item stacks,
+	 * and ItemHandlerCopySlot compensates for it.
+	 */
+	private static class ISISlotItemHandlerIE extends ItemHandlerCopySlot
+	{
+		public ISISlotItemHandlerIE(IItemHandler itemHandler, int index, int xPosition, int yPosition)
+		{
+			super(itemHandler, index, xPosition, yPosition);
+		}
+
+		@Override
+		public int getMaxStackSize(@NotNull ItemStack stack)
+		{
+			return Math.min(Math.min(this.getMaxStackSize(), stack.getMaxStackSize()), super.getMaxStackSize(stack));
+		}
+
+		@Override
+		public int getSlotIndex()
+		{
+			// TODO: this is a filthy workaround, because ItemHandlerCopySlot always returns 0 otherwise. Lets hope neoforge fixes that in the future.
+			return index;
 		}
 	}
 

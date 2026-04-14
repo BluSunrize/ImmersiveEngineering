@@ -37,6 +37,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntBinaryOperator;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
@@ -144,7 +145,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 				if(!this.moveItemStackTo(itemstack1, ownSlotCount, this.slots.size(), true))
 					return ItemStack.EMPTY;
 			}
-			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, ownSlotCount))
+			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, ownSlotCount, false))
 				return ItemStack.EMPTY;
 
 			if(itemstack1.isEmpty())
@@ -156,25 +157,70 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 		return itemstack;
 	}
 
-	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex)
+	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex, boolean reverseDirection)
 	{
-		return moveItemStackToWithMayPlace(slots, this::moveItemStackTo, pStack, pStartIndex, pEndIndex);
+		return moveItemStackToWithMayPlace(slots, this::moveItemStackTo, pStack, pStartIndex, pEndIndex, reverseDirection);
 	}
 
+	/**
+	 * This function moves the ItemStack pStack to the target container index.
+	 * Unlike the regular AbstractContainerMenu::moveItemStackTo it will check mayPlace even when finding existing
+	 * stacks of the same item, so players can't place items into the ghost item slot this way.
+	 *
+	 * @param pStack      The ItemStack being moved
+	 * @param pStartIndex the start index of the targeted container slots
+	 * @param pEndIndex   the end index of the targeted container slots (excluded)
+	 * @return true, if any movement has taken place, false, otherwise
+	 */
 	public static boolean moveItemStackToWithMayPlace(
-			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex
+			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex, boolean reverseDirection
 	)
 	{
-		boolean inAllowedRange = true;
-		int allowedStart = pStartIndex;
-		// TODO understand
-		for(int i = pStartIndex; i < pEndIndex; i++)
+		/* Bunch of extra handling for reverseDirection */
+		int i;
+		final byte step;
+		Predicate<Integer> continueLoop;
+		IntBinaryOperator innerMoveStart;
+		IntBinaryOperator innerMoveEnd;
+		if(reverseDirection)
+		{
+			i = pEndIndex-1;
+			step = -1;
+			continueLoop = (a) -> a >= pStartIndex;
+			innerMoveStart = (a, b) -> b;
+			/* +1, because the range is exclusive and unlike i for reverseDirection == false,
+			 * allowedStart does not increment at the end of the loop body */
+			innerMoveEnd = (a, b) -> a+1;
+		}
+		else
+		{
+			i = pStartIndex;
+			step = 1;
+			continueLoop = (a) -> a < pEndIndex;
+			innerMoveStart = (a, b) -> a;
+			innerMoveEnd = (a, b) -> b;
+		}
+		boolean inAllowedRange = false;
+		int allowedStart = i;
+		boolean returnValue = false;
+
+		/* check if there are disallowed slots in the given range.
+		 * if a disallowed slot is encountered, use super.moveItemStackTo from the last allowedStart index
+		 * up until that slot (might result in a 0 range, which is fine and handled)
+		 * then, continue looking through the rest of the indices and see if another allowed slot is encountered,
+		 * to start a new range of allowed slots, which will be moved with super.moveItemStackTo */
+		while(continueLoop.test(i))
 		{
 			boolean mayplace = slots.get(i).mayPlace(pStack);
 			if(inAllowedRange&&!mayplace)
 			{
-				if(move.moveItemStackTo(pStack, allowedStart, i, false))
-					return true;
+				if(move.moveItemStackTo(pStack, innerMoveStart.applyAsInt(allowedStart, i), innerMoveEnd.applyAsInt(allowedStart, i), reverseDirection))
+				{
+					/* only return if the stack is empty, if not, continue trying to find other allowed ranges to place the remainder */
+					if (pStack.isEmpty())
+						return true;
+					returnValue = true;
+				}
 				inAllowedRange = false;
 			}
 			else if(!inAllowedRange&&mayplace)
@@ -182,8 +228,11 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 				allowedStart = i;
 				inAllowedRange = true;
 			}
+			i += step;
 		}
-		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, false);
+
+		returnValue |= inAllowedRange&&move.moveItemStackTo(pStack, innerMoveStart.applyAsInt(allowedStart, i), innerMoveEnd.applyAsInt(allowedStart, i), reverseDirection);
+		return returnValue;
 	}
 
 	/**
@@ -192,9 +241,9 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	 * immediately before the matching slot.
 	 * This logic is currently used by the storage shelf.
 	 *
-	 * @param stack the stack to be inserted
+	 * @param stack      the stack to be inserted
 	 * @param startIndex the first slot to check
-	 * @param endIndex the final slot to check
+	 * @param endIndex   the final slot to check
 	 * @return true if the stack was fully consumed
 	 */
 	public boolean moveToMatchingSlotOrAdjacent(ItemStack stack, int startIndex, int endIndex)
@@ -348,7 +397,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu implements I
 	}
 
 	public record MultiblockMenuContext<S extends IMultiblockState>(IMultiblockContext<S> mbContext,
-																	BlockPos clickedPos)
+	                                                                BlockPos clickedPos)
 	{
 	}
 
