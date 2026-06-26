@@ -71,12 +71,24 @@ public class EntryWithLinks
 		List<String> parts = new ArrayList<>();
 		for(int i = 0; i < in.length(); )
 		{
+			// CJK codepoints are always tokenized individually
+			int cp = in.codePointAt(i);
+			int cpLen = Character.charCount(cp);
+			if(isCJK(cp))
+			{
+				parts.add(in.substring(i, i+cpLen));
+				i += cpLen;
+				continue;
+			}
+
 			StringBuilder here = new StringBuilder();
 			char first = in.charAt(i);
 			here.append(first);
 			i++;
 			while(i < in.length())
 			{
+				if(!(first== '<')&&isCJK(in.codePointAt(i)))
+					break;
 				char hereC = in.charAt(i);
 				byte action = shouldSplit(first, hereC);
 				if((action&1)!=0)
@@ -120,4 +132,17 @@ public class EntryWithLinks
 		return ret;
 	}
 
+	private static boolean isCJK(int codePoint)
+	{
+		return (codePoint >= 0x2E80 && codePoint <= 0xA4FF)
+				|| (codePoint >= 0xAC00 && codePoint <= 0xD7FF)
+				|| (codePoint >= 0xF900 && codePoint <= 0xFAFF)
+				|| (codePoint >= 0xFF00 && codePoint <= 0xFFEF)
+				|| (codePoint >= 0x20000 && codePoint <= 0x2A6DF)
+				|| (codePoint >= 0x2A700 && codePoint <= 0x2B81F)
+				|| (codePoint >= 0x2B820 && codePoint <= 0x2EBEF)
+				|| (codePoint >= 0x2EBF0 && codePoint <= 0x2EE5F)
+				|| (codePoint >= 0x2F800 && codePoint <= 0x2FA1F)
+				|| (codePoint >= 0x30000 && codePoint <= 0x323AF);
+	}
 }
