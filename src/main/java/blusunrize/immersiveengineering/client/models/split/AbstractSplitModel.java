@@ -18,6 +18,7 @@ import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.math.ModelSplitterVec3i;
 import malte0811.modelsplitter.model.OBJModel;
 import malte0811.modelsplitter.model.Polygon;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
@@ -27,6 +28,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.common.util.TriState;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -38,10 +41,25 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 	@Nonnull
 	private final Vec3i size;
 
-	public AbstractSplitModel(T base, Vec3i size)
+	public AbstractSplitModel(T base, @NotNull Vec3i size)
 	{
 		super(base);
 		this.size = size;
+	}
+
+	// Ambient occlusion assumes normal cube lighting, which conflicts with shading
+	// Bake into split quads. Turn it off for these models.
+	@Override
+	public boolean useAmbientOcclusion()
+	{
+		return false;
+	}
+
+	@Nonnull
+	@Override
+	public TriState useAmbientOcclusion(BlockState state, ModelData data, RenderType renderType)
+	{
+		return TriState.FALSE;
 	}
 
 	@Nonnull

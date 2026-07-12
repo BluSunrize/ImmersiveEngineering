@@ -80,7 +80,36 @@ public class PolygonUtils
 
 	public static BakedQuad toBakedQuad(Polygon<ExtraQuadData> poly, ModelState transform)
 	{
-		return toBakedQuad(poly.getPoints(), poly.getTexture(), transform.getRotation().blockCenterToCorner(), true, true);
+		// Split models can't rely on vanilla's per-quad lighting, since it picks a single flat
+		// direction for the whole quad and that doesn't work well on curved/angled surfaces.
+		// Bake own smooth shading and skylight into each quad instead.
+		BakedQuad quad = toBakedQuad(poly.getPoints(), poly.getTexture(), transform.getRotation().blockCenterToCorner(), true, false);
+		bakeSplitLighting(quad);
+		return quad;
+	}
+
+	private static void bakeSplitLighting(BakedQuad quad)
+	{
+		final int stride = DefaultVertexFormat.BLOCK.getVertexSize()/4;
+		final int colorOffset = getOffset(VertexFormatElement.COLOR);
+		final int lightOffset = getOffset(VertexFormatElement.UV2);
+		final int normalOffset = getOffset(VertexFormatElement.NORMAL);
+		int[] verts = quad.getVertices();
+		for(int v = 0; v < 4; ++v)
+		{
+			final int base = v*stride;
+			final int packedNormal = verts[base+normalOffset];
+			final float nx = ((byte)packedNormal)/127f;
+			final float ny = ((byte)(packedNormal >> 8))/127f;
+			final float nz = ((byte)(packedNormal >> 16))/127f;
+			final float shade = Math.min(nx*nx*0.6f+ny*ny*((3+ny)/4f)+nz*nz*0.8f, 1);
+			final int c = verts[base+colorOffset];
+			final int r = Math.min((int)((c&255)*shade), 255);
+			final int g = Math.min((int)(((c>>8)&255)*shade), 255);
+			final int b = Math.min((int)(((c>>16)&255)*shade), 255);
+			verts[base+colorOffset] = r|(g<<8)|(b<<16)|(c&0xFF000000);
+			verts[base+lightOffset] = 0xF00000;
+		}
 	}
 
 	public static BakedQuad toBakedQuad(List<Vertex> points, ExtraQuadData data, Transformation rotation, boolean absoluteUV, boolean shade)
