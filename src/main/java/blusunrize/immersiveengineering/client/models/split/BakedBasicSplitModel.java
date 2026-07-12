@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -22,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -63,15 +65,23 @@ public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 	{
 		BlockPos offset = extraData.get(Model.SUBMODEL_OFFSET);
 		if(offset!=null)
+		{
+			// Split parts aren't full cubes, so they don't have real sides to cull by. Only
+			// answer the "give me everything" request, not each individual face - otherwise the
+			// geometry gets rendered multiple times.
+			if(side!=null)
+				return ImmutableList.of();
 			return splitModels.get().getOrDefault(offset, ImmutableList.of());
+		}
 		else
 			return base.getQuads(state, side, rand, extraData, layer);
 	}
 
 	@Nonnull
 	@Override
-	public ItemTransforms getTransforms()
+	public BakedModel applyTransform(@Nonnull ItemDisplayContext transformType, @Nonnull PoseStack poseStack, boolean applyLeftHandTransform)
 	{
-		return itemTransforms;
+		itemTransforms.getTransform(transformType).apply(applyLeftHandTransform, poseStack);
+		return this;
 	}
 }
