@@ -46,12 +46,15 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedMod
 	{
 		super(base, size);
 		this.subModelCache = CacheBuilder.newBuilder()
-				.maximumSize(10)
-				.expireAfterAccess(1, TimeUnit.MINUTES)
+				.maximumSize(64)
+				.expireAfterAccess(10, TimeUnit.MINUTES)
 				.build(CacheLoader.from(key -> {
 					List<BakedQuad> baseQuads = base.getQuads(key);
 					return split(baseQuads, parts, transform);
 				}));
+		// Register with the reload cache so resource pack reloads actually clear data.
+		// Cache size increased since the old settings caused constant re-splitting.
+		WEAK_INSTANCES.add(this);
 	}
 
 	@Override
@@ -60,7 +63,9 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedMod
 		BlockPos offset = data.get(Model.SUBMODEL_OFFSET);
 		if(offset==null)
 			return super.getQuads(state, side, rand, data, renderType);
-		K key = base.getKey(state, side, rand, data, renderType);
+		if(side!=null)
+			return ImmutableList.of();
+		K key = base.getKey(state, null, rand, data, renderType);
 		if(key==null)
 			return ImmutableList.of();
 		return subModelCache.getUnchecked(key).getOrDefault(offset, ImmutableList.of());
