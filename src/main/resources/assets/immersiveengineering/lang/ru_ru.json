@@ -294,7 +294,7 @@
   "desc.immersiveengineering.info.shader.rarity.uncommon": "Необычный",
   "desc.immersiveengineering.info.shader.rarity.rare": "Редкий",
   "desc.immersiveengineering.info.shader.rarity.epic": "Эпический",
-  "desc.immersiveengineering.info.shader.rarity.ie_masterwork": "Шедевральный",
+  "desc.immersiveengineering.info.shader.rarity.immersiveengineering_masterwork": "Шедевральный",
   "desc.immersiveengineering.info.shader.set": "§lНабор шейдеров§r:",
   "desc.immersiveengineering.info.shader.reference": "§lСсылка на попкультуру§r:",
   "desc.immersiveengineering.info.shader.details": "§lДополнительное инфо§r:",
