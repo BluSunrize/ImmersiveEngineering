@@ -75,6 +75,8 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		IModelOffsetProvider
 {
 	public static final int ENERGY_CAPACITY = 16000;
+	protected final static int[] IDLE_YAW_UPDATE_INTERVAL_TICKS;
+	protected final static float[] IDLE_YAWS;
 
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
 
@@ -88,6 +90,37 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public float rotationPitch;
 
 	private UUID targetId;
+
+	static
+	{
+		// time intervals
+		final int TICKS_PER_SECOND = 20;
+		final int MIN_SECOND = 3;
+		final int MAX_SECOND = 7;
+		int secondIntervals = MAX_SECOND - MIN_SECOND + 1;
+		int totalTick = secondIntervals * TICKS_PER_SECOND;
+		IDLE_YAW_UPDATE_INTERVAL_TICKS = new int[totalTick];
+		int startingTick = MIN_SECOND * TICKS_PER_SECOND;
+		for (int i = 0; i < totalTick; i++)
+		{
+			IDLE_YAW_UPDATE_INTERVAL_TICKS[i] = startingTick + i;
+		}
+
+		// yaws
+		final float ANGLE_INTERVAL_DEG = 0.5f;
+		final float MIN_ANGLE_DEG = 10f;
+		final float MAX_ANGLE_DEG = 30f;
+
+		// if minAngleDeg is 0 then 0 is duplicated here, not a problem really but ever so slightly annoying
+		int totalYawOn1Side = (int) ((MAX_ANGLE_DEG - MIN_ANGLE_DEG) / ANGLE_INTERVAL_DEG) + 1;
+		IDLE_YAWS = new float[totalYawOn1Side * 2];
+		for (int i = 0; i < totalYawOn1Side; i++)
+		{
+			float yaw = MIN_ANGLE_DEG + ANGLE_INTERVAL_DEG * i;
+			IDLE_YAWS[2 * i] = yaw;
+			IDLE_YAWS[2 * i + 1] = -yaw;
+		}
+	}
 
 	public TurretBlockEntity(BlockEntityType<T> type, BlockPos pos, BlockState state)
 	{
@@ -126,22 +159,49 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			else if(level.isClientSide)
 			{
 				double yaw = (Mth.atan2(delta.x, delta.z)*(180/Math.PI))-180;
+				yaw = normalizeToHalfPiesRange((float)yaw);
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				float defaultYaw = 180-getFacing().toYRot();
+				defaultYaw = normalizeToHalfPiesRange((float)defaultYaw);
 				if(this.rotationYaw==0)//moving from default
-					this.rotationYaw = (float)(yaw*.5)-defaultYaw;
+					this.rotationYaw = (float)(yaw-defaultYaw) * 0.5f;
 				else
 					this.rotationYaw = (float)yaw-defaultYaw;
+
+				this.rotationYaw = normalizeToHalfPiesRange(this.rotationYaw);
+				this.rotationPitch = normalizeToHalfPiesRange(this.rotationPitch);
 			}
 		}
 		else if(level.isClientSide)
 		{
-			this.rotationYaw *= .75;
-			if(Math.abs(rotationYaw) < 10)
-				this.rotationYaw = 0;
-			this.rotationPitch *= .75;
-			if(Math.abs(rotationPitch) < 10)
-				this.rotationPitch = 0;
+			final float LERP_DECAY_FACTOR = 0.25f;
+			final float LERP_SNAP_THRESHOLD_DEG = 10f;
+
+			float currentYaw = this.rotationYaw;
+			float idleYaw = getTargetIdleYaw();
+			float yawDiff = idleYaw - currentYaw;
+			if (Math.abs(yawDiff) < LERP_SNAP_THRESHOLD_DEG)
+			{
+				currentYaw = idleYaw;
+			}
+			else
+			{
+				currentYaw = currentYaw + yawDiff * LERP_DECAY_FACTOR;
+			}
+			this.rotationYaw = currentYaw;
+
+			float currentPitch = this.rotationPitch;
+			float idlePitch = getTargetIdlePitch();
+			float pitchDiff = idlePitch - currentPitch;
+			if (Math.abs(pitchDiff) < LERP_SNAP_THRESHOLD_DEG)
+			{
+				currentPitch = idlePitch;
+			}
+			else
+			{
+				currentPitch = currentPitch + pitchDiff * LERP_DECAY_FACTOR;
+			}
+			this.rotationPitch = currentPitch;
 		}
 	}
 
@@ -546,6 +606,72 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			return new BlockPos(0, 1, 0);
 		else
 			return BlockPos.ZERO;
+	}
+
+	protected float getTargetIdleYaw()
+	{
+		final float IDLE_YAW_DEG = 0f;
+		boolean isOn = isRSPowered() ^ config.redstoneControlInverted;
+		if (!isOn)
+		{
+			return IDLE_YAW_DEG;
+		}
+		int energyPassiveConsumptionCost = IEServerConfig.MACHINES.turret_consumption.get();
+		if (energyStorage == null || energyStorage.getEnergyStored() < energyPassiveConsumptionCost)
+		{
+			return IDLE_YAW_DEG;
+		}
+		int worldTick =
+				(int) (getLevelNonnull().getGameTime() % (long) Integer.MAX_VALUE);
+		BlockPos bp = getBlockPos();
+		int gridIndex =
+				Math.abs(hashNonNegative(bp.getX()) + hashNonNegative(bp.getY()) - hashNonNegative((bp.getZ() * 3)));
+		int idleYawUpdateInterval = IDLE_YAW_UPDATE_INTERVAL_TICKS[gridIndex % IDLE_YAW_UPDATE_INTERVAL_TICKS.length];
+		int bucket = worldTick / idleYawUpdateInterval;
+		return IDLE_YAWS[hashNonNegative(bucket) % IDLE_YAWS.length];
+	}
+
+	protected float getTargetIdlePitch()
+	{
+		final float INACTIVE_PITCH_DEG = 20f;
+		final float IDLE_PITCH_DEG = 0f;
+		boolean isOn = isRSPowered() ^ config.redstoneControlInverted;
+		if (!isOn)
+		{
+			return INACTIVE_PITCH_DEG;
+		}
+		int energyPassiveConsumptionCost = IEServerConfig.MACHINES.turret_consumption.get();
+		if (energyStorage == null || energyStorage.getEnergyStored() < energyPassiveConsumptionCost)
+		{
+			return INACTIVE_PITCH_DEG;
+		}
+		return IDLE_PITCH_DEG;
+	}
+
+	protected static float normalizeToHalfPiesRange(float deg)
+	{
+		while (deg <= -180f)
+		{
+			deg += 360f;
+		}
+		while (deg > 180f)
+		{
+			deg -= 360f;
+		}
+		return deg;
+	}
+
+	// Source - https://stackoverflow.com/a/12996028
+	// Posted by Thomas Mueller, modified by community. See post 'Timeline' for change history
+	// Retrieved 2026-08-25, License - CC BY-SA 4.0
+	private static int hashNonNegative(int x)
+	{
+		x = ~((x >>> 16) ^ x) * 0x45d9f3b;
+		x = ((x >>> 16) ^ x) * 0x45d9f3b;
+		x = (x >>> 16) ^ x;
+		// added to ensure positive output for indexing purposes
+		x = x & ~(1 << 31);
+		return x;
 	}
 
 	public record TurretConfig(
