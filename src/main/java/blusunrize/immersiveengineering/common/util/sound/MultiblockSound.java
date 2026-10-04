@@ -29,6 +29,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 	private final BooleanSupplier valid;
 	private final float maxVolume;
 	private long subtitleMillis;
+	private SoundInstance replacement;
 
 	public MultiblockSound(
 			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop, float maxVolume
@@ -60,7 +61,12 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop, maxVolume);
 		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 		soundManager.play(instance);
-		return () -> soundManager.isActive(instance);
+		return () -> soundManager.isActive(instance)||(instance.replacement!=null&&soundManager.isActive(instance.replacement));
+	}
+
+	public void setReplacement(SoundInstance played)
+	{
+		this.replacement = played==this?null: played;
 	}
 
 	@Override

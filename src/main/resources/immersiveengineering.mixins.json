@@ -43,6 +43,7 @@
     "accessors.client.WorldRendererAccess",
     "coremods.client.BipedModelMixin",
     "coremods.client.LevelRendererMixin",
+    "coremods.client.SoundEngineMixin",
     "coremods.client.RebuildTaskMixin"
   ],
   "injectors": {

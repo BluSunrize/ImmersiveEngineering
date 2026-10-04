@@ -78,6 +78,12 @@ public class IEMuffledSound implements SoundInstance
 	}
 
 	@Override
+	public boolean canStartSilent()
+	{
+		return originalSound.canStartSilent();
+	}
+
+	@Override
 	public float getPitch()
 	{
 		return originalSound.getPitch();
