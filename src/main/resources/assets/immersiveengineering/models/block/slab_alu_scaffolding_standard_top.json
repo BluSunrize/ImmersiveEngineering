@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
+    "side": "immersiveengineering:block/metal_decoration/aluminum_scaffolding_slab",
+    "top": "immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_standard"
+  }
+}
